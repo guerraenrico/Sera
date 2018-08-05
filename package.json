@@ -1,0 +1,20 @@
+{
+  "name": "sera_node",
+  "version": "1.0.0",
+  "description": "node.js sera",
+  "main": "index.js",
+  "author": "Enrico Guerra",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "express": "^4.16.3",
+    "mongodb": "^3.0.10"
+  },
+  "devDependencies": {
+    "eslint": "^5.0.0",
+    "eslint-config-airbnb-base": "^13.0.0",
+    "eslint-plugin-import": "^2.12.0",
+    "request": "^2.87.0",
+    "tape": "^4.9.1"
+  }
+}
