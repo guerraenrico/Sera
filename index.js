@@ -43,6 +43,18 @@ app.delete('/api/categories/:id', (req, res) => {
   CallApi(Api.deleteCategory, req, res);
 });
 
+app.get('/api/tasks', (req, res) => {
+  CallApi(Api.getTasks, req, res);
+});
+
+app.post('/api/tasks', (req, res) => {
+  CallApi(Api.insertTask, req, res);
+});
+
+app.delete('/api/tasks/:id', (req, res) => {
+  CallApi(Api.deleteTask, req, res);
+});
+
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/public/index.html'));
 });

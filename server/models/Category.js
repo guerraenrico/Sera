@@ -7,10 +7,8 @@ const Schema = {
 };
 
 const New = (name = '', id = undefined) => (
-  (id) ? {
-    id,
-    name,
-  } : {
+  {
+    ...((id !== undefined) && { id }),
     name,
   }
 );

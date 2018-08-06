@@ -12,6 +12,12 @@ const initialState = {
 };
 
 class TodoArguments extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = initialState;
+    this.onFetchTodoArgumentsNext = this.onFetchTodoArgumentsNext.bind(this);
+  }
+
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.skip !== prevState.skip) {
       return {
@@ -19,12 +25,6 @@ class TodoArguments extends React.Component {
       };
     }
     return null;
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = initialState;
-    this.onFetchTodoArgumentsNext = this.onFetchTodoArgumentsNext.bind(this);
   }
 
   onFetchTodoArgumentsNext() {
@@ -77,7 +77,6 @@ TodoArguments.propTypes = {
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     completed: PropTypes.bool.isRequired,
-    category: PropTypes.shape({}).isRequired,
   }).isRequired).isRequired,
   moreToLoad: PropTypes.bool.isRequired,
   fetchTodoArguments: PropTypes.func.isRequired,

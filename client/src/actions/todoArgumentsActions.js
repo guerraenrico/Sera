@@ -1,4 +1,4 @@
-import { callApi } from '../utils/ApiUtils';
+import { callApi, Methods } from '../utils/ApiUtils';
 import {
   REQUEST_FETCH_ARGUMENTS,
   RECEIVE_FETCH_ARGUMENTS,
@@ -61,9 +61,9 @@ export const fetchTodoArgumentsByCategory = (
   skip = 0,
 ) => (dispatch) => {
   dispatch(requestFetchArguments(limit, skip));
-  const request = callApi('/fetch-arguments-by-category', {
+  const request = callApi('tasks', {
     categoriesId, completed, limit, skip,
-  });
+  }, Methods.GET);
   return request.then(
     (response) => {
       if (response.success) {
@@ -83,7 +83,7 @@ export const fetchTodoArgumentsByCategory = (
 };
 
 export const deleteTodoArgument = (todoArgumentId = '') => (dispatch, getState) => {
-  const request = callApi('/delete-argument', { todoArgumentId });
+  const request = callApi('tasks', todoArgumentId, Methods.DELETE);
   return request.then(
     (response) => {
       if (response.success) {
@@ -101,13 +101,14 @@ export const deleteTodoArgument = (todoArgumentId = '') => (dispatch, getState) 
 
 export const addTodoArgument = (title = '', description = '', category = { id: '' }, todoWithin, callback = undefined) => (dispatch) => {
   const request = callApi(
-    '/add-argument',
+    'tasks',
     {
       title,
       description,
       categoryId: category.id,
       todoWithin,
     },
+    Methods.POST,
   );
   return request.then(
     (response) => {

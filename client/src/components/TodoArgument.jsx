@@ -83,7 +83,6 @@ TodoArgument.propTypes = {
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     completed: PropTypes.bool.isRequired,
-    category: PropTypes.shape({}).isRequired,
     completedAt: PropTypes.shape({}),
   }).isRequired,
 };
