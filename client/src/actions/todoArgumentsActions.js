@@ -82,14 +82,14 @@ export const fetchTodoArgumentsByCategory = (
   );
 };
 
-export const deleteTodoArgument = (todoArgumentId = '') => (dispatch, getState) => {
-  const request = callApi('tasks', todoArgumentId, Methods.DELETE);
+export const deleteTodoArgument = (id = '') => (dispatch, getState) => {
+  const request = callApi('tasks', id, Methods.DELETE);
   return request.then(
     (response) => {
       if (response.success) {
         const { items } = getState().todoArguments;
         const todoArgumentIndex = items.findIndex(todoArgument =>
-          todoArgument.id === todoArgumentId);
+          todoArgument.id === id);
         dispatch(removeArgumentLocal(todoArgumentIndex));
       } else {
         dispatch(showMessageError(response.messageError));
@@ -132,8 +132,8 @@ export const addTodoArgument = (title = '', description = '', category = { id: '
   );
 };
 
-export const toogleTodoArgumentCompleted = (todoArgumentId = '', completed = false) => (dispatch) => {
-  const request = callApi('/toogle-argument-completed', { todoArgumentId, completed });
+export const toogleTodoArgumentCompleted = (id = '', completed = false) => (dispatch) => {
+  const request = callApi('tasks', { id, completed }, Methods.PATCH);
   return request.then(
     (response) => {
       if (response.success) {

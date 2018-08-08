@@ -55,6 +55,10 @@ app.delete('/api/tasks/:id', (req, res) => {
   CallApi(Api.deleteTask, req, res);
 });
 
+app.patch('/api/tasks', (req, res) => {
+  CallApi(Api.updateTask, req, res);
+});
+
 app.get('/*', (req, res) => {
   res.sendFile(path.join(__dirname, '/client/public/index.html'));
 });

@@ -5,9 +5,9 @@ const Schema = {
     title: 'title',
     description: 'description',
     completed: 'completed',
-    todoWithin: 'todo_within',
-    completedAt: 'completed_at',
-    categoryId: 'category_id',
+    todoWithin: 'todoWithin',
+    completedAt: 'completedAt',
+    categoryId: 'categoryId',
   },
 };
 
@@ -34,7 +34,7 @@ const New = (
 const CreateFromBodyRequest = (body) => {
   if (body.title === undefined || body.title === '') {
     return undefined;
-  }  
+  }
   if (body.todoWithin === undefined || body.todoWithin === '') {
     return undefined;
   }

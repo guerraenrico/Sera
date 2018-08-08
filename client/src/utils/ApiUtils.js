@@ -4,6 +4,7 @@ export const Methods = {
   POST: 'POST',
   GET: 'GET',
   DELETE: 'DELETE',
+  PATCH: 'PATCH',
 };
 
 const fullUrl = url => `/api/${url}`;
@@ -42,12 +43,21 @@ const createDeleteRequest = (url, options) => {
   });
 };
 
+const createPatchRequest = (url, options = {}) => (
+  fetch(url, {
+    ...baseRequestInit,
+    method: 'PATCH',
+    body: JSON.stringify(options),
+  })
+);
+
 const createRequest = (url, options, method) => {
   const finalUrl = fullUrl(url);
   switch (method) {
     case Methods.POST: return createPostRequest(finalUrl, options);
     case Methods.GET: return createGetRequest(finalUrl, options);
     case Methods.DELETE: return createDeleteRequest(finalUrl, options);
+    case Methods.PATCH: return createPatchRequest(finalUrl, options);
     default: return createPostRequest(finalUrl, options);
   }
 };

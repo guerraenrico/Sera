@@ -72,12 +72,18 @@ const deleteCategory = (db, req, res) => {
 const getTasks = (db, req, res) => {
   const limit = (req.query.limit !== undefined) && parseInt(req.query.limit, 10);
   const skip = (req.query.skip !== undefined) && parseInt(req.query.skip, 10);
-  const completed = (req.query.completed == 'true');
-  // const categoriesId = (req.categoriesId !== undefined) &&
-  // { name: { $in: ["aa", "bb"] } }
+  const completed = (req.query.completed === 'true');
+  const categoriesId = (req.query.categoriesId !== undefined) && req.query.categoriesId.split(',');
+  const filter = {
+    $and: [
+      { [Task.Schema.fields.completed]: completed },
+      ((categoriesId[0] !== '0')
+        ? { [Task.Schema.fields.categoryId]: { $in: categoriesId } } : {}),
+    ],
+  };
   const query = (limit && skip)
-    ? db.collection(Task.Schema.name).find({}).limit(limit).skip(skip)
-    : db.collection(Task.Schema.name).find({});
+    ? db.collection(Task.Schema.name).find(filter).limit(limit).skip(skip)
+    : db.collection(Task.Schema.name).find(filter);
   return query.toArray()
     .then((tasksDocs) => {
       handleResponse(res, Task.CreateFromDocuments(tasksDocs));
@@ -124,6 +130,30 @@ const deleteTask = (db, req, res) => {
     });
 };
 
+const updateTask = (db, req, res) => {
+  const { body } = req;
+  const { id, ...other } = body;
+  console.log('body', JSON.stringify(body));
+  console.log('other', JSON.stringify(other));
+  if (id === undefined) {
+    return new Promise(() => handleError(res, ApiErrors.InvalidTaskParameters(), 400));
+  }
+  return db.collection(Task.Schema.name).update(
+    { _id: ObjectId(id.toString()) },
+    { $set: { ...other } },
+  ).then((task) => {
+    console.log('task', JSON.stringify(task));
+    if (!task) {
+      handleResponse(res, task);
+    } else {
+      handleError(res, ApiErrors.ErrorUpdateTask());
+    }
+  }, (err) => {
+    console.log('err', JSON.stringify(err));
+    handleError(res, ApiErrors.ErrorUpdateTask(err));
+  });
+};
+
 module.exports = {
   getCategories,
   insertCategory,
@@ -131,4 +161,5 @@ module.exports = {
   getTasks,
   insertTask,
   deleteTask,
+  updateTask,
 };
