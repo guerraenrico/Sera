@@ -1,66 +1,66 @@
 import { callApi, Methods } from '../utils/ApiUtils';
 import {
-  REQUEST_FETCH_ARGUMENTS,
-  RECEIVE_FETCH_ARGUMENTS,
-  ERROR_FETCH_ARGUMENTS,
-  ADD_ARGUMENT_LOCAL,
-  REMOVE_ARGUMENT_LOCAL,
-  UPDATE_ARGUMENT_LOCAL,
+  REQUEST_FETCH_TASKS,
+  RECEIVE_FETCH_TASKS,
+  ERROR_FETCH_TASKS,
+  ADD_TASK_LOCAL,
+  REMOVE_TASK_LOCAL,
+  UPDATE_TASK_LOCAL,
 } from '../constants/actionTypes';
 import { queryItemsLimit } from '../constants/config';
 import { showMessageError } from './messageActions';
 import { toJsDate } from '../utils/Common';
 
-const requestFetchArguments = (limit, skip) => (
+const requestFetchTasks = (limit, skip) => (
   {
-    type: REQUEST_FETCH_ARGUMENTS,
+    type: REQUEST_FETCH_TASKS,
     limit,
     skip,
   }
 );
 
-const receiveFetchArguments = todoArguments => (
+const receiveFetchTasks = tasks => (
   {
-    type: RECEIVE_FETCH_ARGUMENTS,
-    todoArguments,
+    type: RECEIVE_FETCH_TASKS,
+    tasks,
   }
 );
 
-const errorFetchArguments = error => (
+const errorFetchTasks = error => (
   {
-    type: ERROR_FETCH_ARGUMENTS,
+    type: ERROR_FETCH_TASKS,
     error,
   }
 );
 
-const addArgumentLocal = todoArgument => (
+const addTaskLocal = task => (
   {
-    type: ADD_ARGUMENT_LOCAL,
-    todoArgument,
+    type: ADD_TASK_LOCAL,
+    task,
   }
 );
 
-const removeArgumentLocal = todoArgumentIndex => (
+const removeTaskLocal = taskIndex => (
   {
-    type: REMOVE_ARGUMENT_LOCAL,
-    todoArgumentIndex,
+    type: REMOVE_TASK_LOCAL,
+    taskIndex,
   }
 );
 
-const updateArgumentLocal = todoArgument => (
+const updateArgumentLocal = task => (
   {
-    type: UPDATE_ARGUMENT_LOCAL,
-    todoArgument,
+    type: UPDATE_TASK_LOCAL,
+    task,
   }
 );
 
-export const fetchTodoArgumentsByCategory = (
+export const fetchTasksByCategory = (
   categoriesId = [],
   completed = false,
   limit = queryItemsLimit,
   skip = 0,
 ) => (dispatch) => {
-  dispatch(requestFetchArguments(limit, skip));
+  dispatch(requestFetchTasks(limit, skip));
   const request = callApi('tasks', {
     categoriesId, completed, limit, skip,
   }, Methods.GET);
@@ -73,16 +73,16 @@ export const fetchTodoArgumentsByCategory = (
             completedAt: (todo.completedAt) ? toJsDate(todo.completedAt) : undefined,
             todoWithin: (todo.todoWithin) ? toJsDate(todo.todoWithin) : undefined,
           }));
-        dispatch(receiveFetchArguments(todos));
+        dispatch(receiveFetchTasks(todos));
       } else {
-        dispatch(errorFetchArguments(response.messageError));
+        dispatch(errorFetchTasks(response.messageError));
       }
     },
     error => ({ error }),
   );
 };
 
-export const deleteTodoArgument = (id = '') => (dispatch, getState) => {
+export const deleteTask = (id = '') => (dispatch, getState) => {
   const request = callApi('tasks', id, Methods.DELETE);
   return request.then(
     (response) => {
@@ -90,7 +90,7 @@ export const deleteTodoArgument = (id = '') => (dispatch, getState) => {
         const { items } = getState().todoArguments;
         const todoArgumentIndex = items.findIndex(todoArgument =>
           todoArgument.id === id);
-        dispatch(removeArgumentLocal(todoArgumentIndex));
+        dispatch(removeTaskLocal(todoArgumentIndex));
       } else {
         dispatch(showMessageError(response.messageError));
       }
@@ -99,7 +99,7 @@ export const deleteTodoArgument = (id = '') => (dispatch, getState) => {
   );
 };
 
-export const addTodoArgument = (title = '', description = '', category = { id: '' }, todoWithin, callback = undefined) => (dispatch) => {
+export const addTask = (title = '', description = '', category = { id: '' }, todoWithin, callback = undefined) => (dispatch) => {
   const request = callApi(
     'tasks',
     {
@@ -120,7 +120,7 @@ export const addTodoArgument = (title = '', description = '', category = { id: '
           todoWithin: (response.data.todoWithin)
             ? toJsDate(response.data.todoWithin) : undefined,
         };
-        dispatch(addArgumentLocal(todo));
+        dispatch(addTaskLocal(todo));
         if (callback !== undefined) {
           callback();
         }
@@ -132,7 +132,7 @@ export const addTodoArgument = (title = '', description = '', category = { id: '
   );
 };
 
-export const toogleTodoArgumentCompleted = (id = '', completed = false) => (dispatch) => {
+export const toogleTaskCompleted = (id = '', completed = false) => (dispatch) => {
   const request = callApi('tasks', { id, completed }, Methods.PATCH);
   return request.then(
     (response) => {

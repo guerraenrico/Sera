@@ -10,9 +10,9 @@ const initialState = {
   error: '',
 };
 
-const todoArguments = (state = initialState, action) => {
+const tasks = (state = initialState, action) => {
   switch (action.type) {
-    case actionTypes.REQUEST_FETCH_ARGUMENTS:
+    case actionTypes.REQUEST_FETCH_TASKS:
       return {
         ...state,
         isFetching: true,
@@ -20,44 +20,44 @@ const todoArguments = (state = initialState, action) => {
         skip: action.skip,
         moreToLoad: (action.skip === 0) || state.moreToLoad,
       };
-    case actionTypes.RECEIVE_FETCH_ARGUMENTS:
+    case actionTypes.RECEIVE_FETCH_TASKS:
       return {
         ...state,
         isFetching: false,
         items: (state.skip === 0)
-          ? action.todoArguments
-          : [...state.items, ...action.todoArguments],
-        moreToLoad: (action.todoArguments.length === state.limit),
+          ? action.tasks
+          : [...state.items, ...action.tasks],
+        moreToLoad: (action.tasks.length === state.limit),
       };
-    case actionTypes.ERROR_FETCH_ARGUMENTS:
+    case actionTypes.ERROR_FETCH_TASKS:
       return {
         ...state,
         isFetching: false,
         error: action.error,
       };
-    case actionTypes.ADD_ARGUMENT_LOCAL:
+    case actionTypes.ADD_TASK_LOCAL:
       return {
         ...state,
         items: [
           ...state.items,
-          action.todoArgument,
+          action.task,
         ],
       };
-    case actionTypes.REMOVE_ARGUMENT_LOCAL:
+    case actionTypes.REMOVE_TASK_LOCAL:
       return {
         ...state,
         items: [
-          ...state.items.slice(0, action.todoArgumentIndex),
-          ...state.items.slice(action.todoArgumentIndex + 1),
+          ...state.items.slice(0, action.taskIndex),
+          ...state.items.slice(action.taskIndex + 1),
         ],
       };
-    case actionTypes.UPDATE_ARGUMENT_LOCAL:
+    case actionTypes.UPDATE_TASK_LOCAL:
       return {
         ...state,
         items: [
           ...state.items.map(argument => (
-            (argument.id === action.todoArgument.id)
-              ? { ...action.todoArgument } : argument
+            (argument.id === action.task.id)
+              ? { ...action.task } : argument
           )),
         ],
       };
@@ -66,4 +66,4 @@ const todoArguments = (state = initialState, action) => {
   }
 };
 
-export default todoArguments;
+export default tasks;

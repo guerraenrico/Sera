@@ -5,7 +5,7 @@ import LoaderLinear from '../components/LoaderLinear';
 import MainAddButton from '../components/MainAddButton';
 import CategoriesFilterContainer from '../containers/CategoriesFilterContainer';
 import VisibilityFilterContainer from '../containers/VisibilityFilterContainer';
-import TodoArgumentsContainer from '../containers/TodoArgumentsContainer';
+import TasksContainer from '../containers/TasksContainer';
 import DialogAdd from './dialogAdd/DialogAdd';
 import Snackbar from './Snackbar';
 
@@ -36,7 +36,7 @@ class Todos extends Component {
             onClick={() => this.setState({ isDialogAddOpen: true })}
           />
         </div>
-        <TodoArgumentsContainer />
+        <TasksContainer />
         <DialogAdd
           open={isDialogAddOpen}
           onClose={() => this.setState({ isDialogAddOpen: false })}

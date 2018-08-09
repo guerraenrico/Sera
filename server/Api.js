@@ -138,13 +138,15 @@ const updateTask = (db, req, res) => {
   if (id === undefined) {
     return new Promise(() => handleError(res, ApiErrors.InvalidTaskParameters(), 400));
   }
-  return db.collection(Task.Schema.name).update(
+  return db.collection(Task.Schema.name).findAndModify(
     { _id: ObjectId(id.toString()) },
+    {},
     { $set: { ...other } },
-  ).then((task) => {
-    console.log('task', JSON.stringify(task));
-    if (!task) {
-      handleResponse(res, task);
+    { new: true },
+  ).then((result) => {
+    console.log('result', JSON.stringify(result));
+    if (!result && result.ok === 1) {
+      handleResponse(res, result.value);
     } else {
       handleError(res, ApiErrors.ErrorUpdateTask());
     }

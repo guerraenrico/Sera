@@ -6,7 +6,7 @@ import ButtonCompleteArgument from './ButtonCompleteArgument';
 import ButtonDeleteArgument from './ButtonDeleteArgument';
 import { toSimpleDateFormat } from '../utils/Common';
 
-class TodoArgument extends React.Component {
+class Task extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -21,29 +21,29 @@ class TodoArgument extends React.Component {
   }
 
   renderDate() {
-    const { argument } = this.props;
-    if (argument.completed) {
+    const { task } = this.props;
+    if (task.completed) {
       return (
-        <p className="complete-date">{`completed ${(argument.completedAt) ? toSimpleDateFormat(argument.completedAt) : ''}`}</p>
+        <p className="complete-date">{`completed ${(task.completedAt) ? toSimpleDateFormat(task.completedAt) : ''}`}</p>
       );
     }
     return (
-      <p className="complete-within-date">{`to complete within ${(argument.todoWithin) ? toSimpleDateFormat(argument.todoWithin) : 'not set'}`}</p>
+      <p className="complete-within-date">{`to complete within ${(task.todoWithin) ? toSimpleDateFormat(task.todoWithin) : 'not set'}`}</p>
     );
   }
 
   render() {
-    const { argument, onDelete, onComplete } = this.props;
+    const { task, onDelete, onComplete } = this.props;
     const { collapsed } = this.state;
     return (
       <div className="argument-item">
         <div className="argument-header">
           <p
-            className={`argument-title ${(argument.completed) ? 'argument-title-completed' : ''}`}
+            className={`argument-title ${(task.completed) ? 'argument-title-completed' : ''}`}
             onClick={() => this.onTitleClick()}
             role="presentation"
           >
-            {argument.title}
+            {task.title}
           </p>
           <Fade in={collapsed}>
             <ButtonDeleteArgument
@@ -54,7 +54,7 @@ class TodoArgument extends React.Component {
             onComplete !== undefined &&
             <ButtonCompleteArgument
               onClick={onComplete}
-              completed={argument.completed}
+              completed={task.completed}
             />
           }
         </div>
@@ -62,11 +62,11 @@ class TodoArgument extends React.Component {
           {this.renderDate()}
         </div>
         <Collapse in={collapsed}>
-          <div key={argument.description} className="argument-body">
+          <div key={task.description} className="argument-body">
             <p className="argument-description">
               {
-                (argument.description !== undefined && argument.description !== '')
-                ? argument.description : <span className="empty">No description to show :(</span>
+                (task.description !== undefined && task.description !== '')
+                ? task.description : <span className="empty">No description to show :(</span>
               }
             </p>
           </div>
@@ -76,10 +76,10 @@ class TodoArgument extends React.Component {
   }
 }
 
-TodoArgument.propTypes = {
+Task.propTypes = {
   onDelete: PropTypes.func,
   onComplete: PropTypes.func,
-  argument: PropTypes.shape({
+  task: PropTypes.shape({
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     completed: PropTypes.bool.isRequired,
@@ -87,9 +87,9 @@ TodoArgument.propTypes = {
   }).isRequired,
 };
 
-TodoArgument.defaultProps = {
+Task.defaultProps = {
   onDelete: undefined,
   onComplete: undefined,
 };
 
-export default TodoArgument;
+export default Task;

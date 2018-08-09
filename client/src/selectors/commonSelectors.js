@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
 import { isFetchingCategoriesFilter } from './todoFiltersSelectors';
-import { isFetchingTodoArguments } from './todoArgumentsSelectors';
+import { isFetchingTasks } from './tasksSelectors';
 
 export const showLoading = createSelector(
   isFetchingCategoriesFilter,
-  isFetchingTodoArguments,
+  isFetchingTasks,
   (isFetchingCategories, isFetchingTodos) => isFetchingCategories || isFetchingTodos,
 );
 

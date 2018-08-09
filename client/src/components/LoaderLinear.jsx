@@ -5,6 +5,16 @@ import Fade from './anims/Fade';
 const delay = 1000;
 
 class LoaderLinear extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      shouldShow: false,
+      startTimer: false,
+      clearTimer: false,
+    };
+    this.timeout = null;
+  }
+
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState) {
       if (nextProps.show) {
@@ -21,16 +31,6 @@ class LoaderLinear extends React.Component {
       };
     }
     return null;
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      shouldShow: false,
-      startTimer: false,
-      clearTimer: false,
-    };
-    this.timeout = null;
   }
 
   componentDidUpdate() {

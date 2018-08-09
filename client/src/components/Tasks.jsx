@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import { TransitionGroup } from 'react-transition-group';
 import Resize from './anims/Resize';
-import TodoArgument from './TodoArgument';
+import Task from './Task';
 import InfiniteScroll from './InfiniteScroll';
 import { queryItemsLimit } from '../constants/config';
 
@@ -11,7 +11,7 @@ const initialState = {
   skip: 0,
 };
 
-class TodoArguments extends React.Component {
+class Tasks extends React.Component {
   constructor(props) {
     super(props);
     this.state = initialState;
@@ -30,7 +30,7 @@ class TodoArguments extends React.Component {
   onFetchTodoArgumentsNext() {
     const {
       categoriesId, completed,
-      fetchTodoArguments, moreToLoad,
+      fetchTasks, moreToLoad,
     } = this.props;
     if (!moreToLoad) {
       return;
@@ -38,12 +38,12 @@ class TodoArguments extends React.Component {
     const { limit, skip } = this.state;
     const newSkip = skip + limit;
     this.setState({ skip: newSkip });
-    fetchTodoArguments(categoriesId, completed, limit, newSkip);
+    fetchTasks(categoriesId, completed, limit, newSkip);
   }
 
   render() {
     const {
-      listTodoArguments,
+      taskList,
       onDeleteArgument,
       onCompleteArgument,
     } = this.props;
@@ -52,11 +52,11 @@ class TodoArguments extends React.Component {
         <InfiniteScroll onScroll={this.onFetchTodoArgumentsNext}>
           <TransitionGroup>
             {
-              listTodoArguments.map(arg => (
+              taskList.map(arg => (
                 <Resize key={arg.id}>
-                  <TodoArgument
+                  <Task
                     key={arg.id}
-                    argument={arg}
+                    task={arg}
                     onDelete={() => onDeleteArgument(arg)}
                     onComplete={() => onCompleteArgument(arg)}
                   />
@@ -70,18 +70,18 @@ class TodoArguments extends React.Component {
   }
 }
 
-TodoArguments.propTypes = {
+Tasks.propTypes = {
   onDeleteArgument: PropTypes.func.isRequired,
   onCompleteArgument: PropTypes.func.isRequired,
-  listTodoArguments: PropTypes.arrayOf(PropTypes.shape({
+  taskList: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     completed: PropTypes.bool.isRequired,
   }).isRequired).isRequired,
   moreToLoad: PropTypes.bool.isRequired,
-  fetchTodoArguments: PropTypes.func.isRequired,
+  fetchTasks: PropTypes.func.isRequired,
   categoriesId: PropTypes.arrayOf(PropTypes.string).isRequired,
   completed: PropTypes.bool.isRequired,
 };
 
-export default TodoArguments;
+export default Tasks;

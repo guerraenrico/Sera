@@ -10,11 +10,11 @@ import {
   SWITCH_VISIBILITY_FILTER,
 } from '../constants/actionTypes';
 import { queryItemsLimit } from '../constants/config';
-import { fetchTodoArgumentsByCategory } from './todoArgumentsActions';
+import { fetchTasksByCategory } from './tasksActions';
 import { showMessageError } from './messageActions';
 import { getSelectedCategoriesId, visibilityOnlyCompleted } from '../selectors/todoFiltersSelectors';
 
-const fetchArguments = state => fetchTodoArgumentsByCategory(
+const fetchArguments = state => fetchTasksByCategory(
   getSelectedCategoriesId(state),
   visibilityOnlyCompleted(state),
 );
@@ -80,7 +80,7 @@ export const fetchAllCategories = (limit = queryItemsLimit, skip = 0) => (dispat
     (response) => {
       if (response.success) {
         dispatch(receiveFetchAllCategories(response.data));
-        dispatch(fetchTodoArgumentsByCategory(getSelectedCategoriesId(getState())));
+        dispatch(fetchTasksByCategory(getSelectedCategoriesId(getState())));
       } else {
         dispatch(errorFetchAllCategories(response.messageError));
       }

@@ -1,11 +1,11 @@
 ﻿import { combineReducers } from 'redux';
 import todoFilters from './todoFilters';
-import todoArguments from './todoArguments';
+import tasks from './tasks';
 import message from './message';
 
 const reducersTodoApp = combineReducers({
   todoFilters,
-  todoArguments,
+  tasks,
   message,
 });
 

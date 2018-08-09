@@ -5,7 +5,7 @@ import DatePicker from 'react-date-picker';
 
 import labels from '../../constants/labels';
 import { DONE } from '../../constants/steps';
-import { addTodoArgument } from '../../actions/todoArgumentsActions';
+import { addTask } from '../../actions/tasksActions';
 import { showMessageInfo } from '../../actions/messageActions';
 
 class SelectCompleteDate extends React.Component {
@@ -31,7 +31,7 @@ class SelectCompleteDate extends React.Component {
       dispatch(showMessageInfo(labels.msgSelectDate));
       return;
     }
-    dispatch(addTodoArgument(
+    dispatch(addTask(
       title, description,
       category, todoWithin, this.onTodoArgumentCreated,
     ));
