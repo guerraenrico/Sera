@@ -25,7 +25,6 @@ const CallApi = (apiFunction, req, res) => {
       const db = conn.db(dbName);
       return apiFunction(db, req, res)
         .then(() => {
-          console.log('close connection');
           conn.close();
         });
     });

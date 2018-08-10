@@ -9,7 +9,6 @@ import {
 } from '../constants/actionTypes';
 import { queryItemsLimit } from '../constants/config';
 import { showMessageError } from './messageActions';
-import { toJsDate } from '../utils/Common';
 
 const requestFetchTasks = (limit, skip) => (
   {
@@ -47,7 +46,7 @@ const removeTaskLocal = taskIndex => (
   }
 );
 
-const updateArgumentLocal = task => (
+const updateTaskLocal = task => (
   {
     type: UPDATE_TASK_LOCAL,
     task,
@@ -70,8 +69,8 @@ export const fetchTasksByCategory = (
         const todos = response.data.map(todo =>
           ({
             ...todo,
-            completedAt: (todo.completedAt) ? toJsDate(todo.completedAt) : undefined,
-            todoWithin: (todo.todoWithin) ? toJsDate(todo.todoWithin) : undefined,
+            completedAt: (todo.completedAt) ? new Date(todo.completedAt) : undefined,
+            todoWithin: (todo.todoWithin) ? new Date(todo.todoWithin) : undefined,
           }));
         dispatch(receiveFetchTasks(todos));
       } else {
@@ -116,9 +115,9 @@ export const addTask = (title = '', description = '', category = { id: '' }, tod
         const todo = {
           ...response.data,
           completedAt: (response.data.completedAt)
-            ? toJsDate(response.data.completedAt) : undefined,
+            ? new Date(response.data.completedAt) : undefined,
           todoWithin: (response.data.todoWithin)
-            ? toJsDate(response.data.todoWithin) : undefined,
+            ? new Date(response.data.todoWithin) : undefined,
         };
         dispatch(addTaskLocal(todo));
         if (callback !== undefined) {
@@ -132,17 +131,19 @@ export const addTask = (title = '', description = '', category = { id: '' }, tod
   );
 };
 
-export const toogleTaskCompleted = (id = '', completed = false) => (dispatch) => {
-  const request = callApi('tasks', { id, completed }, Methods.PATCH);
+export const toogleTaskCompleted = (id = '', isCompleted = false) => (dispatch) => {
+  const completed = !isCompleted;
+  const completedAt = (completed) ? new Date() : null;
+  const request = callApi('tasks', { id, completed, completedAt }, Methods.PATCH);
   return request.then(
     (response) => {
       if (response.success) {
         const todo = {
           ...response.data,
           completedAt: (response.data.completedAt)
-            ? toJsDate(response.data.completedAt) : undefined,
+            ? new Date(response.data.completedAt) : undefined,
         };
-        dispatch(updateArgumentLocal(todo));
+        dispatch(updateTaskLocal(todo));
       } else {
         dispatch(showMessageError(response.messageError));
       }

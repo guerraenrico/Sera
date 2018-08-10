@@ -14,7 +14,7 @@ import { fetchTasksByCategory } from './tasksActions';
 import { showMessageError } from './messageActions';
 import { getSelectedCategoriesId, visibilityOnlyCompleted } from '../selectors/todoFiltersSelectors';
 
-const fetchArguments = state => fetchTasksByCategory(
+const fetchTasks = state => fetchTasksByCategory(
   getSelectedCategoriesId(state),
   visibilityOnlyCompleted(state),
 );
@@ -135,15 +135,15 @@ export const addCategory = (name = '', callback = undefined) => (dispatch) => {
 
 export const changeVisibility = visibility => (dispatch, getState) => {
   dispatch(switchVisibilityFilter(visibility));
-  return dispatch(fetchArguments(getState()));
+  return dispatch(fetchTasks(getState()));
 };
 
 export const selectCategory = selectedCategory => (dispatch, getState) => {
   dispatch(toogleSelectCategory(selectedCategory));
-  return dispatch(fetchArguments(getState()));
+  return dispatch(fetchTasks(getState()));
 };
 
 export const selectCategoryAll = () => (dispatch, getState) => {
   dispatch(toogleSelectCategoryAll());
-  return dispatch(fetchArguments(getState()));
+  return dispatch(fetchTasks(getState()));
 };

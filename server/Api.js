@@ -133,8 +133,6 @@ const deleteTask = (db, req, res) => {
 const updateTask = (db, req, res) => {
   const { body } = req;
   const { id, ...other } = body;
-  console.log('body', JSON.stringify(body));
-  console.log('other', JSON.stringify(other));
   if (id === undefined) {
     return new Promise(() => handleError(res, ApiErrors.InvalidTaskParameters(), 400));
   }
@@ -142,11 +140,10 @@ const updateTask = (db, req, res) => {
     { _id: ObjectId(id.toString()) },
     {},
     { $set: { ...other } },
-    { new: true },
+    { },
   ).then((result) => {
-    console.log('result', JSON.stringify(result));
-    if (!result && result.ok === 1) {
-      handleResponse(res, result.value);
+    if (!result !== undefined && result.ok === 1) {
+      handleResponse(res, { ...Task.CreateFromDocument(result.value), ...other });
     } else {
       handleError(res, ApiErrors.ErrorUpdateTask());
     }
