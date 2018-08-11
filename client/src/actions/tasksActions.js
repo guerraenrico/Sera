@@ -86,7 +86,7 @@ export const deleteTask = (id = '') => (dispatch, getState) => {
   return request.then(
     (response) => {
       if (response.success) {
-        const { items } = getState().todoArguments;
+        const { items } = getState().tasks;
         const todoArgumentIndex = items.findIndex(todoArgument =>
           todoArgument.id === id);
         dispatch(removeTaskLocal(todoArgumentIndex));
