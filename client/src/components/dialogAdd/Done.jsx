@@ -15,7 +15,7 @@ class Done extends React.Component {
         <h2>Done!</h2>
         <div className="content-ic-done">
           <img
-            src="img/ic-done.svg"
+            src="./client/public/img/ic-done.svg"
             className="ic-done"
             alt="done icon"
           />
