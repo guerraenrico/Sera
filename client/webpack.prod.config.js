@@ -10,7 +10,6 @@ const packageFile = require('./package.json');
 
 module.exports = {
   mode: 'production',
-  context: path.resolve('src'),
   entry: {
     main: './src/index.jsx',
     vendor: Object.keys(packageFile.dependencies),
@@ -19,7 +18,7 @@ module.exports = {
     publicPath: 'client/public/dist/',
     filename: '[name].js',
     chunkFilename: '[name].js',
-    path: path.resolve(__dirname, 'client/public/dist'),
+    path: path.resolve(__dirname, 'public/dist'),
   },
   resolve: {
     extensions: ['.js', '.jsx'],
