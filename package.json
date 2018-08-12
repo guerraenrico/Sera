@@ -6,6 +6,9 @@
   "author": "Enrico Guerra",
   "license": "MIT",
   "private": false,
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
     "express": "^4.16.3",
     "mongodb": "^3.0.10"
