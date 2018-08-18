@@ -10,7 +10,7 @@ import {
   SWITCH_VISIBILITY_FILTER,
 } from '../constants/actionTypes';
 import { queryItemsLimit } from '../constants/config';
-import { fetchTasksByCategory } from './tasksActions';
+import { fetchTasksByCategory } from './todoTasksActions';
 import { showMessageError } from './messageActions';
 import { getSelectedCategoriesId, visibilityOnlyCompleted } from '../selectors/todoFiltersSelectors';
 

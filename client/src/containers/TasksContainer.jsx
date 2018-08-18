@@ -4,9 +4,9 @@ import {
   fetchTasksByCategory,
   deleteTask,
   toogleTaskCompleted,
-} from '../actions/tasksActions';
+} from '../actions/todoTasksActions';
 
-import { getTaskList, getSkip, stillMoreToLoad } from '../selectors/tasksSelectors';
+import { getTaskList, getSkip, stillMoreToLoad } from '../selectors/todoTasksSelectors';
 import { getSelectedCategoriesId, visibilityOnlyCompleted } from '../selectors/todoFiltersSelectors';
 
 const mapStateToProps = state => (
