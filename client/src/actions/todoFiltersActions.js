@@ -10,7 +10,7 @@ import {
   SWITCH_VISIBILITY_FILTER,
 } from '../constants/actionTypes';
 import { queryItemsLimit } from '../constants/config';
-import { fetchTasksByCategory } from './tasksActions';
+import { fetchTasksByCategory } from './todoTasksActions';
 import { showMessageError } from './messageActions';
 import { getSelectedCategoriesId, visibilityOnlyCompleted } from '../selectors/todoFiltersSelectors';
 
@@ -73,40 +73,35 @@ const switchVisibilityFilter = visibility => (
   }
 );
 
-export const fetchAllCategories = (limit = queryItemsLimit, skip = 0) => (dispatch, getState) => {
-  dispatch(requestFetchAllCategories());
-  const request = callApi('categories', { limit, skip }, Methods.GET);
-  return request.then(
-    (response) => {
+export const fetchAllCategories = (limit = queryItemsLimit, skip = 0) =>
+  async (dispatch, getState) => {
+    dispatch(requestFetchAllCategories());
+    try {
+      const response = await callApi('categories', { limit, skip }, Methods.GET);
       if (response.success) {
         dispatch(receiveFetchAllCategories(response.data));
         dispatch(fetchTasksByCategory(getSelectedCategoriesId(getState())));
       } else {
         dispatch(errorFetchAllCategories(response.messageError));
       }
-    },
-    error => (
-      dispatch(showMessageError(error.message))
-    ),
-  );
-};
+    } catch (error) {
+      dispatch(showMessageError(error.message));
+    }
+  };
 
-export const deleteCategory = (categoryId = '') => (dispatch, getState) => {
-  const request = callApi('categories', categoryId, Methods.DELETE);
-  return request.then(
-    (response) => {
-      if (response.success) {
-        const { categories } = getState().todoFilters;
-        const categoryIndex = categories.findIndex(category => category.id === categoryId);
-        dispatch(removeCategoryLocal(categoryIndex));
-      } else {
-        dispatch(showMessageError(response.messageError));
-      }
-    },
-    error => (
-      dispatch(showMessageError(error.message))
-    ),
-  );
+export const deleteCategory = (categoryId = '') => async (dispatch, getState) => {
+  try {
+    const response = await callApi('categories', categoryId, Methods.DELETE);
+    if (response.success) {
+      const { categories } = getState().todoFilters;
+      const categoryIndex = categories.findIndex(category => category.id === categoryId);
+      dispatch(removeCategoryLocal(categoryIndex));
+    } else {
+      dispatch(showMessageError(response.messageError));
+    }
+  } catch (error) {
+    dispatch(showMessageError(error.message));
+  }
 };
 
 /**
@@ -114,23 +109,20 @@ export const deleteCategory = (categoryId = '') => (dispatch, getState) => {
  * @param {String} name category name to add
  * @param {Function} callback function that need to handle the category created
  */
-export const addCategory = (name = '', callback = undefined) => (dispatch) => {
-  const request = callApi('categories', { name }, Methods.POST);
-  return request.then(
-    (response) => {
-      if (response.success) {
-        dispatch(addCategoryLocal(response.data));
-        if (callback !== undefined) {
-          callback(response.data);
-        }
-      } else {
-        dispatch(showMessageError(response.messageError));
+export const addCategory = (name = '', callback = undefined) => async (dispatch) => {
+  try {
+    const response = await callApi('categories', { name }, Methods.POST);
+    if (response.success) {
+      dispatch(addCategoryLocal(response.data));
+      if (callback !== undefined) {
+        callback(response.data);
       }
-    },
-    error => (
-      dispatch(showMessageError(error.message))
-    ),
-  );
+    } else {
+      dispatch(showMessageError(response.messageError));
+    }
+  } catch (error) {
+    dispatch(showMessageError(error.message));
+  }
 };
 
 export const changeVisibility = visibility => (dispatch, getState) => {

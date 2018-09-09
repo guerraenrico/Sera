@@ -1,6 +1,8 @@
+import labels from './labels';
+
 export const SELECT_WANT_TO_ADD = 'SELECT_WANT_TO_ADD';
 export const ADD_CATEGORY = 'ADD_CATEGORY';
-export const ADD_ARGUMENT = 'ADD_ARGUMENT';
+export const ADD_TASK = 'ADD_TASK';
 export const SELECT_CATEGORY = 'SELECT_CATEGORY';
 export const SELECT_COMPLETE_DATE = 'SELECT_COMPLETE_DATE';
 export const DONE = 'DONE';
@@ -8,26 +10,26 @@ export const DONE = 'DONE';
 export const stepList = [
   {
     id: SELECT_WANT_TO_ADD,
-    description: 'What want to add',
+    description: labels.stepDescWantToAdd,
   },
   {
     id: ADD_CATEGORY,
-    description: 'Add a category',
+    description: labels.stepDescAddCategory,
   },
   {
     id: SELECT_CATEGORY,
-    description: 'Select a category',
+    description: labels.stepDescrSelecCategory,
   },
   {
-    id: ADD_ARGUMENT,
-    description: 'Add Argument',
+    id: ADD_TASK,
+    description: labels.stepDescAddTask,
   },
   {
     id: SELECT_COMPLETE_DATE,
-    description: 'Schedule',
+    description: labels.stepDescCompleteDate,
   },
   {
     id: DONE,
-    description: 'That\'s it',
+    description: labels.stepDescDone,
   },
 ];

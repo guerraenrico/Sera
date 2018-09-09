@@ -5,7 +5,7 @@ import DatePicker from 'react-date-picker';
 
 import labels from '../../constants/labels';
 import { DONE } from '../../constants/steps';
-import { addTask } from '../../actions/tasksActions';
+import { addTask } from '../../actions/todoTasksActions';
 import { showMessageInfo } from '../../actions/messageActions';
 
 class SelectCompleteDate extends React.Component {
@@ -16,7 +16,7 @@ class SelectCompleteDate extends React.Component {
     };
     this.onInputDateChange = this.onInputDateChange.bind(this);
     this.onButtonAddClick = this.onButtonAddClick.bind(this);
-    this.onTodoArgumentCreated = this.onTodoArgumentCreated.bind(this);
+    this.onTodoTaskCreated = this.onTodoTaskCreated.bind(this);
   }
 
   onInputDateChange(date) {
@@ -33,11 +33,11 @@ class SelectCompleteDate extends React.Component {
     }
     dispatch(addTask(
       title, description,
-      category, todoWithin, this.onTodoArgumentCreated,
+      category, todoWithin, this.onTodoTaskCreated,
     ));
   }
 
-  onTodoArgumentCreated() {
+  onTodoTaskCreated() {
     const { onNext } = this.props;
     onNext({ stepId: DONE, options: { } });
   }
@@ -46,7 +46,7 @@ class SelectCompleteDate extends React.Component {
     const { todoWithin } = this.state;
     return (
       <div className="content-select-complete-date">
-        <h2>Todo Within</h2>
+        <h2>{labels.titleTodoWithin}</h2>
         <div className="content-input">
           <DatePicker
             className="main-input"
@@ -64,7 +64,7 @@ class SelectCompleteDate extends React.Component {
             className="main-button"
             onClick={this.onButtonAddClick}
           >
-            ADD
+            {labels.buttonAdd}
           </button>
         </div>
       </div>

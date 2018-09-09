@@ -10,7 +10,7 @@ const initialState = {
   error: '',
 };
 
-const tasks = (state = initialState, action) => {
+const todoTasks = (state = initialState, action) => {
   switch (action.type) {
     case actionTypes.REQUEST_FETCH_TASKS:
       return {
@@ -55,9 +55,9 @@ const tasks = (state = initialState, action) => {
       return {
         ...state,
         items: [
-          ...state.items.map(argument => (
-            (argument.id === action.task.id)
-              ? { ...action.task } : argument
+          ...state.items.map(task => (
+            (task.id === action.task.id)
+              ? { ...action.task } : task
           )),
         ],
       };
@@ -66,4 +66,4 @@ const tasks = (state = initialState, action) => {
   }
 };
 
-export default tasks;
+export default todoTasks;

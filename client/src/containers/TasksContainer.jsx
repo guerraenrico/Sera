@@ -4,9 +4,9 @@ import {
   fetchTasksByCategory,
   deleteTask,
   toogleTaskCompleted,
-} from '../actions/tasksActions';
+} from '../actions/todoTasksActions';
 
-import { getTaskList, getSkip, stillMoreToLoad } from '../selectors/tasksSelectors';
+import { getTaskList, getSkip, stillMoreToLoad } from '../selectors/todoTasksSelectors';
 import { getSelectedCategoriesId, visibilityOnlyCompleted } from '../selectors/todoFiltersSelectors';
 
 const mapStateToProps = state => (
@@ -21,10 +21,10 @@ const mapStateToProps = state => (
 
 const mapDispatchToProps = dispatch => (
   {
-    onDeleteArgument: (task) => {
+    onDeleteTask: (task) => {
       dispatch(deleteTask(task.id));
     },
-    onCompleteArgument: (task) => {
+    onCompleteTask: (task) => {
       dispatch(toogleTaskCompleted(task.id, task.completed));
     },
     fetchTasks: (categoriesId, completed, limit, skip) => {

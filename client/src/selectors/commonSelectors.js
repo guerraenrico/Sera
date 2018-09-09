@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import { isFetchingCategoriesFilter } from './todoFiltersSelectors';
-import { isFetchingTasks } from './tasksSelectors';
+import { isFetchingTasks } from './todoTasksSelectors';
 
 export const showLoading = createSelector(
   isFetchingCategoriesFilter,

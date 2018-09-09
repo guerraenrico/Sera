@@ -4,13 +4,13 @@ import PropTypes from 'prop-types';
 import SelectActionAdd from './SelectActionAdd';
 import AddCategory from './AddCategory';
 import SelectCategory from './SelectCategory';
-import AddTodoArgument from './AddTodoArgument';
+import AddTask from './AddTask';
 import SelectCompleteDate from './SelectCompleteDate';
 import Done from './Done';
 import {
   SELECT_WANT_TO_ADD,
   ADD_CATEGORY,
-  ADD_ARGUMENT,
+  ADD_TASK,
   SELECT_CATEGORY,
   SELECT_COMPLETE_DATE,
   DONE,
@@ -19,6 +19,7 @@ import {
 import ReplaceAnim from '../anims/ReplaceAnim';
 import DialogAnim from '../anims/DialogAnim';
 import Steps from './Steps';
+import labels from '../../constants/labels';
 
 const getContentToRender = (steps, props) => {
   if (steps.length === 0) {
@@ -30,8 +31,8 @@ const getContentToRender = (steps, props) => {
       return <SelectActionAdd {...props} />;
     case ADD_CATEGORY:
       return <AddCategory {...props} />;
-    case ADD_ARGUMENT:
-      return <AddTodoArgument {...props} options={lastStep.options} />;
+    case ADD_TASK:
+      return <AddTask {...props} options={lastStep.options} />;
     case SELECT_CATEGORY:
       return <SelectCategory {...props} />;
     case SELECT_COMPLETE_DATE:
@@ -150,7 +151,7 @@ class DialogAdd extends React.Component {
               className="text-button"
               onClick={() => this.onBack()}
             >
-              NEVER MIND, GO BACK
+              {labels.buttonBack}
             </button>
           </div>
         </div>

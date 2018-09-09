@@ -2,9 +2,10 @@
 import PropTypes from 'prop-types';
 import Collapse from './anims/Collapse';
 import Fade from './anims/Fade';
-import ButtonCompleteArgument from './ButtonCompleteArgument';
-import ButtonDeleteArgument from './ButtonDeleteArgument';
+import ButtonCompleteTask from './ButtonCompleteTask';
+import ButtonDeleteTask from './ButtonDeleteTask';
 import { toSimpleDateFormat } from '../utils/Common';
+import labels from '../constants/labels';
 
 class Task extends React.Component {
   constructor(props) {
@@ -24,11 +25,11 @@ class Task extends React.Component {
     const { task } = this.props;
     if (task.completed) {
       return (
-        <p className="complete-date">{`completed ${(task.completedAt) ? toSimpleDateFormat(task.completedAt) : ''}`}</p>
+        <p className="complete-date">{`${labels.labelPartialCompleted} ${(task.completedAt) ? toSimpleDateFormat(task.completedAt) : ''}`}</p>
       );
     }
     return (
-      <p className="complete-within-date">{`to complete within ${(task.todoWithin) ? toSimpleDateFormat(task.todoWithin) : 'not set'}`}</p>
+      <p className="complete-within-date">{`${labels.labelPartialToCompleted} ${(task.todoWithin) ? toSimpleDateFormat(task.todoWithin) : labels.labelNotSet}`}</p>
     );
   }
 
@@ -36,37 +37,37 @@ class Task extends React.Component {
     const { task, onDelete, onComplete } = this.props;
     const { collapsed } = this.state;
     return (
-      <div className="argument-item">
-        <div className="argument-header">
+      <div className="task-item">
+        <div className="task-header">
           <p
-            className={`argument-title ${(task.completed) ? 'argument-title-completed' : ''}`}
+            className={`task-title ${(task.completed) ? 'task-title-completed' : ''}`}
             onClick={() => this.onTitleClick()}
             role="presentation"
           >
             {task.title}
           </p>
           <Fade in={collapsed}>
-            <ButtonDeleteArgument
+            <ButtonDeleteTask
               onClick={onDelete}
             />
           </Fade>
           {
             onComplete !== undefined &&
-            <ButtonCompleteArgument
+            <ButtonCompleteTask
               onClick={onComplete}
               completed={task.completed}
             />
           }
         </div>
-        <div className="argument-date">
+        <div className="task-date">
           {this.renderDate()}
         </div>
         <Collapse in={collapsed}>
-          <div key={task.description} className="argument-body">
-            <p className="argument-description">
+          <div key={task.description} className="task-body">
+            <p className="task-description">
               {
                 (task.description !== undefined && task.description !== '')
-                ? task.description : <span className="empty">No description to show :(</span>
+                ? task.description : <span className="empty">{labels.labelNoDescription}</span>
               }
             </p>
           </div>

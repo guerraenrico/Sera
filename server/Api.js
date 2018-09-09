@@ -18,7 +18,7 @@ const handleResponse = (res, data) => {
 const getCategories = (db, req, res) => {
   const limit = (req.query.limit !== undefined) && parseInt(req.query.limit, 10);
   const skip = (req.query.skip !== undefined) && parseInt(req.query.skip, 10);
-  const query = (limit && skip)
+  const query = (limit !== undefined && skip !== undefined)
     ? db.collection(Category.Schema.name).find({}).limit(limit).skip(skip)
     : db.collection(Category.Schema.name).find({});
   return query.toArray()
@@ -81,7 +81,7 @@ const getTasks = (db, req, res) => {
         ? { [Task.Schema.fields.categoryId]: { $in: categoriesId } } : {}),
     ],
   };
-  const query = (limit && skip)
+  const query = (limit !== undefined && skip !== undefined)
     ? db.collection(Task.Schema.name).find(filter).limit(limit).skip(skip)
     : db.collection(Task.Schema.name).find(filter);
   return query.toArray()
@@ -136,11 +136,9 @@ const updateTask = (db, req, res) => {
   if (id === undefined) {
     return new Promise(() => handleError(res, ApiErrors.InvalidTaskParameters(), 400));
   }
-  return db.collection(Task.Schema.name).findAndModify(
+  return db.collection(Task.Schema.name).findOneAndUpdate(
     { _id: ObjectId(id.toString()) },
-    {},
     { $set: { ...other } },
-    { },
   ).then((result) => {
     if (!result !== undefined && result.ok === 1) {
       handleResponse(res, { ...Task.CreateFromDocument(result.value), ...other });
