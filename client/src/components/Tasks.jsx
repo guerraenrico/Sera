@@ -15,7 +15,7 @@ class Tasks extends React.Component {
   constructor(props) {
     super(props);
     this.state = initialState;
-    this.onFetchTodoArgumentsNext = this.onFetchTodoArgumentsNext.bind(this);
+    this.onFetchTodoTasksNext = this.onFetchTodoTasksNext.bind(this);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -27,7 +27,7 @@ class Tasks extends React.Component {
     return null;
   }
 
-  onFetchTodoArgumentsNext() {
+  onFetchTodoTasksNext() {
     const {
       categoriesId, completed,
       fetchTasks, moreToLoad,
@@ -44,12 +44,12 @@ class Tasks extends React.Component {
   render() {
     const {
       taskList,
-      onDeleteArgument,
-      onCompleteArgument,
+      onDeleteTask,
+      onCompleteTask,
     } = this.props;
     return (
-      <div id="content-todo-arguments">
-        <InfiniteScroll onScroll={this.onFetchTodoArgumentsNext}>
+      <div id="content-todo-tasks">
+        <InfiniteScroll onScroll={this.onFetchTodoTasksNext}>
           <TransitionGroup>
             {
               taskList.map(arg => (
@@ -57,8 +57,8 @@ class Tasks extends React.Component {
                   <Task
                     key={arg.id}
                     task={arg}
-                    onDelete={() => onDeleteArgument(arg)}
-                    onComplete={() => onCompleteArgument(arg)}
+                    onDelete={() => onDeleteTask(arg)}
+                    onComplete={() => onCompleteTask(arg)}
                   />
                 </Resize>
               ))
@@ -71,8 +71,8 @@ class Tasks extends React.Component {
 }
 
 Tasks.propTypes = {
-  onDeleteArgument: PropTypes.func.isRequired,
-  onCompleteArgument: PropTypes.func.isRequired,
+  onDeleteTask: PropTypes.func.isRequired,
+  onCompleteTask: PropTypes.func.isRequired,
   taskList: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,

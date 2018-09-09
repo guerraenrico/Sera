@@ -55,9 +55,9 @@ const todoTasks = (state = initialState, action) => {
       return {
         ...state,
         items: [
-          ...state.items.map(argument => (
-            (argument.id === action.task.id)
-              ? { ...action.task } : argument
+          ...state.items.map(task => (
+            (task.id === action.task.id)
+              ? { ...action.task } : task
           )),
         ],
       };

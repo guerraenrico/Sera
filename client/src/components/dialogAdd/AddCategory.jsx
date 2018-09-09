@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import labels from '../../constants/labels';
-import { ADD_ARGUMENT } from '../../constants/steps';
+import { ADD_TASK } from '../../constants/steps';
 import { addCategory } from '../../actions/todoFiltersActions';
 import { showMessageInfo } from '../../actions/messageActions';
 
@@ -34,13 +34,13 @@ class AddCategory extends React.Component {
 
   onCategoryCreated(selectedCategory) {
     const { onNext } = this.props;
-    onNext({ stepId: ADD_ARGUMENT, options: { selectedCategory } });
+    onNext({ stepId: ADD_TASK, options: { selectedCategory } });
   }
 
   render() {
     return (
       <div className="content-add-category">
-        <h2>Add new CATEGORY</h2>
+        <h2>{labels.titleAddCategory}</h2>
         <div>
           <input
             className="main-input"

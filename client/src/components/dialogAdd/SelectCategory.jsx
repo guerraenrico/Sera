@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import labels from '../../constants/labels';
 import Category from '../Category';
-import { ADD_ARGUMENT } from '../../constants/steps';
+import { ADD_TASK } from '../../constants/steps';
 import { showMessageInfo } from '../../actions/messageActions';
 
 
@@ -29,7 +29,7 @@ class SelectCategory extends React.Component {
       dispatch(showMessageInfo(labels.msgSelectCategory));
       return;
     }
-    onNext({ stepId: ADD_ARGUMENT, options: { selectedCategory } });
+    onNext({ stepId: ADD_TASK, options: { selectedCategory } });
   }
 
   render() {
@@ -37,7 +37,7 @@ class SelectCategory extends React.Component {
     const { selectedCategory } = this.state;
     return (
       <div className="content-select-category">
-        <h2>Choose a CATEGORY</h2>
+        <h2>{labels.titleChooseCategory}</h2>
         <div id="content-categories">
           {
             categoriesList.map(category => (

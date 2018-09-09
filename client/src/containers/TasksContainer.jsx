@@ -21,10 +21,10 @@ const mapStateToProps = state => (
 
 const mapDispatchToProps = dispatch => (
   {
-    onDeleteArgument: (task) => {
+    onDeleteTask: (task) => {
       dispatch(deleteTask(task.id));
     },
-    onCompleteArgument: (task) => {
+    onCompleteTask: (task) => {
       dispatch(toogleTaskCompleted(task.id, task.completed));
     },
     fetchTasks: (categoriesId, completed, limit, skip) => {

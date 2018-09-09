@@ -37,7 +37,7 @@ class AddTask extends React.Component {
   render() {
     const { selectedCategory } = this.props.options;
     return (
-      <div className="content-add-argument">
+      <div className="content-add-task">
         <h2>{labels.titleAddTask}</h2>
         <h3>
           {labels.labelForCategory}
