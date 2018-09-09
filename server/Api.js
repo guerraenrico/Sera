@@ -136,11 +136,9 @@ const updateTask = (db, req, res) => {
   if (id === undefined) {
     return new Promise(() => handleError(res, ApiErrors.InvalidTaskParameters(), 400));
   }
-  return db.collection(Task.Schema.name).findAndModify(
+  return db.collection(Task.Schema.name).findOneAndUpdate(
     { _id: ObjectId(id.toString()) },
-    {},
     { $set: { ...other } },
-    { },
   ).then((result) => {
     if (!result !== undefined && result.ok === 1) {
       handleResponse(res, { ...Task.CreateFromDocument(result.value), ...other });
