@@ -91,7 +91,7 @@ export const fetchAllCategories = (limit = queryItemsLimit, skip = 0) =>
 
 export const deleteCategory = (categoryId = '') => async (dispatch, getState) => {
   try {
-    const response = callApi('categories', categoryId, Methods.DELETE);
+    const response = await callApi('categories', categoryId, Methods.DELETE);
     if (response.success) {
       const { categories } = getState().todoFilters;
       const categoryIndex = categories.findIndex(category => category.id === categoryId);
