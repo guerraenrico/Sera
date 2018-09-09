@@ -6,7 +6,7 @@ import labels from '../../constants/labels';
 import { SELECT_COMPLETE_DATE } from '../../constants/steps';
 import { showMessageInfo } from '../../actions/messageActions';
 
-class AddTodoArgument extends React.Component {
+class AddTask extends React.Component {
   constructor() {
     super();
     this.state = {
@@ -38,9 +38,9 @@ class AddTodoArgument extends React.Component {
     const { selectedCategory } = this.props.options;
     return (
       <div className="content-add-argument">
-        <h2>Add new ARGUMENT</h2>
+        <h2>{labels.titleAddTask}</h2>
         <h3>
-          for the category:
+          {labels.labelForCategory}
           <span className="label-category-name">
             {` ${selectedCategory.name}`}
           </span>
@@ -49,13 +49,13 @@ class AddTodoArgument extends React.Component {
           <input
             className="main-input"
             type="text"
-            placeholder="Type the title"
+            placeholder={labels.placeHolderTitle}
             onChange={this.onInputTextChange('title')}
           />
           <input
             className="main-input"
             type="text"
-            placeholder="Type the description"
+            placeholder={labels.placeHolderDescription}
             onChange={this.onInputTextChange('description')}
           />
         </div>
@@ -64,7 +64,7 @@ class AddTodoArgument extends React.Component {
             className="main-button"
             onClick={this.onButtonScheduleClick}
           >
-            SCHEDULE
+            {labels.buttonSchedule}
           </button>
         </div>
       </div>
@@ -72,7 +72,7 @@ class AddTodoArgument extends React.Component {
   }
 }
 
-AddTodoArgument.propTypes = {
+AddTask.propTypes = {
   dispatch: PropTypes.func.isRequired,
   options: PropTypes.shape({
     selectedCategory: PropTypes.shape({
@@ -83,4 +83,4 @@ AddTodoArgument.propTypes = {
   onNext: PropTypes.func.isRequired,
 };
 
-export default connect()(AddTodoArgument);
+export default connect()(AddTask);

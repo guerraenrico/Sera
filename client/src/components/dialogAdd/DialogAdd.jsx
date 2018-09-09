@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import SelectActionAdd from './SelectActionAdd';
 import AddCategory from './AddCategory';
 import SelectCategory from './SelectCategory';
-import AddTodoArgument from './AddTodoArgument';
+import AddTask from './AddTask';
 import SelectCompleteDate from './SelectCompleteDate';
 import Done from './Done';
 import {
@@ -31,7 +31,7 @@ const getContentToRender = (steps, props) => {
     case ADD_CATEGORY:
       return <AddCategory {...props} />;
     case ADD_ARGUMENT:
-      return <AddTodoArgument {...props} options={lastStep.options} />;
+      return <AddTask {...props} options={lastStep.options} />;
     case SELECT_CATEGORY:
       return <SelectCategory {...props} />;
     case SELECT_COMPLETE_DATE:

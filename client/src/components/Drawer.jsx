@@ -43,7 +43,6 @@ const Drawer = () => (
 );
 
 Drawer.propTypes = {
-  // initFetchAllCategories: PropTypes.func.isRequired,
 };
 
 export default Drawer;

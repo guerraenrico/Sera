@@ -57,7 +57,7 @@ class SelectCategory extends React.Component {
             className="main-button"
             onClick={this.onButtonNextClick}
           >
-            NEXT
+            {labels.buttonNext}
           </button>
         </div>
       </div>

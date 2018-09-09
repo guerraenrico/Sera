@@ -1,5 +1,6 @@
 ﻿import React from 'react';
 import PropTypes from 'prop-types';
+import labels from '../../constants/labels';
 
 class Done extends React.Component {
   componentDidMount() {
@@ -12,7 +13,7 @@ class Done extends React.Component {
   render() {
     return (
       <div className="content-done-add">
-        <h2>Done!</h2>
+        <h2>{labels.labelDone}</h2>
         <div className="content-ic-done">
           <img
             src="./client/public/img/ic-done.svg"

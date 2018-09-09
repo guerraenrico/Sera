@@ -64,7 +64,7 @@ class SelectCompleteDate extends React.Component {
             className="main-button"
             onClick={this.onButtonAddClick}
           >
-            ADD
+            {labels.buttonAdd}
           </button>
         </div>
       </div>

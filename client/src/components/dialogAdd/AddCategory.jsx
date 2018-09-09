@@ -45,7 +45,7 @@ class AddCategory extends React.Component {
           <input
             className="main-input"
             type="text"
-            placeholder="Type the name"
+            placeholder={labels.placeholderName}
             onChange={this.onInputTextChange}
           />
         </div>
@@ -54,7 +54,7 @@ class AddCategory extends React.Component {
             className="main-button"
             onClick={this.onButtonAddClick}
           >
-            ADD
+            {labels.buttonAdd}
           </button>
         </div>
       </div>
