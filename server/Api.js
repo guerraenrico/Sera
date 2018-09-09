@@ -18,7 +18,7 @@ const handleResponse = (res, data) => {
 const getCategories = (db, req, res) => {
   const limit = (req.query.limit !== undefined) && parseInt(req.query.limit, 10);
   const skip = (req.query.skip !== undefined) && parseInt(req.query.skip, 10);
-  const query = (limit && skip)
+  const query = (limit !== undefined && skip !== undefined)
     ? db.collection(Category.Schema.name).find({}).limit(limit).skip(skip)
     : db.collection(Category.Schema.name).find({});
   return query.toArray()
@@ -81,7 +81,7 @@ const getTasks = (db, req, res) => {
         ? { [Task.Schema.fields.categoryId]: { $in: categoriesId } } : {}),
     ],
   };
-  const query = (limit && skip)
+  const query = (limit !== undefined && skip !== undefined)
     ? db.collection(Task.Schema.name).find(filter).limit(limit).skip(skip)
     : db.collection(Task.Schema.name).find(filter);
   return query.toArray()
