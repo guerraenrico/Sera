@@ -1,6 +1,6 @@
 {
   "name": "sera_node",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "node.js sera",
   "main": "index.js",
   "author": "Enrico Guerra",
