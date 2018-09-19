@@ -2,7 +2,7 @@
   "name": "sera_client",
   "version": "1.1.5",
   "private": true,
-  "description": "todo app in .net con utilizzo di reactjs",
+  "description": "client side of sera",
   "main": "src/index.js",
   "scripts": {
     "build": "webpack -p --config webpack.prod.config.js",
