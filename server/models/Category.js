@@ -1,3 +1,5 @@
+const { ObjectId } = require('mongodb');
+
 /* eslint dot-notation: 0 */
 const Schema = {
   name: 'Category',
@@ -28,10 +30,27 @@ const CreateFromDocuments = categoryDocuments => (
   categoryDocuments.map(doc => CreateFromDocument(doc))
 );
 
+const GetAllAsync = async (db, limit, skip) => {
+  const query = (limit !== undefined && skip !== undefined)
+    ? db.collection(Schema.name).find({}).limit(limit).skip(skip)
+    : db.collection(Schema.name).find({});
+  const categoriesDocs = await query.toArray();
+  return CreateFromDocuments(categoriesDocs);
+};
+
+const InsertAsync = async (db, category) => db.collection(Schema.name).insertOne(category);
+
+const DeleteAsync = async (db, id) => (
+  db.collection(Schema.name).deleteOne({ _id: ObjectId(id.toString()) })
+);
+
 module.exports = {
   Schema,
   New,
   CreateFromBodyRequest,
   CreateFromDocument,
   CreateFromDocuments,
+  GetAllAsync,
+  InsertAsync,
+  DeleteAsync,
 };

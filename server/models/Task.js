@@ -1,3 +1,5 @@
+const { ObjectId } = require('mongodb');
+
 /* eslint dot-notation: 0 */
 const Schema = {
   name: 'Task',
@@ -65,9 +67,43 @@ const CreateFromDocuments = categoryDocuments => (
   categoryDocuments.map(doc => CreateFromDocument(doc))
 );
 
+const GetAllAsync = async (db, limit, skip, completed, categoriesId) => {
+  const filter = {
+    $and: [
+      { [Schema.fields.completed]: completed },
+      ((categoriesId[0] !== '0')
+        ? { [Schema.fields.categoryId]: { $in: categoriesId } } : {}),
+    ],
+  };
+  const query = (limit !== undefined && skip !== undefined)
+    ? db.collection(Schema.name).find(filter).limit(limit).skip(skip)
+    : db.collection(Schema.name).find(filter);
+  const tasksDocs = await query.toArray();
+  return CreateFromDocuments(tasksDocs);
+};
+
+const InsertAsync = async (db, task) => (
+  db.collection(Schema.name).insertOne(task)
+);
+
+const DeleteAsync = async (db, id) => (
+  db.collection(Schema.name).deleteOne({ _id: ObjectId(id.toString()) })
+);
+
+const UpdateAsync = async (db, id, fields) => (
+  db.collection(Schema.name).findOneAndUpdate(
+    { _id: ObjectId(id.toString()) },
+    { $set: { ...fields } },
+  )
+);
+
 module.exports = {
   Schema,
   CreateFromBodyRequest,
   CreateFromDocument,
   CreateFromDocuments,
+  GetAllAsync,
+  InsertAsync,
+  DeleteAsync,
+  UpdateAsync,
 };
