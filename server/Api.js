@@ -1,154 +1,149 @@
-const { ObjectId } = require('mongodb');
-
 const Category = require('./models/Category');
 const Task = require('./models/Task');
 const ApiErrors = require('./ApiErrors');
-const ApiResponse = require('./ApiResponse');
-
-const handleError = (res, apiError, httpCode) => {
-  res.status(httpCode || 500).json(ApiResponse.error(apiError));
-};
-
-const handleResponse = (res, data) => {
-  res.status(200).json(ApiResponse.success(data));
-};
+const { handleError, handleResponse } = require('./Handlers');
 
 // Categories
 
-const getCategories = (db, req, res) => {
+const getCategories = async (db, req, res, session) => {
   const limit = (req.query.limit !== undefined) && parseInt(req.query.limit, 10);
   const skip = (req.query.skip !== undefined) && parseInt(req.query.skip, 10);
-  const query = (limit !== undefined && skip !== undefined)
-    ? db.collection(Category.Schema.name).find({}).limit(limit).skip(skip)
-    : db.collection(Category.Schema.name).find({});
-  return query.toArray()
-    .then((categoriesDocs) => {
-      handleResponse(res, Category.CreateFromDocuments(categoriesDocs));
-    }, (err) => {
-      console.log('err', JSON.stringify(err));
-      handleError(res, ApiErrors.ErrorReadCategory(err));
-    });
-};
-
-const insertCategory = (db, req, res) => {
-  const { body } = req;
-  const category = Category.CreateFromBodyRequest(body);
-  if (category === undefined) {
-    return new Promise(() => handleError(res, ApiErrors.InvalidCategoryParameters(), 400));
+  try {
+    const categories = await Category.GetAllAsync(
+      db, session.userId, limit, skip,
+    );
+    handleResponse(res, { categories, accessToken: session.accessToken });
+  } catch (err) {
+    console.log('err', JSON.stringify(err));
+    handleError(res, ApiErrors.ErrorReadCategory(err));
   }
-  return db.collection(Category.Schema.name).insertOne(category)
-    .then((result) => {
-      if (result.insertedId !== undefined) {
-        handleResponse(res, { ...category, id: result.insertedId });
-      } else {
-        handleError(res, ApiErrors.ErrorInsertCategory());
-      }
-    }, (err) => {
-      console.log('err', JSON.stringify(err));
-      handleError(res, ApiErrors.ErrorInsertCategory(err));
-    });
 };
 
-const deleteCategory = (db, req, res) => {
+const insertCategory = async (db, req, res, session) => {
+  const { body } = req;
+  const category = Category.CreateFromBodyRequest(body, session.userId);
+  if (category === undefined) {
+    handleError(res, ApiErrors.InvalidCategoryParameters(), 400);
+    return;
+  }
+  try {
+    const result = await Category.InsertAsync(db, category);
+    if (result.insertedId !== undefined) {
+      handleResponse(res, {
+        category: { ...category, id: result.insertedId },
+        accessToken: session.accessToken,
+      });
+    } else {
+      handleError(res, ApiErrors.ErrorInsertCategory());
+    }
+  } catch (err) {
+    console.log('err', JSON.stringify(err));
+    handleError(res, ApiErrors.ErrorInsertCategory(err));
+  }
+};
+
+const deleteCategory = async (db, req, res, session) => {
   const { id } = req.params;
   if (id === undefined || id.toString() === '') {
-    return new Promise(() => handleError(res, ApiErrors.InvalidCategoryId(), 400));
+    handleError(res, ApiErrors.InvalidCategoryId(), 400);
+    return;
   }
-  return db.collection(Category.Schema.name).deleteOne({ _id: ObjectId(id.toString()) })
-    .then((result) => {
-      if (result.deletedCount >= 1) {
-        handleResponse(res);
-      } else {
-        handleError(res, ApiErrors.ErrorDeleteCategory());
-      }
-    }, (err) => {
-      console.log('err', JSON.stringify(err));
-      handleError(res, ApiErrors.ErrorDeleteCategory(err));
-    });
+  try {
+    const result = await Category.DeleteAsync(db, session.userId, id);
+    if (result.deletedCount >= 1) {
+      handleResponse(res, { accessToken: session.accessToken });
+    } else {
+      handleError(res, ApiErrors.ErrorDeleteCategory());
+    }
+  } catch (err) {
+    console.log('err', JSON.stringify(err));
+    handleError(res, ApiErrors.ErrorDeleteCategory(err));
+  }
 };
 
 // Tasks
 
-const getTasks = (db, req, res) => {
+const getTasks = async (db, req, res, session) => {
   const limit = (req.query.limit !== undefined) && parseInt(req.query.limit, 10);
   const skip = (req.query.skip !== undefined) && parseInt(req.query.skip, 10);
   const completed = (req.query.completed === 'true');
   const categoriesId = (req.query.categoriesId !== undefined) && req.query.categoriesId.split(',');
-  const filter = {
-    $and: [
-      { [Task.Schema.fields.completed]: completed },
-      ((categoriesId[0] !== '0')
-        ? { [Task.Schema.fields.categoryId]: { $in: categoriesId } } : {}),
-    ],
-  };
-  const query = (limit !== undefined && skip !== undefined)
-    ? db.collection(Task.Schema.name).find(filter).limit(limit).skip(skip)
-    : db.collection(Task.Schema.name).find(filter);
-  return query.toArray()
-    .then((tasksDocs) => {
-      handleResponse(res, Task.CreateFromDocuments(tasksDocs));
-    }, (err) => {
-      console.log('err', JSON.stringify(err));
-      handleError(res, ApiErrors.ErrorReadTask(err));
-    });
-};
-
-const insertTask = (db, req, res) => {
-  const { body } = req;
-  const task = Task.CreateFromBodyRequest(body);
-  if (task === undefined) {
-    return new Promise(() => handleError(res, ApiErrors.InvalidTaskParameters(), 400));
+  try {
+    const tasks = await Task.GetAllAsync(
+      db, session.userId, limit, skip, completed, categoriesId,
+    );
+    handleResponse(res, { tasks, accessToken: session.accessToken });
+  } catch (err) {
+    console.log('err', JSON.stringify(err));
+    handleError(res, ApiErrors.ErrorReadTask(err));
   }
-  return db.collection(Task.Schema.name).insertOne(task)
-    .then((result) => {
-      if (result.insertedId !== undefined) {
-        handleResponse(res, { ...task, id: result.insertedId });
-      } else {
-        handleError(res, ApiErrors.ErrorInsertTask());
-      }
-    }, (err) => {
-      console.log('err', JSON.stringify(err));
-      handleError(res, ApiErrors.ErrorInsertTask(err));
-    });
 };
 
-const deleteTask = (db, req, res) => {
+const insertTask = async (db, req, res, session) => {
+  const { body } = req;
+  const task = Task.CreateFromBodyRequest(body, session.userId);
+  if (task === undefined) {
+    handleError(res, ApiErrors.InvalidTaskParameters(), 400);
+    return;
+  }
+  try {
+    const result = await Task.InsertAsync(db, task);
+    if (result.insertedId !== undefined) {
+      handleResponse(res, {
+        task: { ...task, id: result.insertedId },
+        accessToken: session.accessToken,
+      });
+    } else {
+      handleError(res, ApiErrors.ErrorInsertTask());
+    }
+  } catch (err) {
+    console.log('err', JSON.stringify(err));
+    handleError(res, ApiErrors.ErrorInsertTask(err));
+  }
+};
+
+const deleteTask = async (db, req, res, session) => {
   const { id } = req.params;
   if (id === undefined || id.toString() === '') {
-    return new Promise(() => handleError(res, ApiErrors.InvalidTaskId(), 400));
+    handleError(res, ApiErrors.InvalidTaskId(), 400);
+    return;
   }
-  return db.collection(Task.Schema.name).deleteOne({ _id: ObjectId(id.toString()) })
-    .then((result) => {
-      if (result.deletedCount >= 1) {
-        handleResponse(res);
-      } else {
-        handleError(res, ApiErrors.ErrorDeleteTask());
-      }
-    }, (err) => {
-      console.log('err', JSON.stringify(err));
-      handleError(res, ApiErrors.ErrorDeleteTask(err));
-    });
+  try {
+    const result = await Task.DeleteAsync(
+      db, session.userId, id,
+    );
+    if (result.deletedCount >= 1) {
+      handleResponse(res, { accessToken: session.accessToken });
+    } else {
+      handleError(res, ApiErrors.ErrorDeleteTask());
+    }
+  } catch (err) {
+    console.log('err', JSON.stringify(err));
+    handleError(res, ApiErrors.ErrorDeleteTask(err));
+  }
 };
 
-const updateTask = (db, req, res) => {
+const updateTask = async (db, req, res, session) => {
   const { body } = req;
   const { id, ...other } = body;
   if (id === undefined) {
-    return new Promise(() => handleError(res, ApiErrors.InvalidTaskParameters(), 400));
+    handleError(res, ApiErrors.InvalidTaskParameters(), 400);
+    return;
   }
-  return db.collection(Task.Schema.name).findOneAndUpdate(
-    { _id: ObjectId(id.toString()) },
-    { $set: { ...other } },
-  ).then((result) => {
+  try {
+    const result = await Task.UpdateAsync(db, id, { ...other });
     if (!result !== undefined && result.ok === 1) {
-      handleResponse(res, { ...Task.CreateFromDocument(result.value), ...other });
+      handleResponse(res, {
+        task: { ...Task.CreateFromDocument(result.value), ...other },
+        accessToken: session.accessToken,
+      });
     } else {
       handleError(res, ApiErrors.ErrorUpdateTask());
     }
-  }, (err) => {
+  } catch (err) {
     console.log('err', JSON.stringify(err));
     handleError(res, ApiErrors.ErrorUpdateTask(err));
-  });
+  }
 };
 
 module.exports = {

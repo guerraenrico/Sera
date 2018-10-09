@@ -1,5 +1,11 @@
 /* eslint quote-props: ["error", "consistent"] */
 
+import { getAccessToken } from './StoreUtils';
+
+function ApiException(error) {
+  this.message = error.message;
+}
+
 export const Methods = {
   POST: 'POST',
   GET: 'GET',
@@ -9,16 +15,17 @@ export const Methods = {
 
 const fullUrl = url => `/api/${url}`;
 
-const baseRequestInit = {
+const baseRequestInit = () => ({
   credentials: 'include',
   headers: {
     'Content-Type': 'application/json',
+    'x-token': getAccessToken(),
   },
-};
+});
 
 const createPostRequest = (url, options = {}) => (
   fetch(url, {
-    ...baseRequestInit,
+    ...baseRequestInit(),
     method: 'POST',
     body: JSON.stringify(options),
   })
@@ -30,7 +37,7 @@ const createGetRequest = (url, options = {}) => {
     finalUrl = `${finalUrl}${(poition > 0) ? '&' : ''}${key}=${value}`;
   });
   return fetch(finalUrl, {
-    ...baseRequestInit,
+    ...baseRequestInit(),
     method: 'GET',
   });
 };
@@ -38,14 +45,14 @@ const createGetRequest = (url, options = {}) => {
 const createDeleteRequest = (url, options) => {
   const finalUrl = `${url}/${options}`;
   return fetch(finalUrl, {
-    ...baseRequestInit,
+    ...baseRequestInit(),
     method: 'DELETE',
   });
 };
 
 const createPatchRequest = (url, options = {}) => (
   fetch(url, {
-    ...baseRequestInit,
+    ...baseRequestInit(),
     method: 'PATCH',
     body: JSON.stringify(options),
   })
@@ -64,11 +71,10 @@ const createRequest = (url, options, method) => {
 
 export const callApi = (url, options = {}, method = Methods.POST) => (
   createRequest(url, options, method).then(
-    response => (response.ok ?
-      response.json() :
-      Promise.reject(response.text())
+    response => (
+      response.json()
     ),
-    error => Promise.reject(error),
+    (error) => { throw new ApiException(error); },
   )
 );
 

@@ -1,6 +1,6 @@
 {
   "name": "sera_node",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "node.js sera",
   "main": "index.js",
   "author": "Enrico Guerra",
@@ -10,14 +10,16 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "dotenv": "^6.0.0",
     "express": "^4.16.3",
-    "mongodb": "^3.1.1"
+    "express-async-handler": "^1.1.4",
+    "google-auth-library": "^2.0.0",
+    "mongodb": "^3.1.6"
   },
   "devDependencies": {
-    "eslint": "^5.3.0",
+    "eslint": "^5.6.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "request": "^2.88.0",
     "tape": "^4.9.1"
   }
 }

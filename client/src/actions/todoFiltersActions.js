@@ -1,4 +1,5 @@
 import { callApi, Methods } from '../utils/ApiUtils';
+import { refreshAccessToken } from './authActions';
 import {
   REQUEST_FETCH_ALL_CATEGORIES,
   RECEIVE_FETCH_ALL_CATEGORIES,
@@ -79,10 +80,11 @@ export const fetchAllCategories = (limit = queryItemsLimit, skip = 0) =>
     try {
       const response = await callApi('categories', { limit, skip }, Methods.GET);
       if (response.success) {
-        dispatch(receiveFetchAllCategories(response.data));
+        dispatch(refreshAccessToken(response.data.accessToken));
+        dispatch(receiveFetchAllCategories(response.data.categories));
         dispatch(fetchTasksByCategory(getSelectedCategoriesId(getState())));
       } else {
-        dispatch(errorFetchAllCategories(response.messageError));
+        dispatch(errorFetchAllCategories(response.error.message));
       }
     } catch (error) {
       dispatch(showMessageError(error.message));
@@ -93,11 +95,12 @@ export const deleteCategory = (categoryId = '') => async (dispatch, getState) =>
   try {
     const response = await callApi('categories', categoryId, Methods.DELETE);
     if (response.success) {
+      dispatch(refreshAccessToken(response.data.accessToken));
       const { categories } = getState().todoFilters;
       const categoryIndex = categories.findIndex(category => category.id === categoryId);
       dispatch(removeCategoryLocal(categoryIndex));
     } else {
-      dispatch(showMessageError(response.messageError));
+      dispatch(showMessageError(response.error.message));
     }
   } catch (error) {
     dispatch(showMessageError(error.message));
@@ -113,12 +116,14 @@ export const addCategory = (name = '', callback = undefined) => async (dispatch)
   try {
     const response = await callApi('categories', { name }, Methods.POST);
     if (response.success) {
-      dispatch(addCategoryLocal(response.data));
+      const { category, accessToken } = response.data;
+      dispatch(refreshAccessToken(accessToken));
+      dispatch(addCategoryLocal(category));
       if (callback !== undefined) {
-        callback(response.data);
+        callback(category);
       }
     } else {
-      dispatch(showMessageError(response.messageError));
+      dispatch(showMessageError(response.error.message));
     }
   } catch (error) {
     dispatch(showMessageError(error.message));

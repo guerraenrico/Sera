@@ -51,3 +51,25 @@
 .icon-circle-border:before {
   content: "\e908";
 }
+.icon-google-g .path1:before {
+  content: "\e909";
+  color: rgb(251, 188, 5);
+}
+.icon-google-g .path2:before {
+  content: "\e90a";
+  margin-left: -1em;
+  color: rgb(234, 67, 53);
+}
+.icon-google-g .path3:before {
+  content: "\e90b";
+  margin-left: -1em;
+  color: rgb(52, 168, 83);
+}
+.icon-google-g .path4:before {
+  content: "\e90c";
+  margin-left: -1em;
+  color: rgb(66, 133, 244);
+}
+.icon-ic-logout:before {
+  content: "\e90d";
+}
