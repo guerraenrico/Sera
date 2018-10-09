@@ -1,18 +1,20 @@
-const express = require('express');
-const http = require('http');
-const { MongoClient } = require('mongodb');
-const path = require('path');
-
-const auth = require('./server/lib/auth');
-const { dbName, dbUrl } = require('./server/constants/dbConstants');
-const Api = require('./server/Api');
-
 if (process.env.NODE_ENV !== 'production') {
   /* eslint global-require: 0 */
   require('dotenv').load();
 }
 
-const PORT = process.env.PORT || 5000;
+const express = require('express');
+const http = require('http');
+const { MongoClient } = require('mongodb');
+const path = require('path');
+
+const auth = require('./server/lib/auth-routes');
+const { dbName, dbUrl } = require('./server/constants/dbConstants');
+const Api = require('./server/Api');
+
+const needAuth = require('./server/middleware/authMiddleware');
+
+const { PORT } = process.env;
 
 const app = express();
 
@@ -28,11 +30,11 @@ app.use('/client/public', express.static(path.join(__dirname, '/client/public'))
 const CallApi = async (apiFunction, req, res) => {
   const conn = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
   const db = conn.db(dbName);
-  await apiFunction(db, req, res);
+  await needAuth(db, req, res, apiFunction);
   conn.close();
 };
 
-app.use('/api/auth/google/callback', auth);
+app.use('/api/auth', auth);
 
 app.get('/api/categories', (req, res) => {
   CallApi(Api.getCategories, req, res);

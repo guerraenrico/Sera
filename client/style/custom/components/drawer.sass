@@ -5,15 +5,22 @@
   width: $drawer-width
   background-color: $drawer-background-color
   margin: 0 $container-margin 0 0
-  -webkit-border-radius: $container-border-radius
-  border-radius: $container-border-radius
   -webkit-box-shadow: 0 0 10px 0 rgba(0,0,0,0.2)
   box-shadow: 0 0 10px 0 rgba(0,0,0,0.2)
+
+  #drawer-fixed
+    position: fixed
+    display: flex
+    flex-flow: column
+    height: 100vh
+
+  button.item
+    font-size: 1.3rem
 
   .item
     position: relative
     width: $drawer-width
-    height: $drawer-item-height
+    height: $drawer-item-height    
     color: $drawer-item-icon-color
     text-decoration: none
     background: none
@@ -32,10 +39,5 @@
     color: $drawer-item-icon-color-selected
     background-color: $drawer-item-select-background
 
-  .item:first-child
-    -webkit-border-radius: $container-border-radius $container-border-radius 0 0
-    border-radius: $container-border-radius $container-border-radius 0 0
-
-  .item:last-child
-    -webkit-border-radius: 0 0 $container-border-radius $container-border-radius
-    border-radius: 0 0 $container-border-radius $container-border-radius
+  .space
+    height: 100%

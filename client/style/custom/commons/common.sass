@@ -14,19 +14,18 @@ h2
 
 #main-container
   position: relative
-  width: 80%
+  width: 100%
   margin: 0 auto 0 auto
 
   #flex-container
     display: flex
     min-height: 100vh
     box-sizing: border-box
-    padding-top: $container-margin
-    padding-bottom: $container-margin
-    justify-content: center
+    justify-content: flex-start
 
     .content-app
-      width: calc(100% - #{$drawer-width} - #{$container-margin}) 
+      width: calc(100% - #{$drawer-width} - #{$container-margin})
+      margin: $container-margin $container-margin 0 0
 
 .align-items-center
   display: -ms-inline-flex

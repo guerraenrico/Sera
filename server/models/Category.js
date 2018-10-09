@@ -5,43 +5,55 @@ const Schema = {
   name: 'Category',
   fields: {
     name: 'name',
+    userId: 'userId',
   },
 };
 
-const New = (name = '', id = undefined) => (
+const New = (name = '', userId = '', id = undefined) => (
   {
     ...((id !== undefined) && { id }),
-    name,
+    [Schema.fields.name]: name,
+    [Schema.fields.userId]: userId,
   }
 );
 
-const CreateFromBodyRequest = (body) => {
+const CreateFromBodyRequest = (body, userId) => {
   if (body.name !== undefined && body.name !== '') {
-    return New(body.name);
+    return New(body.name, userId);
   }
   return undefined;
 };
 
 const CreateFromDocument = categoryDocument => (
-  New(categoryDocument.name, categoryDocument['_id'])
+  New(
+    categoryDocument[Schema.fields.name],
+    categoryDocument[Schema.fields.userId],
+    categoryDocument['_id'],
+  )
 );
 
 const CreateFromDocuments = categoryDocuments => (
   categoryDocuments.map(doc => CreateFromDocument(doc))
 );
 
-const GetAllAsync = async (db, limit, skip) => {
+const GetAllAsync = async (db, userId, limit, skip) => {
+  const filter = { [Schema.fields.userId]: userId };
   const query = (limit !== undefined && skip !== undefined)
-    ? db.collection(Schema.name).find({}).limit(limit).skip(skip)
-    : db.collection(Schema.name).find({});
+    ? db.collection(Schema.name).find(filter).limit(limit).skip(skip)
+    : db.collection(Schema.name).find(filter);
   const categoriesDocs = await query.toArray();
   return CreateFromDocuments(categoriesDocs);
 };
 
 const InsertAsync = async (db, category) => db.collection(Schema.name).insertOne(category);
 
-const DeleteAsync = async (db, id) => (
-  db.collection(Schema.name).deleteOne({ _id: ObjectId(id.toString()) })
+const DeleteAsync = async (db, userId, id) => (
+  db.collection(Schema.name).deleteOne({
+    $and: [
+      { _id: ObjectId(id.toString()) },
+      { [Schema.fields.userId]: userId },
+    ],
+  })
 );
 
 module.exports = {

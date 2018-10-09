@@ -1,4 +1,5 @@
 import { callApi, Methods } from '../utils/ApiUtils';
+import { refreshAccessToken } from './authActions';
 import {
   REQUEST_FETCH_TASKS,
   RECEIVE_FETCH_TASKS,
@@ -60,74 +61,96 @@ export const fetchTasksByCategory = (
   skip = 0,
 ) => async (dispatch) => {
   dispatch(requestFetchTasks(limit, skip));
-  const response = await callApi('tasks', {
-    categoriesId, completed, limit, skip,
-  }, Methods.GET);
-  if (response.success) {
-    const todos = response.data.map(todo =>
-      ({
-        ...todo,
-        completedAt: (todo.completedAt) ? new Date(todo.completedAt) : undefined,
-        todoWithin: (todo.todoWithin) ? new Date(todo.todoWithin) : undefined,
-      }));
-    dispatch(receiveFetchTasks(todos));
-  } else {
-    dispatch(errorFetchTasks(response.messageError));
+  try {
+    const response = await callApi('tasks', {
+      categoriesId, completed, limit, skip,
+    }, Methods.GET);
+    if (response.success) {
+      dispatch(refreshAccessToken(response.data.accessToken));
+      const tasks = response.data.tasks.map(task =>
+        ({
+          ...task,
+          completedAt: (task.completedAt) ? new Date(task.completedAt) : undefined,
+          todoWithin: (task.todoWithin) ? new Date(task.todoWithin) : undefined,
+        }));
+      dispatch(receiveFetchTasks(tasks));
+    } else {
+      dispatch(errorFetchTasks(response.error.message));
+    }
+  } catch (error) {
+    dispatch(showMessageError(error.message));
   }
 };
 
 export const deleteTask = (id = '') => async (dispatch, getState) => {
-  const response = await callApi('tasks', id, Methods.DELETE);
-  if (response.success) {
-    const { items } = getState().todoTasks;
-    const todoArgumentIndex = items.findIndex(todoArgument =>
-      todoArgument.id === id);
-    dispatch(removeTaskLocal(todoArgumentIndex));
-  } else {
-    dispatch(showMessageError(response.messageError));
+  try {
+    const response = await callApi('tasks', id, Methods.DELETE);
+    if (response.success) {
+      const { items } = getState().todoTasks;
+      dispatch(refreshAccessToken(response.data.accessToken));
+      const todoArgumentIndex = items.findIndex(todoArgument =>
+        todoArgument.id === id);
+      dispatch(removeTaskLocal(todoArgumentIndex));
+    } else {
+      dispatch(showMessageError(response.error.message));
+    }
+  } catch (error) {
+    dispatch(showMessageError(error.message));
   }
 };
 
 export const addTask = (title = '', description = '', category = { id: '' }, todoWithin, callback = undefined) => async (dispatch) => {
-  const response = await callApi(
-    'tasks',
-    {
-      title,
-      description,
-      categoryId: category.id,
-      todoWithin,
-    },
-    Methods.POST,
-  );
-  if (response.success) {
-    const todo = {
-      ...response.data,
-      completedAt: (response.data.completedAt)
-        ? new Date(response.data.completedAt) : undefined,
-      todoWithin: (response.data.todoWithin)
-        ? new Date(response.data.todoWithin) : undefined,
-    };
-    dispatch(addTaskLocal(todo));
-    if (callback !== undefined) {
-      callback();
+  try {
+    const response = await callApi(
+      'tasks',
+      {
+        title,
+        description,
+        categoryId: category.id,
+        todoWithin,
+      },
+      Methods.POST,
+    );
+    if (response.success) {
+      dispatch(refreshAccessToken(response.data.accessToken));
+      const fetchedTask = response.data.task;
+      const task = {
+        ...fetchedTask,
+        completedAt: (fetchedTask.completedAt)
+          ? new Date(fetchedTask.completedAt) : undefined,
+        todoWithin: (fetchedTask.todoWithin)
+          ? new Date(fetchedTask.todoWithin) : undefined,
+      };
+      dispatch(addTaskLocal(task));
+      if (callback !== undefined) {
+        callback();
+      }
+    } else {
+      dispatch(showMessageError(response.error.message));
     }
-  } else {
-    dispatch(showMessageError(response.messageError));
+  } catch (error) {
+    dispatch(showMessageError(error.message));
   }
 };
 
 export const toogleTaskCompleted = (id = '', isCompleted = false) => async (dispatch) => {
   const completed = !isCompleted;
   const completedAt = (completed) ? new Date() : null;
-  const response = await callApi('tasks', { id, completed, completedAt }, Methods.PATCH);
-  if (response.success) {
-    const todo = {
-      ...response.data,
-      completedAt: (response.data.completedAt)
-        ? new Date(response.data.completedAt) : undefined,
-    };
-    dispatch(updateTaskLocal(todo));
-  } else {
-    dispatch(showMessageError(response.messageError));
+  try {
+    const response = await callApi('tasks', { id, completed, completedAt }, Methods.PATCH);
+    if (response.success) {
+      dispatch(refreshAccessToken(response.data.accessToken));
+      const fetchedTask = response.data.task;
+      const task = {
+        ...fetchedTask,
+        completedAt: (fetchedTask.completedAt)
+          ? new Date(fetchedTask.completedAt) : undefined,
+      };
+      dispatch(updateTaskLocal(task));
+    } else {
+      dispatch(showMessageError(response.error.message));
+    }
+  } catch (error) {
+    dispatch(showMessageError(error.message));
   }
 };

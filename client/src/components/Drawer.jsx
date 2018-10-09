@@ -26,23 +26,33 @@ Item.defaultProps = {
 };
 
 
-const Drawer = () => (
+const Drawer = ({ logout }) => (
   <div id="drawer-container">
-    {
-      menuItems.map(item => (
-        <Item
-          key={item.id}
-          pathTo={item.path}
-          exact={item.exact}
-        >
-          <i className={item.iconClass} />
-        </Item>
-      ))
-    }
+    <div id="drawer-fixed">
+      {
+        menuItems.map(item => (
+          <Item
+            key={item.id}
+            pathTo={item.path}
+            exact={item.exact}
+          >
+            <i className={item.iconClass} />
+          </Item>
+        ))
+      }
+      <div className="space" />
+      <button
+        onClick={logout}
+        className="item align-items-center"
+      >
+        <i className="icon-ic-logout" />
+      </button>
+    </div>
   </div>
 );
 
 Drawer.propTypes = {
+  logout: PropTypes.func.isRequired,
 };
 
 export default Drawer;

@@ -5,3 +5,8 @@ export const toJsDate = (parseDate = '') =>
 
 export const toSimpleDateFormat = date =>
   dateFormat(date, 'dddd dd mmm yyyy');
+
+export const getCurrentBaseUrl = () => {
+  const getUrl = window.location;
+  return `${getUrl.protocol}//${getUrl.host}`;
+};
