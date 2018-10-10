@@ -7,6 +7,7 @@ import ReplaceAnim from './anims/ReplaceAnim';
 import LoaderLinear from '../components/LoaderLinear';
 import LoaderTip from '../components/LoaderTip';
 import Drawer from '../components/Drawer';
+import Page404 from '../components/Page404';
 import * as paths from '../constants/paths';
 
 const LoginContainer = Loadable({
@@ -19,8 +20,8 @@ const TodosContainer = Loadable({
   loading: LoaderLinear,
 });
 
-const ChartsContainer = Loadable({
-  loader: () => import('../containers/ChartsContainer' /* webpackChunkName: 'charts' */),
+const GoalsContainer = Loadable({
+  loader: () => import('../containers/GoalsContainer' /* webpackChunkName: 'goals' */),
   loading: LoaderLinear,
 });
 
@@ -43,10 +44,18 @@ const routes = [
   },
   {
     key: 2,
-    path: paths.CHARTS,
+    path: paths.GOALS,
     Drawer,
-    Main: ChartsContainer,
+    Main: GoalsContainer,
     needAuth: true,
+    redirectTo: paths.LOGIN,
+  },
+  {
+    key: 404,
+    path: '/*',
+    Drawer: undefined,
+    Main: Page404,
+    needAuth: false,
     redirectTo: paths.LOGIN,
   },
 ];
@@ -191,8 +200,13 @@ class Root extends Component {
 
   render() {
     const { showLoading, showRoute } = this.state;
+    const duration = (showRoute) ? 250 : 1500;
     return (
-      <ReplaceAnim in={showLoading || showRoute} endListener={this.onAnimationEnd}>
+      <ReplaceAnim
+        in={showLoading || showRoute}
+        endListener={this.onAnimationEnd}
+        duration={duration}
+      >
         { this.contentToRender() }
       </ReplaceAnim>
     );

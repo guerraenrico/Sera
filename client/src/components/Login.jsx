@@ -17,7 +17,7 @@ const Login = ({ message, authenticateGoogleToken, hideMessage }) => {
       <div id="content-login">
         <div id="content-declaration">
           <h2 className="title">This is an Experimental App</h2>
-          <p className="description">Dont use to store your confidential data. This app is Highly experimental and has been created only for test</p>
+          <p className="description">Dont use to store your confidential data. This app is Highly experimental and has been created only for my personal test</p>
         </div>
         <div id="content-logo">
           { SeraLogo }

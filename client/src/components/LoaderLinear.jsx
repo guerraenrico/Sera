@@ -45,6 +45,10 @@ class LoaderLinear extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.timeout);
+  }
+
   render() {
     const { shouldShow } = this.state;
     return (

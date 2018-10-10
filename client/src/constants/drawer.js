@@ -4,15 +4,15 @@ export const menuItems = [
   {
     id: 'todos',
     description: 'todos',
-    iconClass: 'icon-list-todo',
+    iconClass: 'icon-todos',
     path: paths.TODOS,
     exact: true,
   },
   {
-    id: 'charts',
-    description: 'charts',
-    iconClass: 'icon-chart',
-    path: paths.CHARTS,
+    id: 'goals',
+    description: 'goals',
+    iconClass: 'icon-goals',
+    path: paths.GOALS,
     exact: true,
   },
 ];

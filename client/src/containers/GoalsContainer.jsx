@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Charts from '../components/Charts';
+import Goals from '../components/Goals';
 import { hideMessage } from '../actions/messageActions';
 
-const ChartsContainer = props => <Charts {...props} />;
+const GoalsContainer = props => <Goals {...props} />;
 
 const mapStateToProps = state => (
   {
@@ -20,4 +20,4 @@ const mapDispatchToProps = dispatch => (
   }
 );
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChartsContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(GoalsContainer);

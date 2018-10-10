@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 
 import Snackbar from './Snackbar';
 
-
-class Charts extends Component {
+class Goals extends Component {
   componentDidMount() {
   }
 
@@ -24,7 +23,7 @@ class Charts extends Component {
   }
 }
 
-Charts.propTypes = {
+Goals.propTypes = {
   message: PropTypes.shape({
     show: PropTypes.bool.isRequired,
     isError: PropTypes.bool.isRequired,
@@ -33,4 +32,4 @@ Charts.propTypes = {
   hideMessage: PropTypes.func.isRequired,
 };
 
-export default Charts;
+export default Goals;

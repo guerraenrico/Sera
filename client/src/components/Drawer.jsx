@@ -45,7 +45,7 @@ const Drawer = ({ logout }) => (
         onClick={logout}
         className="item align-items-center"
       >
-        <i className="icon-ic-logout" />
+        <i className="icon-logout" />
       </button>
     </div>
   </div>

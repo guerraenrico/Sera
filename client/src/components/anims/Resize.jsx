@@ -36,7 +36,7 @@ const onExited = (node) => {
 };
 
 
-const Resize = ({ ...props, children }) => (
+const Resize = ({ children, ...props }) => (
   <Transition
     {...props}
     onEnter={onEnter}
