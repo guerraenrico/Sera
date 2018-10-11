@@ -16,7 +16,7 @@ const transitionStyles = {
   entered: { opacity: 1, visibility: 'visible' },
 };
 
-const Fade = ({ ...props, children }) => (
+const Fade = ({ children, ...props }) => (
   <Transition {...props} timeout={duration}>
     {state => (
       <div style={{

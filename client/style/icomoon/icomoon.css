@@ -36,10 +36,10 @@
 .icon-forward:before {
   content: "\e903";
 }
-.icon-chart:before {
+.icon-charts:before {
   content: "\e904";
 }
-.icon-list-todo:before {
+.icon-todos:before {
   content: "\e905";
 }
 .icon-calendar:before {
@@ -70,6 +70,9 @@
   margin-left: -1em;
   color: rgb(66, 133, 244);
 }
-.icon-ic-logout:before {
+.icon-logout:before {
   content: "\e90d";
+}
+.icon-goals:before {
+  content: "\e90e";
 }

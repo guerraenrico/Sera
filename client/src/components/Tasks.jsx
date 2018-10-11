@@ -37,8 +37,8 @@ class Tasks extends React.Component {
     }
     const { limit, skip } = this.state;
     const newSkip = skip + limit;
-    this.setState({ skip: newSkip });
     fetchTasks(categoriesId, completed, limit, newSkip);
+    this.setState(state => ({ skip: state.skip + state.limit }));
   }
 
   render() {
