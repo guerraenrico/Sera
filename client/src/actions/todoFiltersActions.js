@@ -80,8 +80,8 @@ export const fetchAllCategories = (limit = queryItemsLimit, skip = 0) =>
     try {
       const response = await callApi('categories', { limit, skip }, Methods.GET);
       if (response.success) {
-        dispatch(refreshAccessToken(response.data.accessToken));
-        dispatch(receiveFetchAllCategories(response.data.categories));
+        dispatch(refreshAccessToken(response.accessToken));
+        dispatch(receiveFetchAllCategories(response.data));
         dispatch(fetchTasksByCategory(getSelectedCategoriesId(getState())));
       } else {
         dispatch(errorFetchAllCategories(response.error.message));
@@ -95,7 +95,7 @@ export const deleteCategory = (categoryId = '') => async (dispatch, getState) =>
   try {
     const response = await callApi('categories', categoryId, Methods.DELETE);
     if (response.success) {
-      dispatch(refreshAccessToken(response.data.accessToken));
+      dispatch(refreshAccessToken(response.accessToken));
       const { categories } = getState().todoFilters;
       const categoryIndex = categories.findIndex(category => category.id === categoryId);
       dispatch(removeCategoryLocal(categoryIndex));
@@ -116,8 +116,8 @@ export const addCategory = (name = '', callback = undefined) => async (dispatch)
   try {
     const response = await callApi('categories', { name }, Methods.POST);
     if (response.success) {
-      const { category, accessToken } = response.data;
-      dispatch(refreshAccessToken(accessToken));
+      const category = response.data;
+      dispatch(refreshAccessToken(response.accessToken));
       dispatch(addCategoryLocal(category));
       if (callback !== undefined) {
         callback(category);

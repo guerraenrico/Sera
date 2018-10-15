@@ -43,8 +43,8 @@ export const authenticateGoogleToken = code => async (dispatch) => {
   try {
     const response = await callApi('auth/google/signin/callback', { code, platform }, Methods.POST);
     if (response.success) {
-      store.saveAccessToken(response.data.accessToken);
-      dispatch(receiveAuthentication(response.data.accessToken, response.data.user));
+      store.saveAccessToken(response.accessToken);
+      dispatch(receiveAuthentication(response.accessToken, response.data));
     } else {
       dispatch(showMessageError(response.error.message));
     }
@@ -57,8 +57,8 @@ export const validateToken = accessToken => async (dispatch) => {
   try {
     const response = await callApi('auth/google/validate/token', { accessToken, platform }, Methods.POST);
     if (response.success) {
-      store.saveAccessToken(response.data.accessToken);
-      dispatch(receiveAuthentication(response.data.accessToken, response.data.user));
+      store.saveAccessToken(response.accessToken);
+      dispatch(receiveAuthentication(response.accessToken, response.data));
     } else {
       dispatch(clearAuthentication());
     }

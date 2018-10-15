@@ -66,8 +66,8 @@ export const fetchTasksByCategory = (
       categoriesId, completed, limit, skip,
     }, Methods.GET);
     if (response.success) {
-      dispatch(refreshAccessToken(response.data.accessToken));
-      const tasks = response.data.tasks.map(task =>
+      dispatch(refreshAccessToken(response.accessToken));
+      const tasks = response.data.map(task =>
         ({
           ...task,
           completedAt: (task.completedAt) ? new Date(task.completedAt) : undefined,
@@ -87,7 +87,7 @@ export const deleteTask = (id = '') => async (dispatch, getState) => {
     const response = await callApi('tasks', id, Methods.DELETE);
     if (response.success) {
       const { items } = getState().todoTasks;
-      dispatch(refreshAccessToken(response.data.accessToken));
+      dispatch(refreshAccessToken(response.accessToken));
       const todoArgumentIndex = items.findIndex(todoArgument =>
         todoArgument.id === id);
       dispatch(removeTaskLocal(todoArgumentIndex));
@@ -112,8 +112,8 @@ export const addTask = (title = '', description = '', category = { id: '' }, tod
       Methods.POST,
     );
     if (response.success) {
-      dispatch(refreshAccessToken(response.data.accessToken));
-      const fetchedTask = response.data.task;
+      dispatch(refreshAccessToken(response.accessToken));
+      const fetchedTask = response.data;
       const task = {
         ...fetchedTask,
         completedAt: (fetchedTask.completedAt)
@@ -139,8 +139,8 @@ export const toogleTaskCompleted = (id = '', isCompleted = false) => async (disp
   try {
     const response = await callApi('tasks', { id, completed, completedAt }, Methods.PATCH);
     if (response.success) {
-      dispatch(refreshAccessToken(response.data.accessToken));
-      const fetchedTask = response.data.task;
+      dispatch(refreshAccessToken(response.accessToken));
+      const fetchedTask = response.data;
       const task = {
         ...fetchedTask,
         completedAt: (fetchedTask.completedAt)
