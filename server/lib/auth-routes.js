@@ -89,7 +89,7 @@ router.post('/google/signin/callback', async (req, res) => {
     return;
   }
 
-  handleResponse(res, { accessToken, user });
+  handleResponse(res, user, accessToken);
   conn.close();
 });
 
@@ -109,7 +109,7 @@ router.post('/google/validate/token', async (req, res) => {
       handleError(res, Unauthorized(), 401);
       return;
     }
-    handleResponse(res, { accessToken: session.accessToken, user });
+    handleResponse(res, user, session.accessToken);
   } catch (ex) {
     handleError(res, Unauthorized(ex), 401);
   } finally {
