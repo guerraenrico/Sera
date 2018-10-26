@@ -82,11 +82,7 @@ export const logout = () => async (dispatch, getState) => {
 
 export const initAuth = () => (dispatch) => {
   dispatch(fetchingAuthentication());
-  const accessToken = store.getAccessToken() === undefined || store.getAccessToken() === '' ?
-    'ya29.GlxBBoWGBlnbtX68QdIRztDmyJ2UuCOaYnppzwuxpIacTACLrhht4joMZUFvaBiW_aeKHxDPqfVU-obqDuFdsWN0yqAl4ZNH8OH2Cl6DSM_Jamz62sS3kytqMLO2bw' :
-    store.getAccessToken();
-
-  // TODO: Remove
+  const accessToken = store.getAccessToken();
 
   if (accessToken === undefined || accessToken === '') {
     return dispatch(clearAuthentication());
