@@ -78,7 +78,8 @@ export const fetchAllCategories = (limit = queryItemsLimit, skip = 0) =>
   async (dispatch, getState) => {
     dispatch(requestFetchAllCategories());
     try {
-      const response = await callApi('categories', { limit, skip }, Methods.GET);
+      const { accessToken } = getState().auth;
+      const response = await callApi('categories', { limit, skip }, Methods.GET, accessToken);
       if (response.success) {
         dispatch(refreshAccessToken(response.accessToken));
         dispatch(receiveFetchAllCategories(response.data));
@@ -93,7 +94,8 @@ export const fetchAllCategories = (limit = queryItemsLimit, skip = 0) =>
 
 export const deleteCategory = (categoryId = '') => async (dispatch, getState) => {
   try {
-    const response = await callApi('categories', categoryId, Methods.DELETE);
+    const { accessToken } = getState().auth;
+    const response = await callApi('categories', categoryId, Methods.DELETE, accessToken);
     if (response.success) {
       dispatch(refreshAccessToken(response.accessToken));
       const { categories } = getState().todoFilters;
@@ -112,9 +114,10 @@ export const deleteCategory = (categoryId = '') => async (dispatch, getState) =>
  * @param {String} name category name to add
  * @param {Function} callback function that need to handle the category created
  */
-export const addCategory = (name = '', callback = undefined) => async (dispatch) => {
+export const addCategory = (name = '', callback = undefined) => async (dispatch, getState) => {
   try {
-    const response = await callApi('categories', { name }, Methods.POST);
+    const { accessToken } = getState().auth;
+    const response = await callApi('categories', { name }, Methods.POST, accessToken);
     if (response.success) {
       const category = response.data;
       dispatch(refreshAccessToken(response.accessToken));

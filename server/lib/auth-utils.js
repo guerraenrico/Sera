@@ -53,7 +53,8 @@ const getSessionByTokenAndRefreshIfNeeded = async (db, accessToken) => {
     return undefined;
   }
   client.credentials.refresh_token = user.refreshToken;
-  const { token } = await client.getAccessToken();
+  const res = await client.getAccessToken();
+  const { token } = res;
   if (!token) {
     return undefined;
   }

@@ -59,12 +59,13 @@ export const fetchTasksByCategory = (
   completed = false,
   limit = queryItemsLimit,
   skip = 0,
-) => async (dispatch) => {
+) => async (dispatch, getState) => {
   dispatch(requestFetchTasks(limit, skip));
   try {
+    const { accessToken } = getState().auth;
     const response = await callApi('tasks', {
       categoriesId, completed, limit, skip,
-    }, Methods.GET);
+    }, Methods.GET, accessToken);
     if (response.success) {
       dispatch(refreshAccessToken(response.accessToken));
       const tasks = response.data.map(task =>
@@ -84,7 +85,8 @@ export const fetchTasksByCategory = (
 
 export const deleteTask = (id = '') => async (dispatch, getState) => {
   try {
-    const response = await callApi('tasks', id, Methods.DELETE);
+    const { accessToken } = getState().auth;
+    const response = await callApi('tasks', id, Methods.DELETE, accessToken);
     if (response.success) {
       const { items } = getState().todoTasks;
       dispatch(refreshAccessToken(response.accessToken));
@@ -99,8 +101,9 @@ export const deleteTask = (id = '') => async (dispatch, getState) => {
   }
 };
 
-export const addTask = (title = '', description = '', category = { id: '' }, todoWithin, callback = undefined) => async (dispatch) => {
+export const addTask = (title = '', description = '', category = { id: '' }, todoWithin, callback = undefined) => async (dispatch, getState) => {
   try {
+    const { accessToken } = getState().auth;
     const response = await callApi(
       'tasks',
       {
@@ -110,6 +113,7 @@ export const addTask = (title = '', description = '', category = { id: '' }, tod
         todoWithin,
       },
       Methods.POST,
+      accessToken,
     );
     if (response.success) {
       dispatch(refreshAccessToken(response.accessToken));
@@ -133,11 +137,12 @@ export const addTask = (title = '', description = '', category = { id: '' }, tod
   }
 };
 
-export const toogleTaskCompleted = (id = '', isCompleted = false) => async (dispatch) => {
+export const toogleTaskCompleted = (id = '', isCompleted = false) => async (dispatch, getState) => {
   const completed = !isCompleted;
   const completedAt = (completed) ? new Date() : null;
   try {
-    const response = await callApi('tasks', { id, completed, completedAt }, Methods.PATCH);
+    const { accessToken } = getState().auth;
+    const response = await callApi('tasks', { id, completed, completedAt }, Methods.PATCH, accessToken);
     if (response.success) {
       dispatch(refreshAccessToken(response.accessToken));
       const fetchedTask = response.data;

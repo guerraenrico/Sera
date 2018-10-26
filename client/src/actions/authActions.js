@@ -31,7 +31,11 @@ export const clearAuthentication = () => (dispatch) => {
   });
 };
 
-export const refreshAccessToken = accessToken => (dispatch) => {
+export const refreshAccessToken = newAccessToken => (dispatch, getState) => {
+  const { accessToken } = getState().auth;
+  if (accessToken === newAccessToken) {
+    return;
+  }
   store.saveAccessToken(accessToken);
   dispatch({
     type: REFRESH_ACCESS_TOKEN,
@@ -44,7 +48,7 @@ export const authenticateGoogleToken = code => async (dispatch) => {
     const response = await callApi('auth/google/signin/callback', { code, platform }, Methods.POST);
     if (response.success) {
       store.saveAccessToken(response.accessToken);
-      dispatch(receiveAuthentication(response.accessToken, response.data));
+      dispatch(receiveAuthentication(response.data, response.accessToken));
     } else {
       dispatch(showMessageError(response.error.message));
     }
@@ -58,7 +62,7 @@ export const validateToken = accessToken => async (dispatch) => {
     const response = await callApi('auth/google/validate/token', { accessToken, platform }, Methods.POST);
     if (response.success) {
       store.saveAccessToken(response.accessToken);
-      dispatch(receiveAuthentication(response.accessToken, response.data));
+      dispatch(receiveAuthentication(response.data, response.accessToken));
     } else {
       dispatch(clearAuthentication());
     }
@@ -67,9 +71,9 @@ export const validateToken = accessToken => async (dispatch) => {
   }
 };
 
-export const logout = () => async (dispatch) => {
+export const logout = () => async (dispatch, getState) => {
   try {
-    const accessToken = store.getAccessToken();
+    const { accessToken } = getState().auth;
     await callApi('auth/google/logout', { accessToken, platform }, Methods.POST);
   } finally {
     dispatch(clearAuthentication());
@@ -78,7 +82,12 @@ export const logout = () => async (dispatch) => {
 
 export const initAuth = () => (dispatch) => {
   dispatch(fetchingAuthentication());
-  const accessToken = store.getAccessToken();
+  const accessToken = store.getAccessToken() === undefined || store.getAccessToken() === '' ?
+    'ya29.GlxBBoWGBlnbtX68QdIRztDmyJ2UuCOaYnppzwuxpIacTACLrhht4joMZUFvaBiW_aeKHxDPqfVU-obqDuFdsWN0yqAl4ZNH8OH2Cl6DSM_Jamz62sS3kytqMLO2bw' :
+    store.getAccessToken();
+
+  // TODO: Remove
+
   if (accessToken === undefined || accessToken === '') {
     return dispatch(clearAuthentication());
   }

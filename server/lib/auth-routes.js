@@ -105,6 +105,9 @@ router.post('/google/validate/token', async (req, res) => {
       return;
     }
     const { user, session } = result;
+    // Clear refresh token
+    user.refreshToken = undefined;
+
     if (user === undefined || user === null || session === undefined || session === null) {
       handleError(res, Unauthorized(), 401);
       return;

@@ -1,7 +1,5 @@
 /* eslint quote-props: ["error", "consistent"] */
 
-import { getAccessToken } from './StoreUtils';
-
 function ApiException(error) {
   this.message = error.message;
 }
@@ -15,62 +13,63 @@ export const Methods = {
 
 const fullUrl = url => `/api/${url}`;
 
-const baseRequestInit = () => ({
+const baseRequestParams = token => ({
   credentials: 'include',
   headers: {
     'Content-Type': 'application/json',
-    'x-token': getAccessToken(),
+    'x-token': token,
   },
 });
 
-const createPostRequest = (url, options = {}) => (
+const createPostRequest = baseParams => (url, options = {}) => (
   fetch(url, {
-    ...baseRequestInit(),
+    ...baseParams,
     method: 'POST',
     body: JSON.stringify(options),
   })
 );
 
-const createGetRequest = (url, options = {}) => {
+const createGetRequest = baseParams => (url, options = {}) => {
   let finalUrl = `${url}?`;
   Object.entries(options).forEach(([key, value], poition) => {
     finalUrl = `${finalUrl}${(poition > 0) ? '&' : ''}${key}=${value}`;
   });
   return fetch(finalUrl, {
-    ...baseRequestInit(),
+    ...baseParams,
     method: 'GET',
   });
 };
 
-const createDeleteRequest = (url, options) => {
+const createDeleteRequest = baseParams => (url, options) => {
   const finalUrl = `${url}/${options}`;
   return fetch(finalUrl, {
-    ...baseRequestInit(),
+    ...baseParams,
     method: 'DELETE',
   });
 };
 
-const createPatchRequest = (url, options = {}) => (
+const createPatchRequest = baseParams => (url, options = {}) => (
   fetch(url, {
-    ...baseRequestInit(),
+    ...baseParams,
     method: 'PATCH',
     body: JSON.stringify(options),
   })
 );
 
-const createRequest = (url, options, method) => {
+const createRequest = (url, options, method, token) => {
+  const baseParams = baseRequestParams(token);
   const finalUrl = fullUrl(url);
   switch (method) {
-    case Methods.POST: return createPostRequest(finalUrl, options);
-    case Methods.GET: return createGetRequest(finalUrl, options);
-    case Methods.DELETE: return createDeleteRequest(finalUrl, options);
-    case Methods.PATCH: return createPatchRequest(finalUrl, options);
-    default: return createPostRequest(finalUrl, options);
+    case Methods.POST: return createPostRequest(baseParams)(finalUrl, options);
+    case Methods.GET: return createGetRequest(baseParams)(finalUrl, options);
+    case Methods.DELETE: return createDeleteRequest(baseParams)(finalUrl, options);
+    case Methods.PATCH: return createPatchRequest(baseParams)(finalUrl, options);
+    default: return createPostRequest(baseParams)(finalUrl, options);
   }
 };
 
-export const callApi = (url, options = {}, method = Methods.POST) => (
-  createRequest(url, options, method).then(
+export const callApi = (url, options = {}, method = Methods.POST, token = '') => (
+  createRequest(url, options, method, token).then(
     response => (
       response.json()
     ),
