@@ -1,66 +1,17 @@
-const Category = require('./models/Category');
-const Task = require('./models/Task');
-const ApiErrors = require('./ApiErrors');
-const { handleError, handleResponse } = require('./Handlers');
+const express = require('express');
 
-// Categories
+const connection = require('../middleware/dbConnectionMiddleware');
+const needAuth = require('../middleware/authMiddleware');
 
-const getCategories = async (db, req, res, session) => {
-  const limit = (req.query.limit !== undefined) && parseInt(req.query.limit, 10);
-  const skip = (req.query.skip !== undefined) && parseInt(req.query.skip, 10);
-  try {
-    const categories = await Category.GetAllAsync(
-      db, session.userId, limit, skip,
-    );
-    handleResponse(res, categories, session.accessToken);
-  } catch (err) {
-    console.log('err', JSON.stringify(err));
-    handleError(res, ApiErrors.ErrorReadCategory(err), session.accessToken);
-  }
-};
+const Task = require('../models/Task');
+const ApiErrors = require('../ApiErrors');
+const { handleError, handleResponse } = require('../Handlers');
 
-const insertCategory = async (db, req, res, session) => {
-  const { body } = req;
-  const category = Category.CreateFromBodyRequest(body, session.userId);
-  if (category === undefined) {
-    handleError(res, ApiErrors.InvalidCategoryParameters(), 400, session.accessToken);
-    return;
-  }
-  try {
-    const result = await Category.InsertAsync(db, category);
-    if (result.insertedId !== undefined) {
-      handleResponse(res, { ...category, id: result.insertedId }, session.accessToken);
-    } else {
-      handleError(res, ApiErrors.ErrorInsertCategory(), session.accessToken);
-    }
-  } catch (err) {
-    console.log('err', JSON.stringify(err));
-    handleError(res, ApiErrors.ErrorInsertCategory(err), session.accessToken);
-  }
-};
+const router = express.Router();
 
-const deleteCategory = async (db, req, res, session) => {
-  const { id } = req.params;
-  if (id === undefined || id.toString() === '') {
-    handleError(res, ApiErrors.InvalidCategoryId(), 400, session.accessToken);
-    return;
-  }
-  try {
-    const result = await Category.DeleteAsync(db, session.userId, id);
-    if (result.deletedCount >= 1) {
-      handleResponse(res, { }, session.accessToken);
-    } else {
-      handleError(res, ApiErrors.ErrorDeleteCategory(), session.accessToken);
-    }
-  } catch (err) {
-    console.log('err', JSON.stringify(err));
-    handleError(res, ApiErrors.ErrorDeleteCategory(err), session.accessToken);
-  }
-};
+// Get Tasks
 
-// Tasks
-
-const getTasks = async (db, req, res, session) => {
+router.get('/', (req, res) => connection(db => needAuth(db, req, res, async (session) => {
   const limit = (req.query.limit !== undefined) && parseInt(req.query.limit, 10);
   const skip = (req.query.skip !== undefined) && parseInt(req.query.skip, 10);
   const completed = (req.query.completed === 'true');
@@ -74,9 +25,11 @@ const getTasks = async (db, req, res, session) => {
     console.log('err', JSON.stringify(err));
     handleError(res, ApiErrors.ErrorReadTask(err), session.accessToken);
   }
-};
+})));
 
-const insertTask = async (db, req, res, session) => {
+// Insert Task
+
+router.post('/', (req, res) => connection(db => needAuth(db, req, res, async (session) => {
   const { body } = req;
   const task = Task.CreateFromBodyRequest(body, session.userId);
   if (task === undefined) {
@@ -94,9 +47,11 @@ const insertTask = async (db, req, res, session) => {
     console.log('err', JSON.stringify(err));
     handleError(res, ApiErrors.ErrorInsertTask(err), session.accessToken);
   }
-};
+})));
 
-const deleteTask = async (db, req, res, session) => {
+// Delete Task
+
+router.delete('/:id', (req, res) => connection(db => needAuth(db, req, res, async (session) => {
   const { id } = req.params;
   if (id === undefined || id.toString() === '') {
     handleError(res, ApiErrors.InvalidTaskId(), 400, session.accessToken);
@@ -115,9 +70,11 @@ const deleteTask = async (db, req, res, session) => {
     console.log('err', JSON.stringify(err));
     handleError(res, ApiErrors.ErrorDeleteTask(err), session.accessToken);
   }
-};
+})));
 
-const updateTask = async (db, req, res, session) => {
+// Update Task
+
+router.patch('/', (req, res) => connection(db => needAuth(db, req, res, async (session) => {
   const { body } = req;
   const { id, ...other } = body;
   if (id === undefined) {
@@ -136,14 +93,6 @@ const updateTask = async (db, req, res, session) => {
     console.log('err', JSON.stringify(err));
     handleError(res, ApiErrors.ErrorUpdateTask(err), session.accessToken);
   }
-};
+})));
 
-module.exports = {
-  getCategories,
-  insertCategory,
-  deleteCategory,
-  getTasks,
-  insertTask,
-  deleteTask,
-  updateTask,
-};
+module.exports = router;

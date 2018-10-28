@@ -1,4 +1,4 @@
-const { getSessionByTokenAndRefreshIfNeeded } = require('../utils/auth-utils');
+const { getSessionByTokenAndRefreshIfNeeded } = require('../utils/authUtils');
 const { handleError } = require('../Handlers');
 const {
   Unauthorized,
@@ -10,7 +10,7 @@ const needAuth = async (db, req, res, next) => {
     if (session === undefined || session === null) {
       return handleError(res, Unauthorized(), 401);
     }
-    return next(db, req, res, session);
+    return next(session);
   } catch (ex) {
     return handleError(res, Unauthorized(ex), 401);
   }
