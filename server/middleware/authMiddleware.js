@@ -1,4 +1,4 @@
-const { getSessionByTokenAndRefreshIfNeeded } = require('../lib/auth-utils');
+const { getSessionByTokenAndRefreshIfNeeded } = require('../utils/auth-utils');
 const { handleError } = require('../Handlers');
 const {
   Unauthorized,
