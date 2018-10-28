@@ -12,7 +12,7 @@ const {
 const {
   getPayload, isPayloadValid,
   getUserByToken, getTokens, revokeSessionAndToken,
-} = require('../utils/auth-utils');
+} = require('../utils/authUtils');
 
 const router = express.Router();
 

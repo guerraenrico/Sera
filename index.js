@@ -8,7 +8,7 @@ const http = require('http');
 const { MongoClient } = require('mongodb');
 const path = require('path');
 
-const auth = require('./server/routes/auth-routes');
+const auth = require('./server/routes/authRoutes');
 const { dbName, dbUrl } = require('./server/constants/dbConstants');
 const Api = require('./server/Api');
 
