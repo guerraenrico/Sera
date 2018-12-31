@@ -10,16 +10,16 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "dotenv": "^6.0.0",
-    "express": "^4.16.3",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
     "express-async-handler": "^1.1.4",
-    "google-auth-library": "^2.0.0",
-    "mongodb": "^3.1.6"
+    "google-auth-library": "^2.0.2",
+    "mongodb": "^3.1.10"
   },
   "devDependencies": {
-    "eslint": "^5.6.0",
+    "eslint": "^5.11.1",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
-    "tape": "^4.9.1"
+    "tape": "^4.9.2"
   }
 }
