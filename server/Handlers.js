@@ -1,6 +1,7 @@
 const ApiResponse = require('./ApiResponse');
 
 const handleError = (res, apiError, httpCode, accessToken = '') => {
+  console.log('ERROR: ', `apiError: ${apiError} - httpCode: ${httpCode} -`);
   res.status(httpCode || 500).json(ApiResponse.error(apiError, accessToken));
 };
 

@@ -12,6 +12,7 @@ const {
 const {
   getPayload, isPayloadValid,
   getUserByToken, getTokens, revokeSessionAndToken,
+  getSessionByTokenAndRefreshIfNeeded,
 } = require('../utils/authUtils');
 
 const router = express.Router();
@@ -97,7 +98,6 @@ router.post('/google/validate/token', async (req, res) => {
   const conn = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
   const db = conn.db(dbName);
   const { accessToken } = req.body;
-
   try {
     const result = await getUserByToken(db, accessToken);
     if (result === undefined) {
@@ -127,6 +127,32 @@ router.post('/google/logout', async (req, res) => {
   try {
     await revokeSessionAndToken(db, accessToken);
     handleResponse(res);
+  } catch (ex) {
+    handleError(res, Unauthorized(ex), 401);
+  } finally {
+    conn.close();
+  }
+});
+
+router.post('/google/refresh/token', async (req, res) => {
+  const conn = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
+  const db = conn.db(dbName);
+  const { accessToken } = req.body;
+  try {
+    const result = await getSessionByTokenAndRefreshIfNeeded(db, accessToken);
+    if (result === undefined) {
+      handleError(res, Unauthorized(), 401);
+      return;
+    }
+    const { user, session } = result;
+    // Clear refresh token
+    user.refreshToken = undefined;
+
+    if (user === undefined || user === null || session === undefined || session === null) {
+      handleError(res, Unauthorized(), 401);
+      return;
+    }
+    handleResponse(res, user, session.accessToken);
   } catch (ex) {
     handleError(res, Unauthorized(ex), 401);
   } finally {

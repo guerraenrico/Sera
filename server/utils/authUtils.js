@@ -3,14 +3,26 @@ const { OAuth2Client } = require('google-auth-library');
 const User = require('../models/User');
 const Session = require('../models/Session');
 
+const {
+  Unauthorized, ExpiredSession, isErrorExpiredSession,
+} = require('../ApiErrors');
+
 const client = new OAuth2Client(
   process.env.OAUTH2_CLIENT_ID_WEB,
   process.env.OAUTH2_CLIENT_SECRET_WEB,
   process.env.OAUTH2_REDIRECT_WEB,
 );
 
+/**
+ * Get user tokens from Google Auth Client
+ * @param {String} code user's google code
+ */
 const getTokens = code => client.getToken(code);
 
+/**
+ * Get payloads from Google Auth Client
+ * @param {String} idToken usert token id
+ */
 const getPayload = async (idToken) => {
   const ticket = await client.verifyIdToken({
     idToken,
@@ -22,6 +34,10 @@ const getPayload = async (idToken) => {
   return ticket.getPayload();
 };
 
+/**
+ * Check id the payload is valid
+ * @param {Object} payload user's google payload
+ */
 const isPayloadValid = (payload) => {
   if (payload === undefined) {
     return false;
@@ -36,16 +52,52 @@ const isPayloadValid = (payload) => {
   return true;
 };
 
+/**
+ * Check if the session is valid
+ * Return undefined if is valid othrewise an {Object} Error
+ * @param {Object} session user session
+ */
+const verifySession = async (session) => {
+  if (session === undefined
+    || !await client.getTokenInfo(session.accessToken)) {
+    return Unauthorized();
+  }
+  if (session.expireAt < (new Date())) {
+    return ExpiredSession();
+  }
+  return undefined;
+};
+
+/**
+ * Read user's session from datatabase
+ * @param {Object} db database
+ * @param {String} accessToken user' access token
+ */
+const getSessionByToken = async (db, accessToken) => {
+  const session = await Session.GetByAccessTokenAsync(db, accessToken);
+  return session;
+};
+
+/**
+ * Read user's session from database and if expired a new
+ * access token is created.
+ * If no session is found or is invalid return undefined
+ * @param {Object} db database
+ * @param {String} accessToken user's access token
+ */
 const getSessionByTokenAndRefreshIfNeeded = async (db, accessToken) => {
-  let session = await Session.GetByAccessTokenAsync(db, accessToken);
+  let session = await getSessionByToken(db, accessToken);
   if (session === undefined) {
     return undefined;
   }
 
-  if (session.expireAt > (new Date())) {
-    if (await client.getTokenInfo(session.accessToken)) {
-      return session;
-    }
+  const sessionError = verifySession(session);
+  if (sessionError === undefined) {
+    return session;
+  }
+  // Refresh only if the session is expired
+  if (!isErrorExpiredSession(sessionError)) {
+    return undefined;
   }
 
   const user = await User.GetAsync(db, session.userId);
@@ -75,12 +127,15 @@ const getSessionByTokenAndRefreshIfNeeded = async (db, accessToken) => {
   return session;
 };
 
+/**
+ * Read the user from the database
+ * @param {Object} db database
+ * @param {String} accessToken user's access token
+ */
 const getUserByToken = async (db, accessToken) => {
-  // Verify token saved in the db and refresh if expired
-  const session = await getSessionByTokenAndRefreshIfNeeded(db, accessToken);
-  if (session === undefined) {
-    return undefined;
-  }
+  // Verify token
+  const session = await getSessionByToken(accessToken);
+
   // Verify user saved in the db
   const user = await User.GetAsync(db, session.userId);
   return { user, session };
@@ -96,6 +151,7 @@ module.exports = {
   isPayloadValid,
   getUserByToken,
   getTokens,
+  getSessionByToken,
   getSessionByTokenAndRefreshIfNeeded,
   revokeSessionAndToken,
 };
