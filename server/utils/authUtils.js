@@ -91,7 +91,7 @@ const getSessionByTokenAndRefreshIfNeeded = async (db, accessToken) => {
     return undefined;
   }
 
-  const sessionError = verifySession(session);
+  const sessionError = await verifySession(session);
   if (sessionError === undefined) {
     return session;
   }
@@ -149,6 +149,7 @@ const revokeSessionAndToken = async (db, accessToken) => {
 module.exports = {
   getPayload,
   isPayloadValid,
+  verifySession,
   getUserByToken,
   getTokens,
   getSessionByToken,

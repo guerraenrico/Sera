@@ -139,20 +139,12 @@ router.post('/google/refresh/token', async (req, res) => {
   const db = conn.db(dbName);
   const { accessToken } = req.body;
   try {
-    const result = await getSessionByTokenAndRefreshIfNeeded(db, accessToken);
-    if (result === undefined) {
+    const newSession = await getSessionByTokenAndRefreshIfNeeded(db, accessToken);
+    if (newSession === undefined) {
       handleError(res, Unauthorized(), 401);
       return;
     }
-    const { user, session } = result;
-    // Clear refresh token
-    user.refreshToken = undefined;
-
-    if (user === undefined || user === null || session === undefined || session === null) {
-      handleError(res, Unauthorized(), 401);
-      return;
-    }
-    handleResponse(res, user, session.accessToken);
+    handleResponse(res, newSession, newSession.accessToken);
   } catch (ex) {
     handleError(res, Unauthorized(ex), 401);
   } finally {

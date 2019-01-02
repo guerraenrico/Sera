@@ -10,7 +10,7 @@ const needAuth = async (db, req, res, next) => {
     if (session === undefined || session === null) {
       return handleError(res, Unauthorized(), 401);
     }
-    const sessionError = verifySession(session);
+    const sessionError = await verifySession(session);
     if (sessionError !== undefined) {
       return handleError(res, sessionError, 401);
     }
