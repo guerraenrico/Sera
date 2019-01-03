@@ -134,7 +134,7 @@ const getSessionByTokenAndRefreshIfNeeded = async (db, accessToken) => {
  */
 const getUserByToken = async (db, accessToken) => {
   // Verify token
-  const session = await getSessionByToken(accessToken);
+  const session = await getSessionByToken(db, accessToken);
 
   // Verify user saved in the db
   const user = await User.GetAsync(db, session.userId);
