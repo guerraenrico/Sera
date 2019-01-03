@@ -1,4 +1,5 @@
 import { callApi, Methods } from '../utils/ApiUtils';
+import { shouldRefreshToken } from '../utils/RequestUtils';
 import { refreshAccessToken } from './authActions';
 import {
   REQUEST_FETCH_TASKS,
@@ -67,7 +68,6 @@ export const fetchTasksByCategory = (
       categoriesId, completed, limit, skip,
     }, Methods.GET, accessToken);
     if (response.success) {
-      dispatch(refreshAccessToken(response.accessToken));
       const tasks = response.data.map(task =>
         ({
           ...task,
@@ -76,7 +76,13 @@ export const fetchTasksByCategory = (
         }));
       dispatch(receiveFetchTasks(tasks));
     } else {
+      if (shouldRefreshToken(response)) {
+        await dispatch(refreshAccessToken());
+        dispatch(fetchTasksByCategory(categoriesId, completed, limit, skip));
+        return;
+      }
       dispatch(errorFetchTasks(response.error.message));
+      dispatch(showMessageError(response.error.message));
     }
   } catch (error) {
     dispatch(showMessageError(error.message));
@@ -89,11 +95,15 @@ export const deleteTask = (id = '') => async (dispatch, getState) => {
     const response = await callApi('tasks', id, Methods.DELETE, accessToken);
     if (response.success) {
       const { items } = getState().todoTasks;
-      dispatch(refreshAccessToken(response.accessToken));
       const todoArgumentIndex = items.findIndex(todoArgument =>
         todoArgument.id === id);
       dispatch(removeTaskLocal(todoArgumentIndex));
     } else {
+      if (shouldRefreshToken(response)) {
+        await dispatch(refreshAccessToken());
+        dispatch(deleteTask(id));
+        return;
+      }
       dispatch(showMessageError(response.error.message));
     }
   } catch (error) {
@@ -116,7 +126,6 @@ export const addTask = (title = '', description = '', category = { id: '' }, tod
       accessToken,
     );
     if (response.success) {
-      dispatch(refreshAccessToken(response.accessToken));
       const fetchedTask = response.data;
       const task = {
         ...fetchedTask,
@@ -130,6 +139,11 @@ export const addTask = (title = '', description = '', category = { id: '' }, tod
         callback();
       }
     } else {
+      if (shouldRefreshToken(response)) {
+        await dispatch(refreshAccessToken());
+        dispatch(addTask(title, description, category, todoWithin, callback));
+        return;
+      }
       dispatch(showMessageError(response.error.message));
     }
   } catch (error) {
@@ -144,7 +158,6 @@ export const toogleTaskCompleted = (id = '', isCompleted = false) => async (disp
     const { accessToken } = getState().auth;
     const response = await callApi('tasks', { id, completed, completedAt }, Methods.PATCH, accessToken);
     if (response.success) {
-      dispatch(refreshAccessToken(response.accessToken));
       const fetchedTask = response.data;
       const task = {
         ...fetchedTask,
@@ -153,6 +166,11 @@ export const toogleTaskCompleted = (id = '', isCompleted = false) => async (disp
       };
       dispatch(updateTaskLocal(task));
     } else {
+      if (shouldRefreshToken(response)) {
+        await dispatch(refreshAccessToken());
+        dispatch(toogleTaskCompleted(id, isCompleted));
+        return;
+      }
       dispatch(showMessageError(response.error.message));
     }
   } catch (error) {

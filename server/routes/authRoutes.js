@@ -100,8 +100,9 @@ router.post('/google/validate/token', async (req, res) => {
   const { accessToken } = req.body;
   try {
     const result = await getUserByToken(db, accessToken);
-    if (result === undefined) {
-      handleError(res, Unauthorized(), 401);
+    // Check if return error
+    if (result.code !== undefined) {
+      handleError(res, result, 401);
       return;
     }
     const { user, session } = result;

@@ -7,6 +7,7 @@ import {
 import { callApi, Methods } from '../utils/ApiUtils';
 import * as store from '../utils/StoreUtils';
 import { showMessageError } from './messageActions';
+import { shouldRefreshToken } from '../utils/RequestUtils';
 
 const platform = 'web';
 
@@ -31,16 +32,25 @@ export const clearAuthentication = () => (dispatch) => {
   });
 };
 
-export const refreshAccessToken = newAccessToken => (dispatch, getState) => {
-  const { accessToken } = getState().auth;
-  if (accessToken === newAccessToken) {
-    return;
+export const refreshAccessToken = () => async (dispatch) => {
+  try {
+    const accessToken = store.getAccessToken();
+    const response = await callApi('auth/google/refresh/token', { accessToken, platform }, Methods.POST);
+    if (response.success) {
+      if (accessToken === response.data.accessToken) {
+        return;
+      }
+      store.saveAccessToken(response.data.accessToken);
+      dispatch({
+        type: REFRESH_ACCESS_TOKEN,
+        accessToken: response.data.accessToken,
+      });
+    } else {
+      dispatch(clearAuthentication());
+    }
+  } catch (err) {
+    dispatch(clearAuthentication());
   }
-  store.saveAccessToken(accessToken);
-  dispatch({
-    type: REFRESH_ACCESS_TOKEN,
-    accessToken,
-  });
 };
 
 export const authenticateGoogleToken = code => async (dispatch) => {
@@ -57,13 +67,19 @@ export const authenticateGoogleToken = code => async (dispatch) => {
   }
 };
 
-export const validateToken = accessToken => async (dispatch) => {
+export const validateToken = accessToken => async (dispatch, getState) => {
   try {
     const response = await callApi('auth/google/validate/token', { accessToken, platform }, Methods.POST);
     if (response.success) {
       store.saveAccessToken(response.accessToken);
       dispatch(receiveAuthentication(response.data, response.accessToken));
     } else {
+      if (shouldRefreshToken(response)) {
+        await dispatch(refreshAccessToken());
+        const newAccessToken = getState().auth.accessToken;
+        dispatch(validateToken(newAccessToken));
+        return;
+      }
       dispatch(clearAuthentication());
     }
   } catch (err) {

@@ -1,4 +1,5 @@
 import { callApi, Methods } from '../utils/ApiUtils';
+import { shouldRefreshToken } from '../utils/RequestUtils';
 import { refreshAccessToken } from './authActions';
 import {
   REQUEST_FETCH_ALL_CATEGORIES,
@@ -81,11 +82,16 @@ export const fetchAllCategories = (limit = queryItemsLimit, skip = 0) =>
       const { accessToken } = getState().auth;
       const response = await callApi('categories', { limit, skip }, Methods.GET, accessToken);
       if (response.success) {
-        dispatch(refreshAccessToken(response.accessToken));
         dispatch(receiveFetchAllCategories(response.data));
         dispatch(fetchTasksByCategory(getSelectedCategoriesId(getState())));
       } else {
+        if (shouldRefreshToken(response)) {
+          await dispatch(refreshAccessToken());
+          dispatch(fetchAllCategories(limit, skip));
+          return;
+        }
         dispatch(errorFetchAllCategories(response.error.message));
+        dispatch(showMessageError(response.error.message));
       }
     } catch (error) {
       dispatch(showMessageError(error.message));
@@ -97,11 +103,15 @@ export const deleteCategory = (categoryId = '') => async (dispatch, getState) =>
     const { accessToken } = getState().auth;
     const response = await callApi('categories', categoryId, Methods.DELETE, accessToken);
     if (response.success) {
-      dispatch(refreshAccessToken(response.accessToken));
       const { categories } = getState().todoFilters;
       const categoryIndex = categories.findIndex(category => category.id === categoryId);
       dispatch(removeCategoryLocal(categoryIndex));
     } else {
+      if (shouldRefreshToken(response)) {
+        await dispatch(refreshAccessToken());
+        dispatch(deleteCategory(categoryId));
+        return;
+      }
       dispatch(showMessageError(response.error.message));
     }
   } catch (error) {
@@ -120,12 +130,16 @@ export const addCategory = (name = '', callback = undefined) => async (dispatch,
     const response = await callApi('categories', { name }, Methods.POST, accessToken);
     if (response.success) {
       const category = response.data;
-      dispatch(refreshAccessToken(response.accessToken));
       dispatch(addCategoryLocal(category));
       if (callback !== undefined) {
         callback(category);
       }
     } else {
+      if (shouldRefreshToken(response)) {
+        await dispatch(refreshAccessToken());
+        dispatch(addCategory(name, callback));
+        return;
+      }
       dispatch(showMessageError(response.error.message));
     }
   } catch (error) {

@@ -136,6 +136,11 @@ const getUserByToken = async (db, accessToken) => {
   // Verify token
   const session = await getSessionByToken(db, accessToken);
 
+  const sessionError = await verifySession(session);
+  if (sessionError !== undefined) {
+    return sessionError;
+  }
+
   // Verify user saved in the db
   const user = await User.GetAsync(db, session.userId);
   return { user, session };
@@ -143,7 +148,6 @@ const getUserByToken = async (db, accessToken) => {
 
 const revokeSessionAndToken = async (db, accessToken) => {
   await Session.DeleteByAccessTokenAsync(db, accessToken);
-  // await client.revokeToken(accessToken);
 };
 
 module.exports = {
