@@ -1,7 +1,8 @@
+const { DATABASE_NAME, MONGODB_URI } = process.env;
+
 const express = require('express');
 const { MongoClient } = require('mongodb');
 
-const { dbName, dbUrl } = require('../constants/dbConstants');
 const User = require('../models/User');
 const Session = require('../models/Session');
 const { handleError, handleResponse } = require('../Handlers');
@@ -18,8 +19,8 @@ const {
 const router = express.Router();
 
 router.post('/google/signin/callback', async (req, res) => {
-  const conn = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
-  const db = conn.db(dbName);
+  const conn = await MongoClient.connect(MONGODB_URI, { useNewUrlParser: true });
+  const db = conn.db(DATABASE_NAME);
   const { code, platform } = req.body;
   let tokens;
   let payload;
@@ -95,8 +96,8 @@ router.post('/google/signin/callback', async (req, res) => {
 });
 
 router.post('/google/validate/token', async (req, res) => {
-  const conn = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
-  const db = conn.db(dbName);
+  const conn = await MongoClient.connect(MONGODB_URI, { useNewUrlParser: true });
+  const db = conn.db(DATABASE_NAME);
   const { accessToken } = req.body;
   try {
     const result = await getUserByToken(db, accessToken);
@@ -125,8 +126,8 @@ router.post('/google/validate/token', async (req, res) => {
 });
 
 router.post('/google/logout', async (req, res) => {
-  const conn = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
-  const db = conn.db(dbName);
+  const conn = await MongoClient.connect(MONGODB_URI, { useNewUrlParser: true });
+  const db = conn.db(DATABASE_NAME);
   const { accessToken } = req.body;
   try {
     await revokeSessionAndToken(db, accessToken);
@@ -139,8 +140,8 @@ router.post('/google/logout', async (req, res) => {
 });
 
 router.post('/google/refresh/token', async (req, res) => {
-  const conn = await MongoClient.connect(dbUrl, { useNewUrlParser: true });
-  const db = conn.db(dbName);
+  const conn = await MongoClient.connect(MONGODB_URI, { useNewUrlParser: true });
+  const db = conn.db(DATABASE_NAME);
   const { accessToken } = req.body;
   try {
     const newSession = await getSessionByTokenAndRefreshIfNeeded(db, accessToken);
