@@ -102,6 +102,7 @@ router.post('/google/validate/token', async (req, res) => {
     const result = await getUserByToken(db, accessToken);
     // Check if return error
     if (result.code !== undefined) {
+      console.log('(Validate) ERROR: ', `result: ${JSON.stringify(result)}`);
       handleError(res, result, 401);
       return;
     }
@@ -111,10 +112,12 @@ router.post('/google/validate/token', async (req, res) => {
 
     if (user === undefined || user === null || session === undefined || session === null) {
       handleError(res, Unauthorized(), 401);
+      console.log('(Validate) ERROR: ', `user: ${JSON.stringify(user)} - session: ${JSON.stringify(session)}`);
       return;
     }
     handleResponse(res, user, session.accessToken);
   } catch (ex) {
+    console.log('(Validate) ERROR: ', `ex: ${JSON.stringify(ex)}`);
     handleError(res, Unauthorized(ex), 401);
   } finally {
     conn.close();
@@ -142,11 +145,13 @@ router.post('/google/refresh/token', async (req, res) => {
   try {
     const newSession = await getSessionByTokenAndRefreshIfNeeded(db, accessToken);
     if (newSession === undefined) {
+      console.log('(Refresh) ERROR: ', `newSession: ${JSON.stringify(newSession)}`);
       handleError(res, Unauthorized(), 401);
       return;
     }
     handleResponse(res, newSession, newSession.accessToken);
   } catch (ex) {
+    console.log('(Refresh) ERROR: ', `ex: ${JSON.stringify(ex)}`);
     handleError(res, Unauthorized(ex), 401);
   } finally {
     conn.close();
