@@ -58,12 +58,14 @@ const isPayloadValid = (payload) => {
  * @param {Object} session user session
  */
 const verifySession = async (session) => {
-  if (session === undefined
-    || !await client.getTokenInfo(session.accessToken)) {
+  if (session === undefined) {
     return Unauthorized();
   }
   if (session.expireAt < (new Date())) {
     return ExpiredSession();
+  }
+  if (!await client.getTokenInfo(session.accessToken)) {
+    return Unauthorized();
   }
   return undefined;
 };

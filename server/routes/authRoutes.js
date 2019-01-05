@@ -118,7 +118,6 @@ router.post('/google/validate/token', async (req, res) => {
     }
     handleResponse(res, user, session.accessToken);
   } catch (ex) {
-    console.log('(Validate) ERROR: ', `ex: ${JSON.stringify(ex)}`);
     handleError(res, Unauthorized(ex), 401);
   } finally {
     conn.close();
@@ -152,7 +151,6 @@ router.post('/google/refresh/token', async (req, res) => {
     }
     handleResponse(res, newSession, newSession.accessToken);
   } catch (ex) {
-    console.log('(Refresh) ERROR: ', `ex: ${JSON.stringify(ex)}`);
     handleError(res, Unauthorized(ex), 401);
   } finally {
     conn.close();
