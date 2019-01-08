@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import Snackbar from './Snackbar';
+import Snackbar from '../layout/Snackbar';
 
 class Goals extends Component {
   componentDidMount() {

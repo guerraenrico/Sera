@@ -1,10 +1,10 @@
 ﻿import React from 'react';
 import PropTypes from 'prop-types';
 import { TransitionGroup } from 'react-transition-group';
-import Resize from './anims/Resize';
+import Resize from '../../anims/Resize';
 import Task from './Task';
-import InfiniteScroll from './InfiniteScroll';
-import { queryItemsLimit } from '../constants/config';
+import InfiniteScroll from '../../layout/InfiniteScroll';
+import { queryItemsLimit } from '../../../constants/config';
 
 const initialState = {
   limit: queryItemsLimit,

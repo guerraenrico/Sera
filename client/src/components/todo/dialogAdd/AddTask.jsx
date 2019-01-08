@@ -2,9 +2,9 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import labels from '../../constants/labels';
-import { SELECT_COMPLETE_DATE } from '../../constants/steps';
-import { showMessageInfo } from '../../actions/messageActions';
+import labels from '../../../constants/labels';
+import { SELECT_COMPLETE_DATE } from '../../../constants/steps';
+import { showMessageInfo } from '../../../actions/messageActions';
 
 class AddTask extends React.Component {
   constructor() {

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import LoaderLinear from '../components/LoaderLinear';
-import MainAddButton from '../components/MainAddButton';
-import CategoriesFilterContainer from '../containers/CategoriesFilterContainer';
-import VisibilityFilterContainer from '../containers/VisibilityFilterContainer';
-import TasksContainer from '../containers/TasksContainer';
+import LoaderLinear from '../layout/LoaderLinear';
+import MainAddButton from '../layout/MainAddButton';
+import CategoriesFilterContainer from '../../containers/CategoriesFilterContainer';
+import VisibilityFilterContainer from '../../containers/VisibilityFilterContainer';
+import TasksContainer from '../../containers/TasksContainer';
 import DialogAdd from './dialogAdd/DialogAdd';
-import Snackbar from './Snackbar';
+import Snackbar from '../layout/Snackbar';
 
 class Todos extends Component {
   constructor(props) {

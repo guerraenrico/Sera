@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import SnackbarAnim from './anims/SnackbarAnim';
+import SnackbarAnim from '../anims/SnackbarAnim';
 
 const Action = ({ onClick, text }) => (
   <button className="button-action-snackbar" onClick={onClick}>

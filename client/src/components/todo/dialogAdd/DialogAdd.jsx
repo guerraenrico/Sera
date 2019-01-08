@@ -15,11 +15,11 @@ import {
   SELECT_COMPLETE_DATE,
   DONE,
   stepList,
-} from '../../constants/steps';
-import ReplaceAnim from '../anims/ReplaceAnim';
-import DialogAnim from '../anims/DialogAnim';
+} from '../../../constants/steps';
+import ReplaceAnim from '../../anims/ReplaceAnim';
+import DialogAnim from '../../anims/DialogAnim';
 import Steps from './Steps';
-import labels from '../../constants/labels';
+import labels from '../../../constants/labels';
 
 const getContentToRender = (steps, props) => {
   if (steps.length === 0) {

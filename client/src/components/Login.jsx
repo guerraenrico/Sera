@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import GoogleLogin from 'react-google-login';
 
-import Snackbar from './Snackbar';
+import Snackbar from './layout/Snackbar';
 import { getCurrentBaseUrl } from '../utils/Common';
 import { SeraLogo } from '../assets/Svgs';
 

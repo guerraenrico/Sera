@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import VisibilitySwitch from './VisibilitySwitch';
-import { ALL_TODOS, ONLY_COMPLETED, ONLY_TO_COMPLETE } from '../constants/config';
+import { ALL_TODOS, ONLY_COMPLETED, ONLY_TO_COMPLETE } from '../../../constants/config';
 
 const VisibilityFilter = ({
   selectedVisibilityFilter, onVisibilitySwitchClick,

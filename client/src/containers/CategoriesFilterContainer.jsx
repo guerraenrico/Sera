@@ -1,5 +1,5 @@
 ﻿import { connect } from 'react-redux';
-import CategoriesFilter from '../components/CategoriesFilter';
+import CategoriesFilter from '../components/todo/category/CategoriesFilter';
 import {
   selectCategory,
   selectCategoryAll,

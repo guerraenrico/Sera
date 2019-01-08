@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
-import Goals from '../components/Goals';
+import Goals from '../components/goal/Goals';
 import { hideMessage } from '../actions/messageActions';
 
 const GoalsContainer = props => <Goals {...props} />;

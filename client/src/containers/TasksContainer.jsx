@@ -1,5 +1,5 @@
 ﻿import { connect } from 'react-redux';
-import Tasks from '../components/Tasks';
+import Tasks from '../components/todo/task/Tasks';
 import {
   fetchTasksByCategory,
   deleteTask,

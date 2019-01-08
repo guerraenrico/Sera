@@ -6,7 +6,8 @@
   "main": "src/index.js",
   "scripts": {
     "build": "webpack -p --config webpack.prod.config.js",
-    "develop": "webpack --config webpack.dev.config.js"
+    "develop": "webpack --config webpack.dev.config.js",
+    "test": "jest"
   },
   "author": "Enrico Guerra",
   "license": "ISC",
@@ -37,8 +38,10 @@
     "webpack-cli": "^2.1.5"
   },
   "dependencies": {
+    "babel-jest": "^23.6.0",
     "babel-polyfill": "^6.26.0",
     "dateformat": "^3.0.3",
+    "jest": "^23.6.0",
     "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
@@ -48,9 +51,11 @@
     "react-loadable": "^5.5.0",
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
+    "react-test-renderer": "^16.7.0",
     "react-transition-group": "^2.5.0",
     "redux": "^4.0.0",
     "redux-thunk": "^2.3.0",
+    "regenerator-runtime": "^0.13.1",
     "reselect": "^3.0.1",
     "scroll": "^2.0.3",
     "store": "^2.0.12"

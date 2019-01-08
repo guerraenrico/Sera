@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import PropTypes from 'prop-types';
-import labels from '../../constants/labels';
+import labels from '../../../constants/labels';
 
 class Done extends React.Component {
   componentDidMount() {

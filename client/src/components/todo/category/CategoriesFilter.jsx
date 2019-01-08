@@ -2,9 +2,9 @@
 import PropTypes from 'prop-types';
 import { TransitionGroup } from 'react-transition-group';
 import scroll from 'scroll';
-import ButtonScroll from './ButtonScoll';
+import ButtonScroll from '../../layout/ButtonScoll';
 import Category from './Category';
-import Fade from './anims/Fade';
+import Fade from '../../anims/Fade';
 
 class CategoriesFilter extends React.Component {
   constructor(props) {

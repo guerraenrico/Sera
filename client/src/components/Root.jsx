@@ -4,10 +4,10 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-d
 import Loadable from 'react-loadable';
 
 import ReplaceAnim from './anims/ReplaceAnim';
-import LoaderLinear from '../components/LoaderLinear';
-import LoaderTip from '../components/LoaderTip';
-import Drawer from '../components/Drawer';
-import Page404 from '../components/Page404';
+import LoaderLinear from '../components/layout/LoaderLinear';
+import LoaderTip from '../components/layout/LoaderTip';
+import Drawer from '../components/layout/Drawer';
+import Page404 from '../components/layout/Page404';
 import * as paths from '../constants/paths';
 
 const LoginContainer = Loadable({

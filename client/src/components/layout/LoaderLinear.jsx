@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Fade from './anims/Fade';
+import Fade from '../anims/Fade';
 
 const delay = 1000;
 

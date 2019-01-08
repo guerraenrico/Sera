@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import VisibilityFilters from '../components/VisibilityFilters';
+import VisibilityFilters from '../components/todo/visibility/VisibilityFilters';
 import { changeVisibility } from '../actions/todoFiltersActions';
 
 import { getVisibilityFilter } from '../selectors/todoFiltersSelectors';

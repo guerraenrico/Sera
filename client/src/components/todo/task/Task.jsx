@@ -1,11 +1,11 @@
 ﻿import React from 'react';
 import PropTypes from 'prop-types';
-import Collapse from './anims/Collapse';
-import Fade from './anims/Fade';
+import Collapse from '../../anims/Collapse';
+import Fade from '../../anims/Fade';
 import ButtonCompleteTask from './ButtonCompleteTask';
 import ButtonDeleteTask from './ButtonDeleteTask';
-import { toSimpleDateFormat } from '../utils/Common';
-import labels from '../constants/labels';
+import { toSimpleDateFormat } from '../../../utils/Common';
+import labels from '../../../constants/labels';
 
 class Task extends React.Component {
   constructor(props) {

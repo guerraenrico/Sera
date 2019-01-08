@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
 
-import { menuItems } from '../constants/drawer';
+import { menuItems } from '../../constants/drawer';
 
 const Item = ({ pathTo, exact, children }) => (
   <NavLink
