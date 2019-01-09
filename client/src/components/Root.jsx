@@ -61,17 +61,12 @@ const routes = [
 ];
 
 class Root extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      shouldShowLoading: true,
-      showLoading: true,
-      shouldShowRoute: false,
-      showRoute: false,
-    };
-    this.contentToRender = this.contentToRender.bind(this);
-    this.onAnimationEnd = this.onAnimationEnd.bind(this);
-  }
+  state = {
+    shouldShowLoading: true,
+    showLoading: true,
+    shouldShowRoute: false,
+    showRoute: false,
+  };
 
   componentDidMount() {
     const { initAuth } = this.props;
@@ -108,7 +103,7 @@ class Root extends Component {
     return null;
   }
 
-  onAnimationEnd(node, done) {
+  onAnimationEnd = (node, done) => {
     const handleAnimationEnd = () => {
       done();
       const {
@@ -137,7 +132,7 @@ class Root extends Component {
     node.addEventListener('transitionend', handleAnimationEnd, false);
   }
 
-  contentToRender() {
+  contentToRender = () => {
     const { isAuthenticated, logout } = this.props;
     const { showLoading, showRoute } = this.state;
     if (showLoading || !showRoute) {

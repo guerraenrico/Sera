@@ -12,11 +12,7 @@ const initialState = {
 };
 
 class Tasks extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = initialState;
-    this.onFetchTodoTasksNext = this.onFetchTodoTasksNext.bind(this);
-  }
+  state = initialState;
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.skip !== prevState.skip) {
@@ -27,7 +23,7 @@ class Tasks extends React.Component {
     return null;
   }
 
-  onFetchTodoTasksNext() {
+  onFetchTodoTasksNext = () => {
     const {
       categoriesId, completed,
       fetchTasks, moreToLoad,

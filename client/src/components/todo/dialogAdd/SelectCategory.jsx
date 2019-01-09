@@ -9,20 +9,15 @@ import { showMessageInfo } from '../../../actions/messageActions';
 
 
 class SelectCategory extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedCategory: undefined,
-    };
-    this.onCategoryClick = this.onCategoryClick.bind(this);
-    this.onButtonNextClick = this.onButtonNextClick.bind(this);
-  }
+  state = {
+    selectedCategory: undefined,
+  };
 
-  onCategoryClick(category) {
+  onCategoryClick = (category) => {
     this.setState({ selectedCategory: category });
   }
 
-  onButtonNextClick() {
+  onButtonNextClick = () => {
     const { selectedCategory } = this.state;
     const { onNext, dispatch } = this.props;
     if (selectedCategory === undefined) {

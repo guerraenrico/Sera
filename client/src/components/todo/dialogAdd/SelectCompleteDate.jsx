@@ -9,21 +9,15 @@ import { addTask } from '../../../actions/todoTasksActions';
 import { showMessageInfo } from '../../../actions/messageActions';
 
 class SelectCompleteDate extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      todoWithin: new Date(),
-    };
-    this.onInputDateChange = this.onInputDateChange.bind(this);
-    this.onButtonAddClick = this.onButtonAddClick.bind(this);
-    this.onTodoTaskCreated = this.onTodoTaskCreated.bind(this);
-  }
+  state = {
+    todoWithin: new Date(),
+  };
 
-  onInputDateChange(date) {
+  onInputDateChange = (date) => {
     this.setState({ todoWithin: date });
   }
 
-  onButtonAddClick() {
+  onButtonAddClick = () => {
     const { todoWithin } = this.state;
     const { dispatch, options } = this.props;
     const { title, description, category } = options;
@@ -37,7 +31,7 @@ class SelectCompleteDate extends React.Component {
     ));
   }
 
-  onTodoTaskCreated() {
+  onTodoTaskCreated = () => {
     const { onNext } = this.props;
     onNext({ stepId: DONE, options: { } });
   }

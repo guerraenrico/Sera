@@ -8,15 +8,11 @@ import { toSimpleDateFormat } from '../../../utils/Common';
 import labels from '../../../constants/labels';
 
 class Task extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      collapsed: false,
-    };
-    this.renderDate = this.renderDate.bind(this);
-  }
+  state = {
+    collapsed: false,
+  };
 
-  onTitleClick() {
+  onTitleClick = () => {
     const { collapsed } = this.state;
     this.setState({ collapsed: !collapsed });
   }

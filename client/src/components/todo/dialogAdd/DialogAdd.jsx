@@ -56,18 +56,11 @@ const initalState = {
 };
 
 class DialogAdd extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      ...initalState,
-    };
-    this.onBack = this.onBack.bind(this);
-    this.onNext = this.onNext.bind(this);
-    this.onResetAndClose = this.onResetAndClose.bind(this);
-    this.onAnimationEnd = this.onAnimationEnd.bind(this);
-  }
+  state = {
+    ...initalState,
+  };
 
-  onBack() {
+  onBack = () => {
     const { steps } = this.state;
     const { onClose } = this.props;
     const stepCount = steps.length;
@@ -85,7 +78,7 @@ class DialogAdd extends React.Component {
     }
   }
 
-  onNext(step = { stepId: '', options: {} }) {
+  onNext = (step = { stepId: '', options: {} }) => {
     const { steps } = this.state;
     this.setState({
       nextSteps: [
@@ -98,7 +91,7 @@ class DialogAdd extends React.Component {
     });
   }
 
-  onResetAndClose() {
+  onResetAndClose = () => {
     const { onClose } = this.props;
     onClose();
     setTimeout(() => {
@@ -106,7 +99,7 @@ class DialogAdd extends React.Component {
     }, 500);
   }
 
-  onAnimationEnd(node, done) {
+  onAnimationEnd = (node, done) => {
     node.addEventListener('transitionend', () => {
       done();
       const { nextSteps, showStep } = this.state;

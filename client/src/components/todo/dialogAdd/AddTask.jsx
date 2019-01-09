@@ -7,23 +7,15 @@ import { SELECT_COMPLETE_DATE } from '../../../constants/steps';
 import { showMessageInfo } from '../../../actions/messageActions';
 
 class AddTask extends React.Component {
-  constructor() {
-    super();
-    this.state = {
-      title: '',
-      description: '',
-    };
-    this.onInputTextChange = this.onInputTextChange.bind(this);
-    this.onButtonScheduleClick = this.onButtonScheduleClick.bind(this);
-  }
+  state = {
+    title: '',
+    description: '',
+  };
 
-  onInputTextChange(name) {
-    return (e) => {
-      this.setState({ [name]: e.target.value });
-    };
-  }
+  onInputTextChange = name => e =>
+    this.setState({ [name]: e.target.value });
 
-  onButtonScheduleClick() {
+  onButtonScheduleClick = () => {
     const { options, dispatch, onNext } = this.props;
     const { title, description } = this.state;
     const category = options.selectedCategory;

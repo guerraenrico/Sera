@@ -7,27 +7,21 @@ import Category from './Category';
 import Fade from '../../anims/Fade';
 
 class CategoriesFilter extends React.Component {
-  constructor(props) {
-    super(props);
-    this.chips = undefined;
-    this.handleLeftScrollClick = this.handleLeftScrollClick.bind(this);
-    this.handleRightScrollClick = this.handleRightScrollClick.bind(this);
-    this.moveChipsScroll = this.moveChipsScroll.bind(this);
-  }
+  chips = undefined;
 
-  handleLeftScrollClick() {
+  handleLeftScrollClick = () => {
     if (this.chips) {
       this.moveChipsScroll(-this.chips.clientWidth);
     }
   }
 
-  handleRightScrollClick() {
+  handleRightScrollClick = () => {
     if (this.chips) {
       this.moveChipsScroll(this.chips.clientWidth);
     }
   }
 
-  moveChipsScroll(delta) {
+  moveChipsScroll = (delta) => {
     if (this.chips) {
       const nextScrollLeft = this.chips.scrollLeft + delta;
       scroll.left(this.chips, nextScrollLeft);

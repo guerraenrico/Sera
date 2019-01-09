@@ -5,11 +5,6 @@ import { throttle } from 'lodash';
 const waitTime = 500;
 
 class InfiniteScroll extends React.Component {
-  constructor(props) {
-    super(props);
-    this.onScroll = this.onScroll.bind(this);
-  }
-
   componentDidMount() {
     window.addEventListener('scroll', throttle(this.onScroll, waitTime), false);
   }
@@ -18,7 +13,7 @@ class InfiniteScroll extends React.Component {
     window.removeEventListener('scroll', throttle(this.onScroll, waitTime), false);
   }
 
-  onScroll() {
+  onScroll = () => {
     if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 200)) {
       const { args, onScroll } = this.props;
       onScroll(...args);

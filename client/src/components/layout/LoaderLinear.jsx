@@ -5,15 +5,11 @@ import Fade from '../anims/Fade';
 const delay = 1000;
 
 class LoaderLinear extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      shouldShow: false,
-      startTimer: false,
-      clearTimer: false,
-    };
-    this.timeout = null;
-  }
+  state = {
+    shouldShow: false,
+    startTimer: false,
+    clearTimer: false,
+  };
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState) {
@@ -48,6 +44,8 @@ class LoaderLinear extends React.Component {
   componentWillUnmount() {
     clearTimeout(this.timeout);
   }
+
+  timeout = null;
 
   render() {
     const { shouldShow } = this.state;

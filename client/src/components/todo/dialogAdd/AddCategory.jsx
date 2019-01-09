@@ -8,21 +8,15 @@ import { addCategory } from '../../../actions/todoFiltersActions';
 import { showMessageInfo } from '../../../actions/messageActions';
 
 class AddCategory extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      name: '',
-    };
-    this.onInputTextChange = this.onInputTextChange.bind(this);
-    this.onButtonAddClick = this.onButtonAddClick.bind(this);
-    this.onCategoryCreated = this.onCategoryCreated.bind(this);
-  }
+  state = {
+    name: '',
+  };
 
-  onInputTextChange(e) {
+  onInputTextChange = (e) => {
     this.setState({ name: e.target.value });
   }
 
-  onButtonAddClick() {
+  onButtonAddClick = () => {
     const { name } = this.state;
     const { dispatch } = this.props;
     if (name === '') {
@@ -32,7 +26,7 @@ class AddCategory extends React.Component {
     dispatch(addCategory(name, this.onCategoryCreated));
   }
 
-  onCategoryCreated(selectedCategory) {
+  onCategoryCreated = (selectedCategory) => {
     const { onNext } = this.props;
     onNext({ stepId: ADD_TASK, options: { selectedCategory } });
   }

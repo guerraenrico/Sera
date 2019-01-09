@@ -10,12 +10,9 @@ import DialogAdd from './dialogAdd/DialogAdd';
 import Snackbar from '../layout/Snackbar';
 
 class Todos extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isDialogAddOpen: false,
-    };
-  }
+  state = {
+    isDialogAddOpen: false,
+  };
 
   componentDidMount() {
     const { initFetchAllCategories } = this.props;
