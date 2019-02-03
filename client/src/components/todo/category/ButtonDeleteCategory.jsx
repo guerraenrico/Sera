@@ -1,5 +1,5 @@
-﻿import React from 'react';
-import PropTypes from 'prop-types';
+﻿import React from "react";
+import PropTypes from "prop-types";
 
 const ButtonDeleteCategory = ({ onClick }) => (
   <button className="button-delete-category" onClick={onClick}>
@@ -8,7 +8,7 @@ const ButtonDeleteCategory = ({ onClick }) => (
 );
 
 ButtonDeleteCategory.propTypes = {
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired
 };
 
 export default ButtonDeleteCategory;

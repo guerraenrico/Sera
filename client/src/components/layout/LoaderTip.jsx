@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 const LoaderTip = ({ phrase, author }) => (
   <div id="content-loader-tip">
@@ -10,7 +10,7 @@ const LoaderTip = ({ phrase, author }) => (
 
 LoaderTip.propTypes = {
   phrase: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired,
+  author: PropTypes.string.isRequired
 };
 
 export default LoaderTip;

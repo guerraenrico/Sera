@@ -1,5 +1,5 @@
-﻿import * as actionTypes from '../constants/actionTypes';
-import { queryItemsLimit } from '../constants/config';
+﻿import * as actionTypes from "../constants/actionTypes";
+import { queryItemsLimit } from "../constants/config";
 
 const initialState = {
   isFetching: false,
@@ -7,7 +7,7 @@ const initialState = {
   limit: queryItemsLimit,
   skip: 0,
   moreToLoad: true,
-  error: '',
+  error: ""
 };
 
 const todoTasks = (state = initialState, action) => {
@@ -18,48 +18,43 @@ const todoTasks = (state = initialState, action) => {
         isFetching: true,
         limit: action.limit,
         skip: action.skip,
-        moreToLoad: (action.skip === 0) || state.moreToLoad,
+        moreToLoad: action.skip === 0 || state.moreToLoad
       };
     case actionTypes.RECEIVE_FETCH_TASKS:
       return {
         ...state,
         isFetching: false,
-        items: (state.skip === 0)
-          ? action.tasks
-          : [...state.items, ...action.tasks],
-        moreToLoad: (action.tasks.length === state.limit),
+        items:
+          state.skip === 0 ? action.tasks : [...state.items, ...action.tasks],
+        moreToLoad: action.tasks.length === state.limit
       };
     case actionTypes.ERROR_FETCH_TASKS:
       return {
         ...state,
         isFetching: false,
-        error: action.error,
+        error: action.error
       };
     case actionTypes.ADD_TASK_LOCAL:
       return {
         ...state,
-        items: [
-          ...state.items,
-          action.task,
-        ],
+        items: [...state.items, action.task]
       };
     case actionTypes.REMOVE_TASK_LOCAL:
       return {
         ...state,
         items: [
           ...state.items.slice(0, action.taskIndex),
-          ...state.items.slice(action.taskIndex + 1),
-        ],
+          ...state.items.slice(action.taskIndex + 1)
+        ]
       };
     case actionTypes.UPDATE_TASK_LOCAL:
       return {
         ...state,
         items: [
-          ...state.items.map(task => (
-            (task.id === action.task.id)
-              ? { ...action.task } : task
-          )),
-        ],
+          ...state.items.map(task =>
+            task.id === action.task.id ? { ...action.task } : task
+          )
+        ]
       };
     default:
       return state;

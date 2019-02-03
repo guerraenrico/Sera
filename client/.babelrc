@@ -4,17 +4,16 @@
       "@babel/preset-env",
       {
         "targets": {
-          "browsers": [
-            "last 2 versions"
-          ]
+          "browsers": ["last 2 versions"]
         }
       }
     ],
-    "@babel/preset-react"
+    "@babel/preset-react",
+    "flow"
   ],
   "plugins": [
     "@babel/plugin-syntax-dynamic-import",
-    "@babel/plugin-proposal-class-properties",
+    "@babel/plugin-proposal-class-properties"
   ],
   "comments": true
 }

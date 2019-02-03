@@ -2,16 +2,17 @@ const success = (data, accessToken) => ({
   success: true,
   data,
   error: undefined,
-  accessToken,
+  accessToken
 });
 
 const error = (apiError, accessToken) => ({
   success: false,
   data: undefined,
   error: apiError,
-  accessToken,
+  accessToken
 });
 
 module.exports = {
-  success, error,
+  success,
+  error
 };

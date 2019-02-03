@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
-const VisibilitySwitch = ({
-  selected, children, onClick,
-}) => (
+const VisibilitySwitch = ({ selected, children, onClick }) => (
   <div
-    className={`visibility-button-switch align-items-center ${(selected) ? 'selected' : ''} `}
+    className={`visibility-button-switch align-items-center ${
+      selected ? "selected" : ""
+    } `}
     onClick={onClick}
     role="presentation"
   >
@@ -16,11 +16,11 @@ const VisibilitySwitch = ({
 VisibilitySwitch.propTypes = {
   selected: PropTypes.bool,
   children: PropTypes.node.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired
 };
 
 VisibilitySwitch.defaultProps = {
-  selected: false,
+  selected: false
 };
 
 export default VisibilitySwitch;

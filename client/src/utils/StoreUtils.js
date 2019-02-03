@@ -1,10 +1,10 @@
-import store from 'store';
+import store from "store";
 
-const KEY_ACCESS_TOKEN = 'AccessToken';
+const KEY_ACCESS_TOKEN = "AccessToken";
 
 export const getAccessToken = () => store.get(KEY_ACCESS_TOKEN);
 
-export const saveAccessToken = (data) => {
+export const saveAccessToken = data => {
   store.set(KEY_ACCESS_TOKEN, data);
 };
 

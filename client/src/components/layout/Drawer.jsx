@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { NavLink } from 'react-router-dom';
+import React from "react";
+import PropTypes from "prop-types";
+import { NavLink } from "react-router-dom";
 
-import { menuItems } from '../../constants/drawer';
+import { menuItems } from "../../constants/drawer";
 
 const Item = ({ pathTo, exact, children }) => (
   <NavLink
@@ -18,33 +18,23 @@ const Item = ({ pathTo, exact, children }) => (
 Item.propTypes = {
   exact: PropTypes.bool,
   pathTo: PropTypes.string.isRequired,
-  children: PropTypes.element.isRequired,
+  children: PropTypes.element.isRequired
 };
 
 Item.defaultProps = {
-  exact: false,
+  exact: false
 };
-
 
 const Drawer = ({ logout }) => (
   <div id="drawer-container">
     <div id="drawer-fixed">
-      {
-        menuItems.map(item => (
-          <Item
-            key={item.id}
-            pathTo={item.path}
-            exact={item.exact}
-          >
-            <i className={item.iconClass} />
-          </Item>
-        ))
-      }
+      {menuItems.map(item => (
+        <Item key={item.id} pathTo={item.path} exact={item.exact}>
+          <i className={item.iconClass} />
+        </Item>
+      ))}
       <div className="space" />
-      <button
-        onClick={logout}
-        className="item align-items-center"
-      >
+      <button onClick={logout} className="item align-items-center">
         <i className="icon-logout" />
       </button>
     </div>
@@ -52,7 +42,7 @@ const Drawer = ({ logout }) => (
 );
 
 Drawer.propTypes = {
-  logout: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired
 };
 
 export default Drawer;

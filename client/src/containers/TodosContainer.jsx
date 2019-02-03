@@ -1,29 +1,28 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React from "react";
+import { connect } from "react-redux";
 
-import Todos from '../components/todo/Todos';
-import { fetchAllCategories } from '../actions/todoFiltersActions';
-import { hideMessage } from '../actions/messageActions';
-import { showLoading } from '../selectors/commonSelectors';
+import Todos from "../components/todo/Todos";
+import { fetchAllCategories } from "../actions/todoFiltersActions";
+import { hideMessage } from "../actions/messageActions";
+import { showLoading } from "../selectors/commonSelectors";
 
 const TodosContainer = props => <Todos {...props} />;
 
-const mapStateToProps = state => (
-  {
-    message: state.message,
-    showLoading: showLoading(state),
-  }
-);
+const mapStateToProps = state => ({
+  message: state.message,
+  showLoading: showLoading(state)
+});
 
-const mapDispatchToProps = dispatch => (
-  {
-    hideMessage: () => {
-      dispatch(hideMessage());
-    },
-    initFetchAllCategories: () => {
-      dispatch(fetchAllCategories());
-    },
+const mapDispatchToProps = dispatch => ({
+  hideMessage: () => {
+    dispatch(hideMessage());
+  },
+  initFetchAllCategories: () => {
+    dispatch(fetchAllCategories());
   }
-);
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(TodosContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(TodosContainer);

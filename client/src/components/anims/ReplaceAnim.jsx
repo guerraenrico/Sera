@@ -1,32 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Transition } from 'react-transition-group';
+import React from "react";
+import PropTypes from "prop-types";
+import { Transition } from "react-transition-group";
 
-const ReplaceAnim = ({
-  in: inProp, endListener,
-  duration, children,
-}) => {
+const ReplaceAnim = ({ in: inProp, endListener, duration, children }) => {
   const defaultStyle = {
-    width: '100%',
+    width: "100%",
     transition: `opacity ${duration}ms ease-in-out`,
     opacity: 0,
-    display: 'inherit',
+    display: "inherit"
   };
   const transitionStyles = {
     enter: { opacity: 0 },
-    entered: { opacity: 1 },
+    entered: { opacity: 1 }
   };
 
   return (
-    <Transition
-      in={inProp}
-      timeout={duration}
-      addEndListener={endListener}
-    >
+    <Transition in={inProp} timeout={duration} addEndListener={endListener}>
       {state => (
-        <div style={{
+        <div
+          style={{
             ...defaultStyle,
-            ...transitionStyles[state],
+            ...transitionStyles[state]
           }}
         >
           {children}
@@ -40,11 +34,11 @@ ReplaceAnim.propTypes = {
   in: PropTypes.bool.isRequired,
   endListener: PropTypes.func.isRequired,
   duration: PropTypes.number,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired
 };
 
 ReplaceAnim.defaultProps = {
-  duration: 250,
+  duration: 250
 };
 
 export default ReplaceAnim;

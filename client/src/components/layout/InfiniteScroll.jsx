@@ -1,32 +1,35 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { throttle } from 'lodash';
+import React from "react";
+import PropTypes from "prop-types";
+import { throttle } from "lodash";
 
 const waitTime = 500;
 
 class InfiniteScroll extends React.Component {
   componentDidMount() {
-    window.addEventListener('scroll', throttle(this.onScroll, waitTime), false);
+    window.addEventListener("scroll", throttle(this.onScroll, waitTime), false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', throttle(this.onScroll, waitTime), false);
+    window.removeEventListener(
+      "scroll",
+      throttle(this.onScroll, waitTime),
+      false
+    );
   }
 
   onScroll = () => {
-    if ((window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 200)) {
+    if (
+      window.innerHeight + window.scrollY >=
+      document.body.offsetHeight - 200
+    ) {
       const { args, onScroll } = this.props;
       onScroll(...args);
     }
-  }
+  };
 
   render() {
     const { children, className } = this.props;
-    return (
-      <div className={className}>
-        {children}
-      </div>
-    );
+    return <div className={className}>{children}</div>;
   }
 }
 
@@ -34,12 +37,12 @@ InfiniteScroll.propTypes = {
   args: PropTypes.arrayOf(PropTypes.any),
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
-  onScroll: PropTypes.func.isRequired,
+  onScroll: PropTypes.func.isRequired
 };
 
 InfiniteScroll.defaultProps = {
   args: [],
-  className: '',
+  className: ""
 };
 
 export default InfiniteScroll;

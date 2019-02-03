@@ -1,11 +1,11 @@
-import * as actionTypes from '../constants/actionTypes';
+import * as actionTypes from "../constants/actionTypes";
 
 const initialState = {
   show: false,
   isError: false,
-  text: '',
+  text: "",
   action: undefined,
-  actionText: '',
+  actionText: ""
 };
 
 const message = (state = initialState, action) => {
@@ -15,19 +15,19 @@ const message = (state = initialState, action) => {
         ...state,
         show: true,
         isError: false,
-        text: action.message,
+        text: action.message
       };
     case actionTypes.SHOW_MESSAGE_ERROR:
       return {
         ...state,
         show: true,
         isError: true,
-        text: action.message,
+        text: action.message
       };
     case actionTypes.HIDE_MESSAGE:
       return {
         ...state,
-        show: false,
+        show: false
       };
     default:
       return state;

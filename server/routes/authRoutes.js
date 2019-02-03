@@ -1,31 +1,40 @@
 const { DATABASE_NAME, MONGODB_URI } = process.env;
 
-const express = require('express');
-const { MongoClient } = require('mongodb');
+const express = require("express");
+const { MongoClient } = require("mongodb");
 
-const User = require('../models/User');
-const Session = require('../models/Session');
-const { handleError, handleResponse } = require('../Handlers');
+const User = require("../models/User");
+const Session = require("../models/Session");
+const { handleError, handleResponse } = require("../Handlers");
 const {
-  ErrorAuthInvalidPayload, ErrorCreateUser,
-  ErrorCreateSession, ErrorAuthInvalidCode, Unauthorized, InvalidAuthCode,
-} = require('../ApiErrors');
+  ErrorAuthInvalidPayload,
+  ErrorCreateUser,
+  ErrorCreateSession,
+  ErrorAuthInvalidCode,
+  Unauthorized,
+  InvalidAuthCode
+} = require("../ApiErrors");
 const {
-  getPayload, isPayloadValid,
-  getUserByToken, getTokens, revokeSessionAndToken,
-  getSessionByTokenAndRefreshIfNeeded,
-} = require('../utils/authUtils');
+  getPayload,
+  isPayloadValid,
+  getUserByToken,
+  getTokens,
+  revokeSessionAndToken,
+  getSessionByTokenAndRefreshIfNeeded
+} = require("../utils/authUtils");
 
 const router = express.Router();
 
-router.post('/google/signin/callback', async (req, res) => {
-  const conn = await MongoClient.connect(MONGODB_URI, { useNewUrlParser: true });
+router.post("/google/signin/callback", async (req, res) => {
+  const conn = await MongoClient.connect(MONGODB_URI, {
+    useNewUrlParser: true
+  });
   const db = conn.db(DATABASE_NAME);
   const { code, platform } = req.body;
   let tokens;
   let payload;
 
-  if (code === undefined || code === '') {
+  if (code === undefined || code === "") {
     handleError(res, InvalidAuthCode(), 401);
     return;
   }
@@ -53,9 +62,14 @@ router.post('/google/signin/callback', async (req, res) => {
     return;
   }
 
-  const user = User.New(payload.sub,
-    payload.email, payload.name, payload.locale, payload.picture,
-    refreshToken);
+  const user = User.New(
+    payload.sub,
+    payload.email,
+    payload.name,
+    payload.locale,
+    payload.picture,
+    refreshToken
+  );
 
   try {
     const savedUser = await User.GetByGoogleIdAsync(db, user.googleId);
@@ -82,7 +96,9 @@ router.post('/google/signin/callback', async (req, res) => {
     if (savedSession === undefined) {
       const session = Session.New(
         user.id.valueOf().toString(),
-        accessToken, platform, expireAt,
+        accessToken,
+        platform,
+        expireAt
       );
       await Session.InsertAsync(db, session);
     }
@@ -95,15 +111,17 @@ router.post('/google/signin/callback', async (req, res) => {
   conn.close();
 });
 
-router.post('/google/validate/token', async (req, res) => {
-  const conn = await MongoClient.connect(MONGODB_URI, { useNewUrlParser: true });
+router.post("/google/validate/token", async (req, res) => {
+  const conn = await MongoClient.connect(MONGODB_URI, {
+    useNewUrlParser: true
+  });
   const db = conn.db(DATABASE_NAME);
   const { accessToken } = req.body;
   try {
     const result = await getUserByToken(db, accessToken);
     // Check if return error
     if (result.code !== undefined) {
-      console.log('(Validate) ERROR: ', `result: ${JSON.stringify(result)}`);
+      console.log("(Validate) ERROR: ", `result: ${JSON.stringify(result)}`);
       handleError(res, result, 401);
       return;
     }
@@ -111,9 +129,17 @@ router.post('/google/validate/token', async (req, res) => {
     // Clear refresh token
     user.refreshToken = undefined;
 
-    if (user === undefined || user === null || session === undefined || session === null) {
+    if (
+      user === undefined ||
+      user === null ||
+      session === undefined ||
+      session === null
+    ) {
       handleError(res, Unauthorized(), 401);
-      console.log('(Validate) ERROR: ', `user: ${JSON.stringify(user)} - session: ${JSON.stringify(session)}`);
+      console.log(
+        "(Validate) ERROR: ",
+        `user: ${JSON.stringify(user)} - session: ${JSON.stringify(session)}`
+      );
       return;
     }
     handleResponse(res, user, session.accessToken);
@@ -124,8 +150,10 @@ router.post('/google/validate/token', async (req, res) => {
   }
 });
 
-router.post('/google/logout', async (req, res) => {
-  const conn = await MongoClient.connect(MONGODB_URI, { useNewUrlParser: true });
+router.post("/google/logout", async (req, res) => {
+  const conn = await MongoClient.connect(MONGODB_URI, {
+    useNewUrlParser: true
+  });
   const db = conn.db(DATABASE_NAME);
   const { accessToken } = req.body;
   try {
@@ -138,14 +166,22 @@ router.post('/google/logout', async (req, res) => {
   }
 });
 
-router.post('/google/refresh/token', async (req, res) => {
-  const conn = await MongoClient.connect(MONGODB_URI, { useNewUrlParser: true });
+router.post("/google/refresh/token", async (req, res) => {
+  const conn = await MongoClient.connect(MONGODB_URI, {
+    useNewUrlParser: true
+  });
   const db = conn.db(DATABASE_NAME);
   const { accessToken } = req.body;
   try {
-    const newSession = await getSessionByTokenAndRefreshIfNeeded(db, accessToken);
+    const newSession = await getSessionByTokenAndRefreshIfNeeded(
+      db,
+      accessToken
+    );
     if (newSession === undefined) {
-      console.log('(Refresh) ERROR: ', `newSession: ${JSON.stringify(newSession)}`);
+      console.log(
+        "(Refresh) ERROR: ",
+        `newSession: ${JSON.stringify(newSession)}`
+      );
       handleError(res, Unauthorized(), 401);
       return;
     }

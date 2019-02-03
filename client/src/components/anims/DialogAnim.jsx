@@ -1,28 +1,28 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Transition } from 'react-transition-group';
+import React from "react";
+import PropTypes from "prop-types";
+import { Transition } from "react-transition-group";
 
 const duration = 250;
 
 const defaultStyle = {
   transition: `all ${duration}ms ease-in-out`,
-  height: '0px',
-  opacity: '0',
-  visibility: 'hidden',
+  height: "0px",
+  opacity: "0",
+  visibility: "hidden"
 };
 
 const transitionStyles = {
   entering: {
-    height: '0px',
-    opacity: '0',
-    visibility: 'hidden',
+    height: "0px",
+    opacity: "0",
+    visibility: "hidden"
   },
   entered: {
-    display: 'block',
-    height: '100vh',
-    opacity: '1',
-    visibility: 'visible',
-  },
+    display: "block",
+    height: "100vh",
+    opacity: "1",
+    visibility: "visible"
+  }
 };
 
 const DialogAnim = ({ in: inProp, children }) => (
@@ -32,7 +32,7 @@ const DialogAnim = ({ in: inProp, children }) => (
         id="backdrop-dialog"
         style={{
           ...defaultStyle,
-          ...transitionStyles[state],
+          ...transitionStyles[state]
         }}
       >
         {children}
@@ -43,7 +43,7 @@ const DialogAnim = ({ in: inProp, children }) => (
 
 DialogAnim.propTypes = {
   in: PropTypes.bool.isRequired,
-  children: PropTypes.node.isRequired,
+  children: PropTypes.node.isRequired
 };
 
 export default DialogAnim;

@@ -1,5 +1,5 @@
-import { createSelector } from 'reselect';
-import { ONLY_COMPLETED } from '../constants/config';
+import { createSelector } from "reselect";
+import { ONLY_COMPLETED } from "../constants/config";
 
 export const isFetchingCategoriesFilter = state => state.todoFilters.isFetching;
 export const getTodoFilters = state => state.todoFilters;
@@ -8,16 +8,18 @@ export const getVisibilityFilter = state => state.todoFilters.visibility;
 
 export const visibilityOnlyCompleted = createSelector(
   getVisibilityFilter,
-  visibility => visibility === ONLY_COMPLETED,
+  visibility => visibility === ONLY_COMPLETED
 );
 
 export const getSelectedCategoriesFilter = createSelector(
   getCategoriesFilterList,
-  categories => categories.filter(category => category.selected),
+  categories => categories.filter(category => category.selected)
 );
 
 export const getSelectedCategoriesId = createSelector(
   getCategoriesFilterList,
-  categories => categories.filter(category => category.selected)
-    .map(categoryFilter => categoryFilter.id),
+  categories =>
+    categories
+      .filter(category => category.selected)
+      .map(categoryFilter => categoryFilter.id)
 );

@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import SnackbarAnim from '../anims/SnackbarAnim';
+import React from "react";
+import PropTypes from "prop-types";
+import SnackbarAnim from "../anims/SnackbarAnim";
 
 const Action = ({ onClick, text }) => (
   <button className="button-action-snackbar" onClick={onClick}>
@@ -10,14 +10,12 @@ const Action = ({ onClick, text }) => (
 
 Action.propTypes = {
   text: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired,
+  onClick: PropTypes.func.isRequired
 };
 
 class Snackbar extends React.Component {
   componentDidUpdate() {
-    const {
-      onClose, duration, show,
-    } = this.props;
+    const { onClose, duration, show } = this.props;
 
     if (show) {
       setTimeout(() => {
@@ -28,19 +26,24 @@ class Snackbar extends React.Component {
 
   render() {
     const {
-      message, isError, actionText, actionClick, show,
-      verticalPostion, horizontalPosition,
+      message,
+      isError,
+      actionText,
+      actionClick,
+      show,
+      verticalPostion,
+      horizontalPosition
     } = this.props;
     return (
-      <SnackbarAnim in={show} customClass={`${verticalPostion} ${(horizontalPosition)}`}>
-        <div
-          className={`snackbar ${(isError) ? 'error' : ''}`}
-        >
+      <SnackbarAnim
+        in={show}
+        customClass={`${verticalPostion} ${horizontalPosition}`}
+      >
+        <div className={`snackbar ${isError ? "error" : ""}`}>
           <span className="snackbar-message">{message}</span>
-          {
-            (actionText !== '' && actionClick !== undefined) &&
-              <Action onClick={actionClick} text={actionText} />
-          }
+          {actionText !== "" && actionClick !== undefined && (
+            <Action onClick={actionClick} text={actionText} />
+          )}
         </div>
       </SnackbarAnim>
     );
@@ -55,17 +58,17 @@ Snackbar.propTypes = {
   isError: PropTypes.bool,
   actionText: PropTypes.string,
   actionClick: PropTypes.func,
-  verticalPostion: PropTypes.oneOf(['top', 'bottom']),
-  horizontalPosition: PropTypes.oneOf(['left', 'right']),
+  verticalPostion: PropTypes.oneOf(["top", "bottom"]),
+  horizontalPosition: PropTypes.oneOf(["left", "right"])
 };
 
 Snackbar.defaultProps = {
   duration: 5000,
   isError: false,
-  actionText: '',
+  actionText: "",
   actionClick: undefined,
-  verticalPostion: 'bottom',
-  horizontalPosition: 'right',
+  verticalPostion: "bottom",
+  horizontalPosition: "right"
 };
 
 export default Snackbar;

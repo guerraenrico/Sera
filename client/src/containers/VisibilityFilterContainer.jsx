@@ -1,26 +1,21 @@
-import { connect } from 'react-redux';
-import VisibilityFilters from '../components/todo/visibility/VisibilityFilters';
-import { changeVisibility } from '../actions/todoFiltersActions';
+import { connect } from "react-redux";
+import VisibilityFilters from "../components/todo/visibility/VisibilityFilters";
+import { changeVisibility } from "../actions/todoFiltersActions";
 
-import { getVisibilityFilter } from '../selectors/todoFiltersSelectors';
+import { getVisibilityFilter } from "../selectors/todoFiltersSelectors";
 
-const mapStateToProps = state => (
-  {
-    selectedVisibilityFilter: getVisibilityFilter(state),
-  }
-);
+const mapStateToProps = state => ({
+  selectedVisibilityFilter: getVisibilityFilter(state)
+});
 
-const mapDispatchToProps = dispatch => (
-  {
-    onVisibilitySwitchClick: visibility => () => (
-      dispatch(changeVisibility(visibility))
-    ),
-  }
-);
+const mapDispatchToProps = dispatch => ({
+  onVisibilitySwitchClick: visibility => () =>
+    dispatch(changeVisibility(visibility))
+});
 
 const VisibilityFilterContainer = connect(
   mapStateToProps,
-  mapDispatchToProps,
+  mapDispatchToProps
 )(VisibilityFilters);
 
 export default VisibilityFilterContainer;

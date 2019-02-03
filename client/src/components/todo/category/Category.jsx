@@ -1,13 +1,11 @@
-﻿import React from 'react';
-import PropTypes from 'prop-types';
-import ButtonDeleteCategory from './ButtonDeleteCategory';
+﻿import React from "react";
+import PropTypes from "prop-types";
+import ButtonDeleteCategory from "./ButtonDeleteCategory";
 
-const Category = ({
-  category, selected, onClick, onDelete,
-}) => {
-  let cssClass = '';
+const Category = ({ category, selected, onClick, onDelete }) => {
+  let cssClass = "";
 
-  const onChipClick = (e) => {
+  const onChipClick = e => {
     onClick(category, e);
   };
   const onDeleteClick = () => {
@@ -15,7 +13,7 @@ const Category = ({
   };
 
   if (selected) {
-    cssClass = 'category-selected';
+    cssClass = "category-selected";
   }
   return (
     <div
@@ -24,10 +22,9 @@ const Category = ({
       role="presentation"
     >
       <span className="category-text">{category.name}</span>
-      {
-        (category.id !== '0' && onDelete !== undefined) &&
-          <ButtonDeleteCategory onClick={onDeleteClick} />
-      }
+      {category.id !== "0" && onDelete !== undefined && (
+        <ButtonDeleteCategory onClick={onDeleteClick} />
+      )}
     </div>
   );
 };
@@ -37,13 +34,13 @@ Category.propTypes = {
   onClick: PropTypes.func.isRequired,
   category: PropTypes.shape({
     id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired
   }).isRequired,
-  selected: PropTypes.bool.isRequired,
+  selected: PropTypes.bool.isRequired
 };
 
 Category.defaultProps = {
-  onDelete: undefined,
+  onDelete: undefined
 };
 
 export default Category;

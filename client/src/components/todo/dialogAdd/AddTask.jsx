@@ -1,30 +1,32 @@
-﻿import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+﻿import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import labels from '../../../constants/labels';
-import { SELECT_COMPLETE_DATE } from '../../../constants/steps';
-import { showMessageInfo } from '../../../actions/messageActions';
+import labels from "../../../constants/labels";
+import { SELECT_COMPLETE_DATE } from "../../../constants/steps";
+import { showMessageInfo } from "../../../actions/messageActions";
 
 class AddTask extends React.Component {
   state = {
-    title: '',
-    description: '',
+    title: "",
+    description: ""
   };
 
-  onInputTextChange = name => e =>
-    this.setState({ [name]: e.target.value });
+  onInputTextChange = name => e => this.setState({ [name]: e.target.value });
 
   onButtonScheduleClick = () => {
     const { options, dispatch, onNext } = this.props;
     const { title, description } = this.state;
     const category = options.selectedCategory;
-    if (title === '') {
+    if (title === "") {
       dispatch(showMessageInfo(labels.msgTitleRequired));
       return;
     }
-    onNext({ stepId: SELECT_COMPLETE_DATE, options: { title, description, category } });
-  }
+    onNext({
+      stepId: SELECT_COMPLETE_DATE,
+      options: { title, description, category }
+    });
+  };
 
   render() {
     const { selectedCategory } = this.props.options;
@@ -42,20 +44,17 @@ class AddTask extends React.Component {
             className="main-input"
             type="text"
             placeholder={labels.placeHolderTitle}
-            onChange={this.onInputTextChange('title')}
+            onChange={this.onInputTextChange("title")}
           />
           <input
             className="main-input"
             type="text"
             placeholder={labels.placeHolderDescription}
-            onChange={this.onInputTextChange('description')}
+            onChange={this.onInputTextChange("description")}
           />
         </div>
         <div>
-          <button
-            className="main-button"
-            onClick={this.onButtonScheduleClick}
-          >
+          <button className="main-button" onClick={this.onButtonScheduleClick}>
             {labels.buttonSchedule}
           </button>
         </div>
@@ -69,10 +68,10 @@ AddTask.propTypes = {
   options: PropTypes.shape({
     selectedCategory: PropTypes.shape({
       id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-    }).isRequired,
+      name: PropTypes.string.isRequired
+    }).isRequired
   }).isRequired,
-  onNext: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired
 };
 
 export default connect()(AddTask);

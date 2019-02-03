@@ -1,28 +1,36 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom';
-import Loadable from 'react-loadable';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect
+} from "react-router-dom";
+import Loadable from "react-loadable";
 
-import ReplaceAnim from './anims/ReplaceAnim';
-import LoaderLinear from '../components/layout/LoaderLinear';
-import LoaderTip from '../components/layout/LoaderTip';
-import Drawer from '../components/layout/Drawer';
-import Page404 from '../components/layout/Page404';
-import * as paths from '../constants/paths';
+import ReplaceAnim from "./anims/ReplaceAnim";
+import LoaderLinear from "../components/layout/LoaderLinear";
+import LoaderTip from "../components/layout/LoaderTip";
+import Drawer from "../components/layout/Drawer";
+import Page404 from "../components/layout/Page404";
+import * as paths from "../constants/paths";
 
 const LoginContainer = Loadable({
-  loader: () => import('../containers/LoginContainer' /* webpackChunkName: 'login' */),
-  loading: LoaderLinear,
+  loader: () =>
+    import("../containers/LoginContainer" /* webpackChunkName: 'login' */),
+  loading: LoaderLinear
 });
 
 const TodosContainer = Loadable({
-  loader: () => import('../containers/TodosContainer' /* webpackChunkName: 'todos' */),
-  loading: LoaderLinear,
+  loader: () =>
+    import("../containers/TodosContainer" /* webpackChunkName: 'todos' */),
+  loading: LoaderLinear
 });
 
 const GoalsContainer = Loadable({
-  loader: () => import('../containers/GoalsContainer' /* webpackChunkName: 'goals' */),
-  loading: LoaderLinear,
+  loader: () =>
+    import("../containers/GoalsContainer" /* webpackChunkName: 'goals' */),
+  loading: LoaderLinear
 });
 
 const routes = [
@@ -32,7 +40,7 @@ const routes = [
     Drawer: undefined,
     Main: LoginContainer,
     needAuth: false,
-    redirectTo: paths.TODOS,
+    redirectTo: paths.TODOS
   },
   {
     key: 1,
@@ -40,7 +48,7 @@ const routes = [
     Drawer,
     Main: TodosContainer,
     needAuth: true,
-    redirectTo: paths.LOGIN,
+    redirectTo: paths.LOGIN
   },
   {
     key: 2,
@@ -48,16 +56,16 @@ const routes = [
     Drawer,
     Main: GoalsContainer,
     needAuth: true,
-    redirectTo: paths.LOGIN,
+    redirectTo: paths.LOGIN
   },
   {
     key: 404,
-    path: '/*',
+    path: "/*",
     Drawer: undefined,
     Main: Page404,
     needAuth: false,
-    redirectTo: paths.LOGIN,
-  },
+    redirectTo: paths.LOGIN
+  }
 ];
 
 class Root extends Component {
@@ -65,7 +73,7 @@ class Root extends Component {
     shouldShowLoading: true,
     showLoading: true,
     shouldShowRoute: false,
-    showRoute: false,
+    showRoute: false
   };
 
   componentDidMount() {
@@ -80,7 +88,7 @@ class Root extends Component {
         shouldShowLoading: true,
         showLoading: true,
         shouldShowRoute: false,
-        showRoute: false,
+        showRoute: false
       };
     }
     if (props.isAuthenticated && !state.showRoute) {
@@ -89,7 +97,7 @@ class Root extends Component {
         shouldShowLoading: false,
         showLoading: false,
         shouldShowRoute: true,
-        showRoute: false,
+        showRoute: false
       };
     }
     if (!props.isFetchingAuthentication && !props.isAuthenticated) {
@@ -97,7 +105,7 @@ class Root extends Component {
         shouldShowLoading: false,
         showLoading: false,
         shouldShowRoute: false,
-        showRoute: true,
+        showRoute: true
       };
     }
     return null;
@@ -106,16 +114,13 @@ class Root extends Component {
   onAnimationEnd = (node, done) => {
     const handleAnimationEnd = () => {
       done();
-      const {
-        shouldShowLoading,
-        shouldShowRoute,
-      } = this.state;
+      const { shouldShowLoading, shouldShowRoute } = this.state;
       if (shouldShowLoading) {
         this.setState({
           shouldShowLoading: false,
           showLoading: true,
           shouldShowRoute: false,
-          showRoute: false,
+          showRoute: false
         });
       }
       if (shouldShowRoute) {
@@ -123,14 +128,14 @@ class Root extends Component {
           shouldShowLoading: false,
           showLoading: false,
           shouldShowRoute: false,
-          showRoute: true,
+          showRoute: true
         });
       }
-      node.removeEventListener('transitionend', handleAnimationEnd);
+      node.removeEventListener("transitionend", handleAnimationEnd);
     };
 
-    node.addEventListener('transitionend', handleAnimationEnd, false);
-  }
+    node.addEventListener("transitionend", handleAnimationEnd, false);
+  };
 
   contentToRender = () => {
     const { isAuthenticated, logout } = this.props;
@@ -144,65 +149,57 @@ class Root extends Component {
       );
     }
 
-    const nextPath = (isAuthenticated) ? paths.TODOS : paths.LOGIN;
+    const nextPath = isAuthenticated ? paths.TODOS : paths.LOGIN;
     return (
       <Router>
         <div id="main-container">
           <div id="flex-container">
-            <Route
-              exact
-              path="/"
-              render={() => <Redirect to={nextPath} />}
-            />
-            {
-              routes.map((route) => {
-                if (route.Drawer !== undefined) {
-                  return (
-                    <Route
-                      key={route.key}
-                      path={route.path}
-                      exact
-                      render={() => <route.Drawer logout={logout} />}
-                    />
-                  );
-                }
-                return undefined;
-              })
-            }
-            <Switch>
-              {
-                routes.map(route => (
+            <Route exact path="/" render={() => <Redirect to={nextPath} />} />
+            {routes.map(route => {
+              if (route.Drawer !== undefined) {
+                return (
                   <Route
                     key={route.key}
                     path={route.path}
                     exact
-                    render={() => (
-                      isAuthenticated === route.needAuth ? (
-                        <route.Main />
-                      ) : (
-                        <Redirect to={route.redirectTo} />
-                      )
-                    )}
+                    render={() => <route.Drawer logout={logout} />}
                   />
-                ))
+                );
               }
+              return undefined;
+            })}
+            <Switch>
+              {routes.map(route => (
+                <Route
+                  key={route.key}
+                  path={route.path}
+                  exact
+                  render={() =>
+                    isAuthenticated === route.needAuth ? (
+                      <route.Main />
+                    ) : (
+                      <Redirect to={route.redirectTo} />
+                    )
+                  }
+                />
+              ))}
             </Switch>
           </div>
         </div>
       </Router>
     );
-  }
+  };
 
   render() {
     const { showLoading, showRoute } = this.state;
-    const duration = (showRoute) ? 250 : 1500;
+    const duration = showRoute ? 250 : 1500;
     return (
       <ReplaceAnim
         in={showLoading || showRoute}
         endListener={this.onAnimationEnd}
         duration={duration}
       >
-        { this.contentToRender() }
+        {this.contentToRender()}
       </ReplaceAnim>
     );
   }
@@ -212,7 +209,7 @@ Root.propTypes = {
   initAuth: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
   isFetchingAuthentication: PropTypes.bool.isRequired,
-  logout: PropTypes.func.isRequired,
+  logout: PropTypes.func.isRequired
 };
 
 export default Root;

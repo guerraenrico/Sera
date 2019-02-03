@@ -1,23 +1,23 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Transition } from 'react-transition-group';
+import React from "react";
+import PropTypes from "prop-types";
+import { Transition } from "react-transition-group";
 
 const duration = 250;
 
 const defaultStyle = {
   transition: `all ${duration}ms ease-in-out`,
-  bottom: '-100px',
+  bottom: "-100px"
 };
 
 const transitionStyles = {
   entering: {
-    bottom: '-100px',
-    visibility: 'hidden',
+    bottom: "-100px",
+    visibility: "hidden"
   },
   entered: {
-    bottom: '0px',
-    visibility: 'visible',
-  },
+    bottom: "0px",
+    visibility: "visible"
+  }
 };
 
 const SnackbarAnim = ({ in: inProp, children, customClass }) => (
@@ -27,7 +27,7 @@ const SnackbarAnim = ({ in: inProp, children, customClass }) => (
         id="content-snackbar"
         style={{
           ...defaultStyle,
-          ...transitionStyles[state],
+          ...transitionStyles[state]
         }}
         className={customClass}
       >
@@ -40,11 +40,11 @@ const SnackbarAnim = ({ in: inProp, children, customClass }) => (
 SnackbarAnim.propTypes = {
   in: PropTypes.bool.isRequired,
   children: PropTypes.node.isRequired,
-  customClass: PropTypes.string,
+  customClass: PropTypes.string
 };
 
 SnackbarAnim.defaultProps = {
-  customClass: '',
+  customClass: ""
 };
 
 export default SnackbarAnim;

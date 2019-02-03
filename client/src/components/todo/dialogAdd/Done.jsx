@@ -1,6 +1,6 @@
-﻿import React from 'react';
-import PropTypes from 'prop-types';
-import labels from '../../../constants/labels';
+﻿import React from "react";
+import PropTypes from "prop-types";
+import labels from "../../../constants/labels";
 
 class Done extends React.Component {
   componentDidMount() {
@@ -27,7 +27,7 @@ class Done extends React.Component {
 }
 
 Done.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 };
 
 export default Done;

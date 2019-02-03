@@ -1,12 +1,12 @@
-﻿import React from 'react';
-import PropTypes from 'prop-types';
+﻿import React from "react";
+import PropTypes from "prop-types";
 
-import SelectActionAdd from './SelectActionAdd';
-import AddCategory from './AddCategory';
-import SelectCategory from './SelectCategory';
-import AddTask from './AddTask';
-import SelectCompleteDate from './SelectCompleteDate';
-import Done from './Done';
+import SelectActionAdd from "./SelectActionAdd";
+import AddCategory from "./AddCategory";
+import SelectCategory from "./SelectCategory";
+import AddTask from "./AddTask";
+import SelectCompleteDate from "./SelectCompleteDate";
+import Done from "./Done";
 import {
   SELECT_WANT_TO_ADD,
   ADD_CATEGORY,
@@ -14,12 +14,12 @@ import {
   SELECT_CATEGORY,
   SELECT_COMPLETE_DATE,
   DONE,
-  stepList,
-} from '../../../constants/steps';
-import ReplaceAnim from '../../anims/ReplaceAnim';
-import DialogAnim from '../../anims/DialogAnim';
-import Steps from './Steps';
-import labels from '../../../constants/labels';
+  stepList
+} from "../../../constants/steps";
+import ReplaceAnim from "../../anims/ReplaceAnim";
+import DialogAnim from "../../anims/DialogAnim";
+import Steps from "./Steps";
+import labels from "../../../constants/labels";
 
 const getContentToRender = (steps, props) => {
   if (steps.length === 0) {
@@ -49,15 +49,15 @@ const initalState = {
   steps: [
     {
       stepId: SELECT_WANT_TO_ADD,
-      options: {},
-    },
+      options: {}
+    }
   ],
-  showStep: true,
+  showStep: true
 };
 
 class DialogAdd extends React.Component {
   state = {
-    ...initalState,
+    ...initalState
   };
 
   onBack = () => {
@@ -70,26 +70,25 @@ class DialogAdd extends React.Component {
       onClose();
     } else {
       this.setState({
-        nextSteps: [
-          ...steps.slice(0, steps.length - 1),
-        ],
-        showStep: false,
+        nextSteps: [...steps.slice(0, steps.length - 1)],
+        showStep: false
       });
     }
-  }
+  };
 
-  onNext = (step = { stepId: '', options: {} }) => {
+  onNext = (step = { stepId: "", options: {} }) => {
     const { steps } = this.state;
     this.setState({
       nextSteps: [
-        ...steps, {
+        ...steps,
+        {
           ...step,
-          complete: true,
-        },
+          complete: true
+        }
       ],
-      showStep: false,
+      showStep: false
     });
-  }
+  };
 
   onResetAndClose = () => {
     const { onClose } = this.props;
@@ -97,23 +96,25 @@ class DialogAdd extends React.Component {
     setTimeout(() => {
       this.setState({ ...initalState });
     }, 500);
-  }
+  };
 
   onAnimationEnd = (node, done) => {
-    node.addEventListener('transitionend', () => {
-      done();
-      const { nextSteps, showStep } = this.state;
-      if (showStep) {
-        return;
-      }
-      this.setState({
-        steps: [
-          ...nextSteps,
-        ],
-        showStep: true,
-      });
-    }, false);
-  }
+    node.addEventListener(
+      "transitionend",
+      () => {
+        done();
+        const { nextSteps, showStep } = this.state;
+        if (showStep) {
+          return;
+        }
+        this.setState({
+          steps: [...nextSteps],
+          showStep: true
+        });
+      },
+      false
+    );
+  };
 
   render() {
     const { steps, showStep } = this.state;
@@ -121,17 +122,14 @@ class DialogAdd extends React.Component {
     const { onNext, onResetAndClose, onAnimationEnd } = this;
     return (
       <DialogAnim in={open}>
-        <div id="dialog-add" >
+        <div id="dialog-add">
           <div className="dialog-header">
             <button id="main-close-button" onClick={() => onClose()}>
               <i className="material-icons">&#xE5CD;</i>
             </button>
           </div>
           <div className="steps-container">
-            <Steps
-              list={stepList}
-              stepHistory={steps}
-            />
+            <Steps list={stepList} stepHistory={steps} />
           </div>
           <div className="dialog-container">
             <ReplaceAnim in={showStep} endListener={onAnimationEnd}>
@@ -155,7 +153,7 @@ class DialogAdd extends React.Component {
 
 DialogAdd.propTypes = {
   open: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired
 };
 
 export default DialogAdd;

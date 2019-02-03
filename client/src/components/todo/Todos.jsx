@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import LoaderLinear from '../layout/LoaderLinear';
-import MainAddButton from '../layout/MainAddButton';
-import CategoriesFilterContainer from '../../containers/CategoriesFilterContainer';
-import VisibilityFilterContainer from '../../containers/VisibilityFilterContainer';
-import TasksContainer from '../../containers/TasksContainer';
-import DialogAdd from './dialogAdd/DialogAdd';
-import Snackbar from '../layout/Snackbar';
+import LoaderLinear from "../layout/LoaderLinear";
+import MainAddButton from "../layout/MainAddButton";
+import CategoriesFilterContainer from "../../containers/CategoriesFilterContainer";
+import VisibilityFilterContainer from "../../containers/VisibilityFilterContainer";
+import TasksContainer from "../../containers/TasksContainer";
+import DialogAdd from "./dialogAdd/DialogAdd";
+import Snackbar from "../layout/Snackbar";
 
 class Todos extends Component {
   state = {
-    isDialogAddOpen: false,
+    isDialogAddOpen: false
   };
 
   componentDidMount() {
@@ -52,11 +52,11 @@ Todos.propTypes = {
   message: PropTypes.shape({
     show: PropTypes.bool.isRequired,
     isError: PropTypes.bool.isRequired,
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired
   }).isRequired,
   hideMessage: PropTypes.func.isRequired,
   initFetchAllCategories: PropTypes.func.isRequired,
-  showLoading: PropTypes.bool.isRequired,
+  showLoading: PropTypes.bool.isRequired
 };
 
 export default Todos;

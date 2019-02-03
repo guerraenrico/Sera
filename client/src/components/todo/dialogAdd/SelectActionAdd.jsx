@@ -1,8 +1,8 @@
-﻿import React from 'react';
-import PropTypes from 'prop-types';
+﻿import React from "react";
+import PropTypes from "prop-types";
 
-import { ADD_CATEGORY, SELECT_CATEGORY } from '../../../constants/steps';
-import labels from '../../../constants/labels';
+import { ADD_CATEGORY, SELECT_CATEGORY } from "../../../constants/steps";
+import labels from "../../../constants/labels";
 
 const SelectActionAdd = ({ onNext }) => (
   <div className="content-select-action-add">
@@ -29,7 +29,7 @@ const SelectActionAdd = ({ onNext }) => (
 );
 
 SelectActionAdd.propTypes = {
-  onNext: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired
 };
 
 export default SelectActionAdd;

@@ -1,16 +1,18 @@
-const { OAuth2Client } = require('google-auth-library');
+const { OAuth2Client } = require("google-auth-library");
 
-const User = require('../models/User');
-const Session = require('../models/Session');
+const User = require("../models/User");
+const Session = require("../models/Session");
 
 const {
-  Unauthorized, ExpiredSession, isErrorExpiredSession,
-} = require('../ApiErrors');
+  Unauthorized,
+  ExpiredSession,
+  isErrorExpiredSession
+} = require("../ApiErrors");
 
 const client = new OAuth2Client(
   process.env.OAUTH2_CLIENT_ID_WEB,
   process.env.OAUTH2_CLIENT_SECRET_WEB,
-  process.env.OAUTH2_REDIRECT_WEB,
+  process.env.OAUTH2_REDIRECT_WEB
 );
 
 /**
@@ -23,13 +25,13 @@ const getTokens = code => client.getToken(code);
  * Get payloads from Google Auth Client
  * @param {String} idToken usert token id
  */
-const getPayload = async (idToken) => {
+const getPayload = async idToken => {
   const ticket = await client.verifyIdToken({
     idToken,
     audience: [
       // Clients id
-      process.env.OAUTH2_CLIENT_ID_WEB,
-    ],
+      process.env.OAUTH2_CLIENT_ID_WEB
+    ]
   });
   return ticket.getPayload();
 };
@@ -38,7 +40,7 @@ const getPayload = async (idToken) => {
  * Check id the payload is valid
  * @param {Object} payload user's google payload
  */
-const isPayloadValid = (payload) => {
+const isPayloadValid = payload => {
   if (payload === undefined) {
     return false;
   }
@@ -46,7 +48,10 @@ const isPayloadValid = (payload) => {
   if (payload.aud !== process.env.OAUTH2_CLIENT_ID_WEB) {
     return false;
   }
-  if (payload.iss !== 'accounts.google.com' && payload.iss !== 'https://accounts.google.com') {
+  if (
+    payload.iss !== "accounts.google.com" &&
+    payload.iss !== "https://accounts.google.com"
+  ) {
     return false;
   }
   return true;
@@ -57,14 +62,14 @@ const isPayloadValid = (payload) => {
  * Return undefined if is valid othrewise an {Object} Error
  * @param {Object} session user session
  */
-const verifySession = async (session) => {
+const verifySession = async session => {
   if (session === undefined) {
     return Unauthorized();
   }
-  if (session.expireAt < (new Date())) {
+  if (session.expireAt < new Date()) {
     return ExpiredSession();
   }
-  if (!await client.getTokenInfo(session.accessToken)) {
+  if (!(await client.getTokenInfo(session.accessToken))) {
     return Unauthorized();
   }
   return undefined;
@@ -118,7 +123,7 @@ const getSessionByTokenAndRefreshIfNeeded = async (db, accessToken) => {
   session = {
     ...session,
     expireAt: new Date(tokenInfo.expiry_date),
-    accessToken: token,
+    accessToken: token
   };
 
   const { result } = await Session.UpdateAsync(db, session);
@@ -160,5 +165,5 @@ module.exports = {
   getTokens,
   getSessionByToken,
   getSessionByTokenAndRefreshIfNeeded,
-  revokeSessionAndToken,
+  revokeSessionAndToken
 };

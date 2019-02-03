@@ -1,40 +1,39 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import DatePicker from 'react-date-picker';
+import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import DatePicker from "react-date-picker";
 
-import labels from '../../../constants/labels';
-import { DONE } from '../../../constants/steps';
-import { addTask } from '../../../actions/todoTasksActions';
-import { showMessageInfo } from '../../../actions/messageActions';
+import labels from "../../../constants/labels";
+import { DONE } from "../../../constants/steps";
+import { addTask } from "../../../actions/todoTasksActions";
+import { showMessageInfo } from "../../../actions/messageActions";
 
 class SelectCompleteDate extends React.Component {
   state = {
-    todoWithin: new Date(),
+    todoWithin: new Date()
   };
 
-  onInputDateChange = (date) => {
+  onInputDateChange = date => {
     this.setState({ todoWithin: date });
-  }
+  };
 
   onButtonAddClick = () => {
     const { todoWithin } = this.state;
     const { dispatch, options } = this.props;
     const { title, description, category } = options;
-    if (!todoWithin || todoWithin === '') {
+    if (!todoWithin || todoWithin === "") {
       dispatch(showMessageInfo(labels.msgSelectDate));
       return;
     }
-    dispatch(addTask(
-      title, description,
-      category, todoWithin, this.onTodoTaskCreated,
-    ));
-  }
+    dispatch(
+      addTask(title, description, category, todoWithin, this.onTodoTaskCreated)
+    );
+  };
 
   onTodoTaskCreated = () => {
     const { onNext } = this.props;
-    onNext({ stepId: DONE, options: { } });
-  }
+    onNext({ stepId: DONE, options: {} });
+  };
 
   render() {
     const { todoWithin } = this.state;
@@ -54,10 +53,7 @@ class SelectCompleteDate extends React.Component {
           />
         </div>
         <div>
-          <button
-            className="main-button"
-            onClick={this.onButtonAddClick}
-          >
+          <button className="main-button" onClick={this.onButtonAddClick}>
             {labels.buttonAdd}
           </button>
         </div>
@@ -73,10 +69,10 @@ SelectCompleteDate.propTypes = {
     description: PropTypes.string.isRequired,
     category: PropTypes.shape({
       id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-    }).isRequired,
+      name: PropTypes.string.isRequired
+    }).isRequired
   }).isRequired,
-  onNext: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired
 };
 
 export default connect()(SelectCompleteDate);

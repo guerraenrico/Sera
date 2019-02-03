@@ -1,9 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 const ButtonCompleteTask = ({ onClick, completed }) => (
   <button
-    className={`button-complete-task ${(completed) ? 'button-completed-task' : ''}`}
+    className={`button-complete-task ${
+      completed ? "button-completed-task" : ""
+    }`}
     onClick={onClick}
   >
     <i className="icon-check" />
@@ -12,11 +14,11 @@ const ButtonCompleteTask = ({ onClick, completed }) => (
 
 ButtonCompleteTask.propTypes = {
   onClick: PropTypes.func.isRequired,
-  completed: PropTypes.bool,
+  completed: PropTypes.bool
 };
 
 ButtonCompleteTask.defaultProps = {
-  completed: false,
+  completed: false
 };
 
 export default ButtonCompleteTask;

@@ -1,13 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import GoogleLogin from 'react-google-login';
+import React from "react";
+import PropTypes from "prop-types";
+import GoogleLogin from "react-google-login";
 
-import Snackbar from './layout/Snackbar';
-import { getCurrentBaseUrl } from '../utils/Common';
-import { SeraLogo } from '../assets/Svgs';
+import Snackbar from "./layout/Snackbar";
+import { getCurrentBaseUrl } from "../utils/Common";
+import { SeraLogo } from "../assets/Svgs";
 
 const Login = ({ message, authenticateGoogleToken, hideMessage }) => {
-  const responseGoogle = (response) => {
+  const responseGoogle = response => {
     if (response.code !== undefined) {
       authenticateGoogleToken(response.code);
     }
@@ -17,11 +17,12 @@ const Login = ({ message, authenticateGoogleToken, hideMessage }) => {
       <div id="content-login">
         <div id="content-declaration">
           <h2 className="title">This is an Experimental App</h2>
-          <p className="description">Dont use to store your confidential data. This app is Highly experimental and has been created only for my personal test</p>
+          <p className="description">
+            Dont use to store your confidential data. This app is Highly
+            experimental and has been created only for my personal test
+          </p>
         </div>
-        <div id="content-logo">
-          { SeraLogo }
-        </div>
+        <div id="content-logo">{SeraLogo}</div>
         <GoogleLogin
           clientId="489823671693-0vvlltnvkavfa37o2jl123jb57ulcphu.apps.googleusercontent.com"
           buttonText="Login"
@@ -58,10 +59,10 @@ Login.propTypes = {
   message: PropTypes.shape({
     show: PropTypes.bool.isRequired,
     isError: PropTypes.bool.isRequired,
-    text: PropTypes.string.isRequired,
+    text: PropTypes.string.isRequired
   }).isRequired,
   authenticateGoogleToken: PropTypes.func.isRequired,
-  hideMessage: PropTypes.func.isRequired,
+  hideMessage: PropTypes.func.isRequired
 };
 
 export default Login;

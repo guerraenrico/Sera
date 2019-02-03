@@ -1,35 +1,35 @@
-﻿import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+﻿import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import labels from '../../../constants/labels';
-import { ADD_TASK } from '../../../constants/steps';
-import { addCategory } from '../../../actions/todoFiltersActions';
-import { showMessageInfo } from '../../../actions/messageActions';
+import labels from "../../../constants/labels";
+import { ADD_TASK } from "../../../constants/steps";
+import { addCategory } from "../../../actions/todoFiltersActions";
+import { showMessageInfo } from "../../../actions/messageActions";
 
 class AddCategory extends React.Component {
   state = {
-    name: '',
+    name: ""
   };
 
-  onInputTextChange = (e) => {
+  onInputTextChange = e => {
     this.setState({ name: e.target.value });
-  }
+  };
 
   onButtonAddClick = () => {
     const { name } = this.state;
     const { dispatch } = this.props;
-    if (name === '') {
+    if (name === "") {
       dispatch(showMessageInfo(labels.msgNameRequired));
       return;
     }
     dispatch(addCategory(name, this.onCategoryCreated));
-  }
+  };
 
-  onCategoryCreated = (selectedCategory) => {
+  onCategoryCreated = selectedCategory => {
     const { onNext } = this.props;
     onNext({ stepId: ADD_TASK, options: { selectedCategory } });
-  }
+  };
 
   render() {
     return (
@@ -44,10 +44,7 @@ class AddCategory extends React.Component {
           />
         </div>
         <div>
-          <button
-            className="main-button"
-            onClick={this.onButtonAddClick}
-          >
+          <button className="main-button" onClick={this.onButtonAddClick}>
             {labels.buttonAdd}
           </button>
         </div>
@@ -58,7 +55,7 @@ class AddCategory extends React.Component {
 
 AddCategory.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  onNext: PropTypes.func.isRequired,
+  onNext: PropTypes.func.isRequired
 };
 
 export default connect()(AddCategory);
