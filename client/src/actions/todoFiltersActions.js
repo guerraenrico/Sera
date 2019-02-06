@@ -1,3 +1,4 @@
+// @flow
 import { callApi, Methods } from "../utils/ApiUtils";
 import { shouldRefreshToken } from "../utils/RequestUtils";
 import { refreshAccessToken } from "./authActions";
@@ -25,36 +26,36 @@ const fetchTasks = state =>
     visibilityOnlyCompleted(state)
   );
 
-const requestFetchAllCategories = () => ({
+const requestFetchAllCategories = (): { type: string } => ({
   type: REQUEST_FETCH_ALL_CATEGORIES
 });
 
-const receiveFetchAllCategories = categories => ({
+const receiveFetchAllCategories = (categories: {}): { type: string } => ({
   type: RECEIVE_FETCH_ALL_CATEGORIES,
   categories
 });
 
-const errorFetchAllCategories = error => ({
+const errorFetchAllCategories = (error: string): { type: string } => ({
   type: ERROR_FETCH_ALL_CATEGORIES,
   error
 });
 
-const addCategoryLocal = category => ({
+const addCategoryLocal = (category: {}): { type: string } => ({
   type: ADD_CATEGORY_LOCAL,
   category
 });
 
-const removeCategoryLocal = categoryIndex => ({
+const removeCategoryLocal = (categoryIndex: number): { type: string } => ({
   type: REMOVE_CATEGORY_LOCAL,
   categoryIndex
 });
 
-const toogleSelectCategory = selectedCategory => ({
+const toogleSelectCategory = (selectedCategory: {}): { type: string } => ({
   type: TOOGLE_SELECT_CATEGORY,
   selectedCategory
 });
 
-const toogleSelectCategoryAll = () => ({
+const toogleSelectCategoryAll = (): { type: string } => ({
   type: TOOGLE_SELECT_CATEGORY_ALL
 });
 
@@ -63,9 +64,12 @@ const switchVisibilityFilter = visibility => ({
   visibility
 });
 
-export const fetchAllCategories = (limit = queryItemsLimit, skip = 0) => async (
-  dispatch,
-  getState
+export const fetchAllCategories = (
+  limit: number = queryItemsLimit,
+  skip: number = 0
+) => async (
+  dispatch: ({}) => void,
+  getState: () => { auth: { accessToken: string } }
 ) => {
   dispatch(requestFetchAllCategories());
   try {
@@ -93,9 +97,12 @@ export const fetchAllCategories = (limit = queryItemsLimit, skip = 0) => async (
   }
 };
 
-export const deleteCategory = (categoryId = "") => async (
-  dispatch,
-  getState
+export const deleteCategory = (categoryId: string = "") => async (
+  dispatch: ({}) => void,
+  getState: () => {
+    auth: { accessToken: string },
+    todoFilters: { categories: [] }
+  }
 ) => {
   try {
     const { accessToken } = getState().auth;
@@ -129,9 +136,12 @@ export const deleteCategory = (categoryId = "") => async (
  * @param {String} name category name to add
  * @param {Function} callback function that need to handle the category created
  */
-export const addCategory = (name = "", callback = undefined) => async (
-  dispatch,
-  getState
+export const addCategory = (
+  name: string = "",
+  callback: ({}) => void
+) => async (
+  dispatch: ({}) => void,
+  getState: () => { auth: { accessToken: string } }
 ) => {
   try {
     const { accessToken } = getState().auth;
@@ -160,17 +170,26 @@ export const addCategory = (name = "", callback = undefined) => async (
   }
 };
 
-export const changeVisibility = visibility => (dispatch, getState) => {
+export const changeVisibility = (visibility: string) => (
+  dispatch: ({}) => void,
+  getState: () => {}
+) => {
   dispatch(switchVisibilityFilter(visibility));
   return dispatch(fetchTasks(getState()));
 };
 
-export const selectCategory = selectedCategory => (dispatch, getState) => {
+export const selectCategory = (selectedCategory: {}) => (
+  dispatch: ({}) => void,
+  getState: () => {}
+) => {
   dispatch(toogleSelectCategory(selectedCategory));
   return dispatch(fetchTasks(getState()));
 };
 
-export const selectCategoryAll = () => (dispatch, getState) => {
+export const selectCategoryAll = () => (
+  dispatch: ({}) => void,
+  getState: () => {}
+) => {
   dispatch(toogleSelectCategoryAll());
   return dispatch(fetchTasks(getState()));
 };

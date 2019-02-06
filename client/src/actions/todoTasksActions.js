@@ -1,3 +1,4 @@
+// @flow
 import { callApi, Methods } from "../utils/ApiUtils";
 import { shouldRefreshToken } from "../utils/RequestUtils";
 import { refreshAccessToken } from "./authActions";
@@ -12,43 +13,46 @@ import {
 import { queryItemsLimit } from "../constants/config";
 import { showMessageError } from "./messageActions";
 
-const requestFetchTasks = (limit, skip) => ({
+const requestFetchTasks = (limit: number, skip): { type: string } => ({
   type: REQUEST_FETCH_TASKS,
   limit,
   skip
 });
 
-const receiveFetchTasks = tasks => ({
+const receiveFetchTasks = (tasks: {}): { type: string } => ({
   type: RECEIVE_FETCH_TASKS,
   tasks
 });
 
-const errorFetchTasks = error => ({
+const errorFetchTasks = (error: string): { type: string } => ({
   type: ERROR_FETCH_TASKS,
   error
 });
 
-const addTaskLocal = task => ({
+const addTaskLocal = (task: {}): { type: string } => ({
   type: ADD_TASK_LOCAL,
   task
 });
 
-const removeTaskLocal = taskIndex => ({
+const removeTaskLocal = (taskIndex: number): { type: string } => ({
   type: REMOVE_TASK_LOCAL,
   taskIndex
 });
 
-const updateTaskLocal = task => ({
+const updateTaskLocal = (task: {}): { type: string } => ({
   type: UPDATE_TASK_LOCAL,
   task
 });
 
 export const fetchTasksByCategory = (
-  categoriesId = [],
-  completed = false,
-  limit = queryItemsLimit,
-  skip = 0
-) => async (dispatch, getState) => {
+  categoriesId: string[] = [],
+  completed: boolean = false,
+  limit: number = queryItemsLimit,
+  skip: number = 0
+) => async (
+  dispatch: ({}) => void,
+  getState: () => { auth: { accessToken: string } }
+) => {
   dispatch(requestFetchTasks(limit, skip));
   try {
     const { accessToken } = getState().auth;
@@ -84,7 +88,10 @@ export const fetchTasksByCategory = (
   }
 };
 
-export const deleteTask = (id = "") => async (dispatch, getState) => {
+export const deleteTask = (id: string = "") => async (
+  dispatch: ({}) => void,
+  getState: () => { auth: { accessToken: string }, todoTasks: { items: [] } }
+) => {
   try {
     const { accessToken } = getState().auth;
     const response = await callApi("tasks", id, Methods.DELETE, accessToken);
@@ -108,12 +115,15 @@ export const deleteTask = (id = "") => async (dispatch, getState) => {
 };
 
 export const addTask = (
-  title = "",
-  description = "",
-  category = { id: "" },
-  todoWithin,
-  callback = undefined
-) => async (dispatch, getState) => {
+  title: string = "",
+  description: string = "",
+  category: { id: string } = { id: "" },
+  todoWithin: Date,
+  callback: () => void
+) => async (
+  dispatch: ({}) => void,
+  getState: () => { auth: { accessToken: string } }
+) => {
   try {
     const { accessToken } = getState().auth;
     const response = await callApi(
@@ -155,9 +165,12 @@ export const addTask = (
   }
 };
 
-export const toogleTaskCompleted = (id = "", isCompleted = false) => async (
-  dispatch,
-  getState
+export const toogleTaskCompleted = (
+  id: string = "",
+  isCompleted: boolean = false
+) => async (
+  dispatch: ({}) => void,
+  getState: () => { auth: { accessToken: string } }
 ) => {
   const completed = !isCompleted;
   const completedAt = completed ? new Date() : null;
