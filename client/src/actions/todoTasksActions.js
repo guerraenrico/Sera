@@ -19,7 +19,7 @@ const requestFetchTasks = (limit: number, skip): { type: string } => ({
   skip
 });
 
-const receiveFetchTasks = (tasks: {}): { type: string } => ({
+const receiveFetchTasks = (tasks: []): { type: string } => ({
   type: RECEIVE_FETCH_TASKS,
   tasks
 });

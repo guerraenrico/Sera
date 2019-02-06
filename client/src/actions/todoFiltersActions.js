@@ -30,7 +30,7 @@ const requestFetchAllCategories = (): { type: string } => ({
   type: REQUEST_FETCH_ALL_CATEGORIES
 });
 
-const receiveFetchAllCategories = (categories: {}): { type: string } => ({
+const receiveFetchAllCategories = (categories: []): { type: string } => ({
   type: RECEIVE_FETCH_ALL_CATEGORIES,
   categories
 });
