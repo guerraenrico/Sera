@@ -208,6 +208,7 @@ class Root extends Component {
 Root.propTypes = {
   initAuth: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool.isRequired,
+  // eslint-disable-next-line
   isFetchingAuthentication: PropTypes.bool.isRequired,
   logout: PropTypes.func.isRequired
 };

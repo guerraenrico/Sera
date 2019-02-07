@@ -25,22 +25,27 @@ const Login = ({ message, authenticateGoogleToken, hideMessage }) => {
         <div id="content-logo">{SeraLogo}</div>
         <GoogleLogin
           clientId="489823671693-0vvlltnvkavfa37o2jl123jb57ulcphu.apps.googleusercontent.com"
-          buttonText="Login"
           onSuccess={responseGoogle}
           onFailure={responseGoogle}
-          className="main-button button-google-login"
           accessType="offline"
           responseType="code"
           redirectUri={getCurrentBaseUrl}
-        >
-          <span className="icon-google-g">
-            <span className="path1" />
-            <span className="path2" />
-            <span className="path3" />
-            <span className="path4" />
-          </span>
-          <span>Log in with Google</span>
-        </GoogleLogin>
+          render={renderProps => (
+            <button
+              className="main-button button-google-login"
+              onClick={renderProps.onClick}
+              type="button"
+            >
+              <span className="icon-google-g">
+                <span className="path1" />
+                <span className="path2" />
+                <span className="path3" />
+                <span className="path4" />
+              </span>
+              <span>Log in with Google</span>
+            </button>
+          )}
+        />
         <div id="content-tip">
           <h2>“Don’t wish it was easier wish you were better”</h2>
         </div>
