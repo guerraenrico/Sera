@@ -1,32 +1,60 @@
-import * as actionTypes from "../constants/actionTypes";
+// @flow
+export type FetchingAuthenticationAction = {
+  type: "FETCHING_AUTHENTICATION"
+};
+export type ReceiveAuthenticationAction = {
+  type: "RECEIVE_AUTHENTICATION",
+  user: {},
+  accessToken: string
+};
+export type ClearAuthenticationAction = {
+  type: "CLEAR_AUTHENTICATION"
+};
 
-const initialState = {
+export type RefreshAccessTokenAction = {
+  type: "REFRESH_ACCESS_TOKEN",
+  accessToken: string
+};
+
+export type AuthAction =
+  | FetchingAuthenticationAction
+  | ReceiveAuthenticationAction
+  | ClearAuthenticationAction
+  | RefreshAccessTokenAction;
+
+export type AuthState = {
+  +isFetching: boolean,
+  +user: ?{},
+  +accessToken: ?string
+};
+
+const initialState: AuthState = {
   isFetching: true,
   user: undefined,
   accessToken: undefined
 };
 
-const auth = (state = initialState, action) => {
+const auth = (state: AuthState = initialState, action: AuthAction) => {
   switch (action.type) {
-    case actionTypes.FETCHING_AUTHENTICATION:
+    case "FETCHING_AUTHENTICATION":
       return {
         ...state,
         isFetching: true
       };
-    case actionTypes.RECEIVE_AUTHENTICATION:
+    case "RECEIVE_AUTHENTICATION":
       return {
         ...state,
         isFetching: false,
         user: action.user,
         accessToken: action.accessToken
       };
-    case actionTypes.CLEAR_AUTHENTICATION:
+    case "CLEAR_AUTHENTICATION":
       return {
         isFetching: false,
         user: undefined,
         accessToken: undefined
       };
-    case actionTypes.REFRESH_ACCESS_TOKEN:
+    case "REFRESH_ACCESS_TOKEN":
       return {
         ...state,
         accessToken: action.accessToken

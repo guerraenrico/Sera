@@ -1,14 +1,69 @@
-﻿import * as actionTypes from "../constants/actionTypes";
-import categoryAll, { ONLY_TO_COMPLETE } from "../constants/config";
+﻿// @flow
+import categoryAll from "../constants/config";
+import type { Category } from "../models/category";
 
-const setVisibility = (current, next) => {
+export type AllTodo = "ALL_TODOS";
+export type OnlyCompleted = "ONLY_COMPLETED";
+export type OnlyToComplete = "ONLY_TO_COMPLETE";
+
+export type Visibility = AllTodo | OnlyCompleted | OnlyToComplete;
+
+export type RequestFetchAllCategoriesAction = {
+  type: "REQUEST_FETCH_ALL_CATEGORIES"
+};
+export type ReceiveFetchAllCategoriesAction = {
+  type: "RECEIVE_FETCH_ALL_CATEGORIES",
+  categories: [Category]
+};
+export type ErrorFetchAllCategoriesAction = {
+  type: "ERROR_FETCH_ALL_CATEGORIES",
+  error: string
+};
+export type AddCategoyLocalAction = {
+  type: "ADD_CATEGORY_LOCAL",
+  category: Category
+};
+export type RemoveCategoryAllAction = {
+  type: "REMOVE_CATEGORY_LOCAL",
+  categoryIndex: number
+};
+export type ToggleSelectCategoryAction = {
+  type: "TOGGLE_SELECT_CATEGORY",
+  selectedCategory: Category
+};
+export type ToggleSelectCategoryAllAction = {
+  type: "TOGGLE_SELECT_CATEGORY_ALL"
+};
+export type SwitchVisibilityFilterAction = {
+  type: "SWITCH_VISIBILITY_FILTER",
+  visibility: Visibility
+};
+
+export type TodoFiltersAction =
+  | RequestFetchAllCategoriesAction
+  | ReceiveFetchAllCategoriesAction
+  | ErrorFetchAllCategoriesAction
+  | AddCategoyLocalAction
+  | RemoveCategoryAllAction
+  | ToggleSelectCategoryAction
+  | ToggleSelectCategoryAllAction
+  | SwitchVisibilityFilterAction;
+
+export type TodoFiltersState = {
+  isFetching: boolean,
+  categories: [Category],
+  visibility: Visibility,
+  error: string
+};
+
+const setVisibility = (current: Visibility, next: Visibility) => {
   if (current !== next) {
     return next;
   }
   return current;
 };
 
-const initialState = {
+const initialState: TodoFiltersState = {
   isFetching: false,
   categories: [
     {
@@ -16,18 +71,21 @@ const initialState = {
       selected: true
     }
   ],
-  visibility: ONLY_TO_COMPLETE,
+  visibility: "ONLY_TO_COMPLETE",
   error: ""
 };
 
-const todoFilters = (state = initialState, action) => {
+const todoFilters = (
+  state: TodoFiltersState = initialState,
+  action: TodoFiltersAction
+) => {
   switch (action.type) {
-    case actionTypes.REQUEST_FETCH_ALL_CATEGORIES:
+    case "REQUEST_FETCH_ALL_CATEGORIES":
       return {
         ...state,
         isFetching: true
       };
-    case actionTypes.RECEIVE_FETCH_ALL_CATEGORIES:
+    case "RECEIVE_FETCH_ALL_CATEGORIES":
       return {
         ...state,
         isFetching: false,
@@ -36,19 +94,19 @@ const todoFilters = (state = initialState, action) => {
             ...categoryAll,
             selected: true
           },
-          ...action.categories.map(category => ({
+          ...action.categories.map<Category>(category => ({
             ...category,
             selected: false
           }))
         ]
       };
-    case actionTypes.ERROR_FETCH_ALL_CATEGORIES:
+    case "ERROR_FETCH_ALL_CATEGORIES":
       return {
         ...state,
         isFetching: false,
         error: action.error
       };
-    case actionTypes.ADD_CATEGORY_LOCAL:
+    case "ADD_CATEGORY_LOCAL":
       return {
         ...state,
         categories: [
@@ -59,7 +117,7 @@ const todoFilters = (state = initialState, action) => {
           }
         ]
       };
-    case actionTypes.REMOVE_CATEGORY_LOCAL:
+    case "REMOVE_CATEGORY_LOCAL":
       return {
         ...state,
         categories: [
@@ -67,11 +125,11 @@ const todoFilters = (state = initialState, action) => {
           ...state.categories.slice(action.categoryIndex + 1)
         ]
       };
-    case actionTypes.TOOGLE_SELECT_CATEGORY:
+    case "TOGGLE_SELECT_CATEGORY":
       return {
         ...state,
         isFetching: false,
-        categories: state.categories.map(category => {
+        categories: state.categories.map<Category>((category: Category) => {
           if (category.id !== action.selectedCategory.id) {
             if (category.id === categoryAll.id) {
               return {
@@ -87,11 +145,11 @@ const todoFilters = (state = initialState, action) => {
           };
         })
       };
-    case actionTypes.TOOGLE_SELECT_CATEGORY_ALL:
+    case "TOGGLE_SELECT_CATEGORY_ALL":
       return {
         ...state,
         isFetching: false,
-        categories: state.categories.map(category => {
+        categories: state.categories.map<Category>((category: Category) => {
           if (category.id === categoryAll.id) {
             return {
               ...category,
@@ -104,7 +162,7 @@ const todoFilters = (state = initialState, action) => {
           };
         })
       };
-    case actionTypes.SWITCH_VISIBILITY_FILTER:
+    case "SWITCH_VISIBILITY_FILTER":
       return {
         ...state,
         visibility: setVisibility(state.visibility, action.visibility)

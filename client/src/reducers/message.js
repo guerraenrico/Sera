@@ -1,30 +1,43 @@
-import * as actionTypes from "../constants/actionTypes";
+// @flow
+export type ShowMessageInfoAction = {
+  type: "SHOW_MESSAGE_INFO",
+  message: string
+};
+export type ShowMessageErrorAction = {
+  type: "SHOW_MESSAGE_ERROR",
+  message: string
+};
+export type HideMessageAction = { type: "HIDE_MESSAGE" };
 
-const initialState = {
+export type MessageAction =
+  | ShowMessageInfoAction
+  | ShowMessageErrorAction
+  | HideMessageAction;
+export type MessageState = { +show: boolean, +isError: boolean, +text: string };
+
+const initialState: MessageState = {
   show: false,
   isError: false,
-  text: "",
-  action: undefined,
-  actionText: ""
+  text: ""
 };
 
-const message = (state = initialState, action) => {
+const message = (state: MessageState = initialState, action: MessageAction) => {
   switch (action.type) {
-    case actionTypes.SHOW_MESSAGE_INFO:
+    case "SHOW_MESSAGE_INFO":
       return {
         ...state,
         show: true,
         isError: false,
         text: action.message
       };
-    case actionTypes.SHOW_MESSAGE_ERROR:
+    case "SHOW_MESSAGE_ERROR":
       return {
         ...state,
         show: true,
         isError: true,
         text: action.message
       };
-    case actionTypes.HIDE_MESSAGE:
+    case "HIDE_MESSAGE":
       return {
         ...state,
         show: false

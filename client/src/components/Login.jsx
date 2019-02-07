@@ -1,12 +1,21 @@
+// @flow
+
 import React from "react";
-import PropTypes from "prop-types";
 import GoogleLogin from "react-google-login";
 
 import Snackbar from "./layout/Snackbar";
 import { getCurrentBaseUrl } from "../utils/Common";
 import { SeraLogo } from "../assets/Svgs";
 
-const Login = ({ message, authenticateGoogleToken, hideMessage }) => {
+import type { MessageState } from "../reducers/message";
+
+type Props = {
+  message: MessageState,
+  authenticateGoogleToken: string => void,
+  hideMessage: () => void
+};
+
+const Login = ({ message, authenticateGoogleToken, hideMessage }: Props) => {
   const responseGoogle = response => {
     if (response.code !== undefined) {
       authenticateGoogleToken(response.code);
@@ -58,16 +67,6 @@ const Login = ({ message, authenticateGoogleToken, hideMessage }) => {
       />
     </div>
   );
-};
-
-Login.propTypes = {
-  message: PropTypes.shape({
-    show: PropTypes.bool.isRequired,
-    isError: PropTypes.bool.isRequired,
-    text: PropTypes.string.isRequired
-  }).isRequired,
-  authenticateGoogleToken: PropTypes.func.isRequired,
-  hideMessage: PropTypes.func.isRequired
 };
 
 export default Login;

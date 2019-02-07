@@ -1,3 +1,5 @@
+// @flow
+
 import React from "react";
 import { connect } from "react-redux";
 
@@ -12,8 +14,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  authenticateGoogleToken: (idToken, accessToken) => {
-    dispatch(authenticateGoogleToken(idToken, accessToken));
+  authenticateGoogleToken: (idToken: string) => {
+    dispatch(authenticateGoogleToken(idToken));
   },
   hideMessage: () => {
     dispatch(hideMessage());
