@@ -1,10 +1,12 @@
 // @flow
+import type { User } from "../models/user";
+
 export type FetchingAuthenticationAction = {
   type: "FETCHING_AUTHENTICATION"
 };
 export type ReceiveAuthenticationAction = {
   type: "RECEIVE_AUTHENTICATION",
-  user: {},
+  user: User,
   accessToken: string
 };
 export type ClearAuthenticationAction = {
@@ -24,7 +26,7 @@ export type AuthAction =
 
 export type AuthState = {
   +isFetching: boolean,
-  +user: ?{},
+  +user: ?User,
   +accessToken: ?string
 };
 

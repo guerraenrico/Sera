@@ -2,45 +2,49 @@
 import { callApi, Methods } from "../utils/ApiUtils";
 import { shouldRefreshToken } from "../utils/RequestUtils";
 import { refreshAccessToken } from "./authActions";
-import {
-  REQUEST_FETCH_TASKS,
-  RECEIVE_FETCH_TASKS,
-  ERROR_FETCH_TASKS,
-  ADD_TASK_LOCAL,
-  REMOVE_TASK_LOCAL,
-  UPDATE_TASK_LOCAL
-} from "../constants/actionTypes";
+
 import { queryItemsLimit } from "../constants/config";
 import { showMessageError } from "./messageActions";
 
-const requestFetchTasks = (limit: number, skip): { type: string } => ({
-  type: REQUEST_FETCH_TASKS,
+import type {
+  RequestFetchTasksAction,
+  ReceiveFetchTaskssAction,
+  ErrorFetchTasksAction,
+  AddTaskLocalAction,
+  RemoveTaskAction,
+  UpdateTaskLocalAction
+} from "../reducers/todoTasks";
+
+import type { Task } from "../models/task";
+
+const requestFetchTasks = (limit: number, skip): RequestFetchTasksAction => ({
+  type: "REQUEST_FETCH_TASKS",
   limit,
   skip
 });
 
-const receiveFetchTasks = (tasks: []): { type: string } => ({
-  type: RECEIVE_FETCH_TASKS,
+const receiveFetchTasks = (tasks: Array<Task>): ReceiveFetchTaskssAction => ({
+  type: "RECEIVE_FETCH_TASKS",
   tasks
 });
 
-const errorFetchTasks = (error: string): { type: string } => ({
-  type: ERROR_FETCH_TASKS,
+const errorFetchTasks = (error: string): ErrorFetchTasksAction => ({
+  type: "ERROR_FETCH_TASKS",
   error
 });
 
-const addTaskLocal = (task: {}): { type: string } => ({
-  type: ADD_TASK_LOCAL,
+const addTaskLocal = (task: Task): AddTaskLocalAction => ({
+  type: "ADD_TASK_LOCAL",
   task
 });
 
-const removeTaskLocal = (taskIndex: number): { type: string } => ({
-  type: REMOVE_TASK_LOCAL,
+const removeTaskLocal = (taskIndex: number): RemoveTaskAction => ({
+  type: "REMOVE_TASK_LOCAL",
   taskIndex
 });
 
-const updateTaskLocal = (task: {}): { type: string } => ({
-  type: UPDATE_TASK_LOCAL,
+const updateTaskLocal = (task: Task): UpdateTaskLocalAction => ({
+  type: "UPDATE_TASK_LOCAL",
   task
 });
 

@@ -1,7 +1,52 @@
-﻿import * as actionTypes from "../constants/actionTypes";
+﻿// @flow
 import { queryItemsLimit } from "../constants/config";
 
-const initialState = {
+import type { Task } from "../models/task";
+
+export type RequestFetchTasksAction = {
+  type: "REQUEST_FETCH_TASKS",
+  limit: number,
+  skip: number
+};
+export type ReceiveFetchTaskssAction = {
+  type: "RECEIVE_FETCH_TASKS",
+  tasks: Array<Task>
+};
+export type ErrorFetchTasksAction = {
+  type: "ERROR_FETCH_TASKS",
+  error: string
+};
+export type AddTaskLocalAction = {
+  type: "ADD_TASK_LOCAL",
+  task: Task
+};
+export type RemoveTaskAction = {
+  type: "REMOVE_TASK_LOCAL",
+  taskIndex: number
+};
+export type UpdateTaskLocalAction = {
+  type: "UPDATE_TASK_LOCAL",
+  task: Task
+};
+
+export type TodoTasksAction =
+  | RequestFetchTasksAction
+  | ReceiveFetchTaskssAction
+  | ErrorFetchTasksAction
+  | AddTaskLocalAction
+  | RemoveTaskAction
+  | UpdateTaskLocalAction;
+
+export type TodoTasksState = {
+  +isFetching: boolean,
+  +items: Array<Task>,
+  +limit: number,
+  +skip: number,
+  +moreToLoad: boolean,
+  +error: string
+};
+
+const initialState: TodoTasksState = {
   isFetching: false,
   items: [],
   limit: queryItemsLimit,
@@ -10,9 +55,12 @@ const initialState = {
   error: ""
 };
 
-const todoTasks = (state = initialState, action) => {
+const todoTasks = (
+  state: TodoTasksState = initialState,
+  action: TodoTasksAction
+) => {
   switch (action.type) {
-    case actionTypes.REQUEST_FETCH_TASKS:
+    case "REQUEST_FETCH_TASKS":
       return {
         ...state,
         isFetching: true,
@@ -20,7 +68,7 @@ const todoTasks = (state = initialState, action) => {
         skip: action.skip,
         moreToLoad: action.skip === 0 || state.moreToLoad
       };
-    case actionTypes.RECEIVE_FETCH_TASKS:
+    case "RECEIVE_FETCH_TASKS":
       return {
         ...state,
         isFetching: false,
@@ -28,18 +76,18 @@ const todoTasks = (state = initialState, action) => {
           state.skip === 0 ? action.tasks : [...state.items, ...action.tasks],
         moreToLoad: action.tasks.length === state.limit
       };
-    case actionTypes.ERROR_FETCH_TASKS:
+    case "ERROR_FETCH_TASKS":
       return {
         ...state,
         isFetching: false,
         error: action.error
       };
-    case actionTypes.ADD_TASK_LOCAL:
+    case "ADD_TASK_LOCAL":
       return {
         ...state,
         items: [...state.items, action.task]
       };
-    case actionTypes.REMOVE_TASK_LOCAL:
+    case "REMOVE_TASK_LOCAL":
       return {
         ...state,
         items: [
@@ -47,7 +95,7 @@ const todoTasks = (state = initialState, action) => {
           ...state.items.slice(action.taskIndex + 1)
         ]
       };
-    case actionTypes.UPDATE_TASK_LOCAL:
+    case "UPDATE_TASK_LOCAL":
       return {
         ...state,
         items: [

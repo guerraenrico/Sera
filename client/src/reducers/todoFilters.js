@@ -1,5 +1,5 @@
 ﻿// @flow
-import categoryAll from "../constants/config";
+import { categoryAll } from "../models/category";
 import type { Category } from "../models/category";
 
 export type AllTodo = "ALL_TODOS";
@@ -13,7 +13,7 @@ export type RequestFetchAllCategoriesAction = {
 };
 export type ReceiveFetchAllCategoriesAction = {
   type: "RECEIVE_FETCH_ALL_CATEGORIES",
-  categories: [Category]
+  categories: Array<Category>
 };
 export type ErrorFetchAllCategoriesAction = {
   type: "ERROR_FETCH_ALL_CATEGORIES",
@@ -23,7 +23,7 @@ export type AddCategoyLocalAction = {
   type: "ADD_CATEGORY_LOCAL",
   category: Category
 };
-export type RemoveCategoryAllAction = {
+export type RemoveCategoryAction = {
   type: "REMOVE_CATEGORY_LOCAL",
   categoryIndex: number
 };
@@ -44,19 +44,19 @@ export type TodoFiltersAction =
   | ReceiveFetchAllCategoriesAction
   | ErrorFetchAllCategoriesAction
   | AddCategoyLocalAction
-  | RemoveCategoryAllAction
+  | RemoveCategoryAction
   | ToggleSelectCategoryAction
   | ToggleSelectCategoryAllAction
   | SwitchVisibilityFilterAction;
 
 export type TodoFiltersState = {
-  isFetching: boolean,
-  categories: [Category],
-  visibility: Visibility,
-  error: string
+  +isFetching: boolean,
+  +categories: Array<Category>,
+  +visibility: Visibility,
+  +error: string
 };
 
-const setVisibility = (current: Visibility, next: Visibility) => {
+const setVisibility = (current: Visibility, next: Visibility): Visibility => {
   if (current !== next) {
     return next;
   }
@@ -94,7 +94,7 @@ const todoFilters = (
             ...categoryAll,
             selected: true
           },
-          ...action.categories.map<Category>(category => ({
+          ...action.categories.map<Category>((category: Category) => ({
             ...category,
             selected: false
           }))

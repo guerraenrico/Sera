@@ -1,27 +1,26 @@
 // @flow
 
-import {
-  FETCHING_AUTHENTICATION,
-  RECEIVE_AUTHENTICATION,
-  CLEAR_AUTHENTICATION,
-  REFRESH_ACCESS_TOKEN
-} from "../constants/actionTypes";
 import { callApi, Methods } from "../utils/ApiUtils";
 import * as store from "../utils/StoreUtils";
 import { showMessageError } from "./messageActions";
 import { shouldRefreshToken } from "../utils/RequestUtils";
 
+import {
+  FetchingAuthenticationAction,
+  ReceiveAuthenticationAction
+} from "../reducers/auth";
+
 const platform = "web";
 
-const fetchingAuthentication = (): { type: string } => ({
-  type: FETCHING_AUTHENTICATION
+const fetchingAuthentication = (): FetchingAuthenticationAction => ({
+  type: "FETCHING_AUTHENTICATION"
 });
 
 const receiveAuthentication = (
   user,
   accessToken: string
-): { type: string } => ({
-  type: RECEIVE_AUTHENTICATION,
+): ReceiveAuthenticationAction => ({
+  type: "RECEIVE_AUTHENTICATION",
   user,
   accessToken
 });
@@ -29,7 +28,7 @@ const receiveAuthentication = (
 export const clearAuthentication = () => (dispatch: ({}) => void) => {
   store.removeAccessToken();
   dispatch({
-    type: CLEAR_AUTHENTICATION
+    type: "CLEAR_AUTHENTICATION"
   });
 };
 
@@ -47,7 +46,7 @@ export const refreshAccessToken = () => async (dispatch: ({}) => void) => {
       }
       store.saveAccessToken(response.data.accessToken);
       dispatch({
-        type: REFRESH_ACCESS_TOKEN,
+        type: "REFRESH_ACCESS_TOKEN",
         accessToken: response.data.accessToken
       });
     } else {

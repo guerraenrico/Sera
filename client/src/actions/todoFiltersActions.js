@@ -2,16 +2,7 @@
 import { callApi, Methods } from "../utils/ApiUtils";
 import { shouldRefreshToken } from "../utils/RequestUtils";
 import { refreshAccessToken } from "./authActions";
-import {
-  REQUEST_FETCH_ALL_CATEGORIES,
-  RECEIVE_FETCH_ALL_CATEGORIES,
-  ERROR_FETCH_ALL_CATEGORIES,
-  ADD_CATEGORY_LOCAL,
-  REMOVE_CATEGORY_LOCAL,
-  TOOGLE_SELECT_CATEGORY,
-  TOOGLE_SELECT_CATEGORY_ALL,
-  SWITCH_VISIBILITY_FILTER
-} from "../constants/actionTypes";
+
 import { queryItemsLimit } from "../constants/config";
 import { fetchTasksByCategory } from "./todoTasksActions";
 import { showMessageError } from "./messageActions";
@@ -20,47 +11,69 @@ import {
   visibilityOnlyCompleted
 } from "../selectors/todoFiltersSelectors";
 
+import type {
+  RequestFetchAllCategoriesAction,
+  ReceiveFetchAllCategoriesAction,
+  ErrorFetchAllCategoriesAction,
+  AddCategoyLocalAction,
+  RemoveCategoryAction,
+  ToggleSelectCategoryAction,
+  ToggleSelectCategoryAllAction,
+  SwitchVisibilityFilterAction,
+  Visibility
+} from "../reducers/todoFilters";
+
+import type { Category } from "../models/category";
+
 const fetchTasks = state =>
   fetchTasksByCategory(
     getSelectedCategoriesId(state),
     visibilityOnlyCompleted(state)
   );
 
-const requestFetchAllCategories = (): { type: string } => ({
-  type: REQUEST_FETCH_ALL_CATEGORIES
+const requestFetchAllCategories = (): RequestFetchAllCategoriesAction => ({
+  type: "REQUEST_FETCH_ALL_CATEGORIES"
 });
 
-const receiveFetchAllCategories = (categories: []): { type: string } => ({
-  type: RECEIVE_FETCH_ALL_CATEGORIES,
+const receiveFetchAllCategories = (
+  categories: Array<Category>
+): ReceiveFetchAllCategoriesAction => ({
+  type: "RECEIVE_FETCH_ALL_CATEGORIES",
   categories
 });
 
-const errorFetchAllCategories = (error: string): { type: string } => ({
-  type: ERROR_FETCH_ALL_CATEGORIES,
+const errorFetchAllCategories = (
+  error: string
+): ErrorFetchAllCategoriesAction => ({
+  type: "ERROR_FETCH_ALL_CATEGORIES",
   error
 });
 
-const addCategoryLocal = (category: {}): { type: string } => ({
-  type: ADD_CATEGORY_LOCAL,
+const addCategoryLocal = (category: Category): AddCategoyLocalAction => ({
+  type: "ADD_CATEGORY_LOCAL",
   category
 });
 
-const removeCategoryLocal = (categoryIndex: number): { type: string } => ({
-  type: REMOVE_CATEGORY_LOCAL,
+const removeCategoryLocal = (categoryIndex: number): RemoveCategoryAction => ({
+  type: "REMOVE_CATEGORY_LOCAL",
   categoryIndex
 });
 
-const toogleSelectCategory = (selectedCategory: {}): { type: string } => ({
-  type: TOOGLE_SELECT_CATEGORY,
+const toogleSelectCategory = (
+  selectedCategory: Category
+): ToggleSelectCategoryAction => ({
+  type: "TOGGLE_SELECT_CATEGORY",
   selectedCategory
 });
 
-const toogleSelectCategoryAll = (): { type: string } => ({
-  type: TOOGLE_SELECT_CATEGORY_ALL
+const toogleSelectCategoryAll = (): ToggleSelectCategoryAllAction => ({
+  type: "TOGGLE_SELECT_CATEGORY_ALL"
 });
 
-const switchVisibilityFilter = visibility => ({
-  type: SWITCH_VISIBILITY_FILTER,
+const switchVisibilityFilter = (
+  visibility: Visibility
+): SwitchVisibilityFilterAction => ({
+  type: "SWITCH_VISIBILITY_FILTER",
   visibility
 });
 
@@ -170,7 +183,7 @@ export const addCategory = (
   }
 };
 
-export const changeVisibility = (visibility: string) => (
+export const changeVisibility = (visibility: Visibility) => (
   dispatch: ({}) => void,
   getState: () => {}
 ) => {
@@ -178,7 +191,7 @@ export const changeVisibility = (visibility: string) => (
   return dispatch(fetchTasks(getState()));
 };
 
-export const selectCategory = (selectedCategory: {}) => (
+export const selectCategory = (selectedCategory: Category) => (
   dispatch: ({}) => void,
   getState: () => {}
 ) => {
