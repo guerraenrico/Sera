@@ -10,6 +10,8 @@ import type {
   ReceiveAuthenticationAction
 } from "../reducers/auth";
 
+import type { ThunkAction } from "../reducers";
+
 const platform = "web";
 
 const fetchingAuthentication = (): FetchingAuthenticationAction => ({
@@ -25,14 +27,14 @@ const receiveAuthentication = (
   accessToken
 });
 
-export const clearAuthentication = () => (dispatch: ({}) => void) => {
+export const clearAuthentication = (): ThunkAction => dispatch => {
   store.removeAccessToken();
   dispatch({
     type: "CLEAR_AUTHENTICATION"
   });
 };
 
-export const refreshAccessToken = () => async (dispatch: ({}) => void) => {
+export const refreshAccessToken = (): ThunkAction => async dispatch => {
   try {
     const accessToken = store.getAccessToken();
     const response = await callApi(
@@ -57,9 +59,9 @@ export const refreshAccessToken = () => async (dispatch: ({}) => void) => {
   }
 };
 
-export const authenticateGoogleToken = (code: string) => async (
-  dispatch: ({}) => void
-) => {
+export const authenticateGoogleToken = (
+  code: string
+): ThunkAction => async dispatch => {
   try {
     const response = await callApi(
       "auth/google/signin/callback",
@@ -77,9 +79,9 @@ export const authenticateGoogleToken = (code: string) => async (
   }
 };
 
-export const validateToken = (accessToken: string) => async (
-  dispatch: ({}) => void,
-  getState: () => { auth: { accessToken: string } }
+export const validateToken = (accessToken: string): ThunkAction => async (
+  dispatch,
+  getState
 ) => {
   try {
     const response = await callApi(
@@ -94,7 +96,9 @@ export const validateToken = (accessToken: string) => async (
       if (shouldRefreshToken(response)) {
         await dispatch(refreshAccessToken());
         const newAccessToken = getState().auth.accessToken;
-        dispatch(validateToken(newAccessToken));
+        if (newAccessToken !== undefined && newAccessToken !== null) {
+          dispatch(validateToken(newAccessToken));
+        }
         return;
       }
       dispatch(clearAuthentication());
@@ -104,10 +108,7 @@ export const validateToken = (accessToken: string) => async (
   }
 };
 
-export const logout = () => async (
-  dispatch: ({}) => void,
-  getState: () => { auth: { accessToken: string } }
-) => {
+export const logout = (): ThunkAction => async (dispatch, getState) => {
   try {
     const { accessToken } = getState().auth;
     await callApi(
@@ -120,7 +121,7 @@ export const logout = () => async (
   }
 };
 
-export const initAuth = () => (dispatch: ({}) => void) => {
+export const initAuth = (): ThunkAction => dispatch => {
   dispatch(fetchingAuthentication());
   const accessToken = store.getAccessToken();
 

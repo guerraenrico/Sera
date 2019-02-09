@@ -24,8 +24,9 @@ import type {
 } from "../reducers/todoFilters";
 
 import type { Category } from "../models/category";
+import type { ThunkAction } from "../reducers";
 
-const fetchTasks = state =>
+const fetchTasks = (state): ThunkAction =>
   fetchTasksByCategory(
     getSelectedCategoriesId(state),
     visibilityOnlyCompleted(state)
@@ -80,10 +81,7 @@ const switchVisibilityFilter = (
 export const fetchAllCategories = (
   limit: number = queryItemsLimit,
   skip: number = 0
-) => async (
-  dispatch: ({}) => void,
-  getState: () => { auth: { accessToken: string } }
-) => {
+): ThunkAction => async (dispatch, getState) => {
   dispatch(requestFetchAllCategories());
   try {
     const { accessToken } = getState().auth;
@@ -110,12 +108,9 @@ export const fetchAllCategories = (
   }
 };
 
-export const deleteCategory = (categoryId: string = "") => async (
-  dispatch: ({}) => void,
-  getState: () => {
-    auth: { accessToken: string },
-    todoFilters: { categories: [] }
-  }
+export const deleteCategory = (categoryId: string = ""): ThunkAction => async (
+  dispatch,
+  getState
 ) => {
   try {
     const { accessToken } = getState().auth;
@@ -152,10 +147,7 @@ export const deleteCategory = (categoryId: string = "") => async (
 export const addCategory = (
   name: string = "",
   callback: ({}) => void
-) => async (
-  dispatch: ({}) => void,
-  getState: () => { auth: { accessToken: string } }
-) => {
+): ThunkAction => async (dispatch, getState) => {
   try {
     const { accessToken } = getState().auth;
     const response = await callApi(
@@ -183,26 +175,23 @@ export const addCategory = (
   }
 };
 
-export const changeVisibility = (visibility: Visibility) => (
-  dispatch: ({}) => void,
-  getState: () => {}
+export const changeVisibility = (visibility: Visibility): ThunkAction => (
+  dispatch,
+  getState
 ) => {
   dispatch(switchVisibilityFilter(visibility));
   return dispatch(fetchTasks(getState()));
 };
 
-export const selectCategory = (selectedCategory: Category) => (
-  dispatch: ({}) => void,
-  getState: () => {}
+export const selectCategory = (selectedCategory: Category): ThunkAction => (
+  dispatch,
+  getState
 ) => {
   dispatch(toogleSelectCategory(selectedCategory));
   return dispatch(fetchTasks(getState()));
 };
 
-export const selectCategoryAll = () => (
-  dispatch: ({}) => void,
-  getState: () => {}
-) => {
+export const selectCategoryAll = (): ThunkAction => (dispatch, getState) => {
   dispatch(toogleSelectCategoryAll());
   return dispatch(fetchTasks(getState()));
 };

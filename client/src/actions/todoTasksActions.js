@@ -16,6 +16,7 @@ import type {
 } from "../reducers/todoTasks";
 
 import type { Task } from "../models/task";
+import type { ThunkAction } from "../reducers";
 
 const requestFetchTasks = (limit: number, skip): RequestFetchTasksAction => ({
   type: "REQUEST_FETCH_TASKS",
@@ -53,10 +54,7 @@ export const fetchTasksByCategory = (
   completed: boolean = false,
   limit: number = queryItemsLimit,
   skip: number = 0
-) => async (
-  dispatch: ({}) => void,
-  getState: () => { auth: { accessToken: string } }
-) => {
+): ThunkAction => async (dispatch, getState) => {
   dispatch(requestFetchTasks(limit, skip));
   try {
     const { accessToken } = getState().auth;
@@ -92,9 +90,9 @@ export const fetchTasksByCategory = (
   }
 };
 
-export const deleteTask = (id: string = "") => async (
-  dispatch: ({}) => void,
-  getState: () => { auth: { accessToken: string }, todoTasks: { items: [] } }
+export const deleteTask = (id: string = ""): ThunkAction => async (
+  dispatch,
+  getState
 ) => {
   try {
     const { accessToken } = getState().auth;
@@ -124,10 +122,7 @@ export const addTask = (
   category: { id: string } = { id: "" },
   todoWithin: Date,
   callback: () => void
-) => async (
-  dispatch: ({}) => void,
-  getState: () => { auth: { accessToken: string } }
-) => {
+): ThunkAction => async (dispatch, getState) => {
   try {
     const { accessToken } = getState().auth;
     const response = await callApi(
@@ -172,10 +167,7 @@ export const addTask = (
 export const toogleTaskCompleted = (
   id: string = "",
   isCompleted: boolean = false
-) => async (
-  dispatch: ({}) => void,
-  getState: () => { auth: { accessToken: string } }
-) => {
+): ThunkAction => async (dispatch, getState) => {
   const completed = !isCompleted;
   const completedAt = completed ? new Date() : null;
   try {
