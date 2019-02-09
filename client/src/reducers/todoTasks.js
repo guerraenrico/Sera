@@ -100,6 +100,7 @@ const todoTasks = (
         ...state,
         items: [
           ...state.items.map(task =>
+            // $FlowFixMe remove flow error on action.task
             task.id === action.task.id ? { ...action.task } : task
           )
         ]

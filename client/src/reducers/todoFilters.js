@@ -130,6 +130,7 @@ const todoFilters = (
         ...state,
         isFetching: false,
         categories: state.categories.map<Category>((category: Category) => {
+          // $FlowFixMe remove flow error on action.selectedCategory
           if (category.id !== action.selectedCategory.id) {
             if (category.id === categoryAll.id) {
               return {

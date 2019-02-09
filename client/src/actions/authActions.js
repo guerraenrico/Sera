@@ -5,7 +5,7 @@ import * as store from "../utils/StoreUtils";
 import { showMessageError } from "./messageActions";
 import { shouldRefreshToken } from "../utils/RequestUtils";
 
-import {
+import type {
   FetchingAuthenticationAction,
   ReceiveAuthenticationAction
 } from "../reducers/auth";
