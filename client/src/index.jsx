@@ -5,7 +5,7 @@ import { createStore, applyMiddleware, compose } from "redux";
 import thunk from "redux-thunk";
 import { Provider } from "react-redux";
 
-import RootContainer from "./containers/RootContainer";
+import Root from "./views/Root";
 import reducers from "./reducers";
 
 import "../style/main.sass";
@@ -29,4 +29,4 @@ const render = Component => {
   );
 };
 
-render(RootContainer);
+render(Root);

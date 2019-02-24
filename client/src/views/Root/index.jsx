@@ -1,5 +1,6 @@
+// @flow
+
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,29 +8,30 @@ import {
   Redirect
 } from "react-router-dom";
 import Loadable from "react-loadable";
+import { connect } from "react-redux";
 
-import ReplaceAnim from "./anims/ReplaceAnim";
-import LoaderLinear from "./layout/LoaderLinear";
-import LoaderTip from "./layout/LoaderTip";
-import Drawer from "./layout/Drawer";
-import Page404 from "./layout/Page404";
-import * as paths from "../constants/paths";
+import ReplaceAnim from "../../components/anims/ReplaceAnim";
+import LoaderLinear from "../../components/layout/LoaderLinear";
+import LoaderTip from "../../components/layout/LoaderTip";
+import Drawer from "../../components/layout/Drawer";
+import Page404 from "../../components/layout/Page404";
+import * as paths from "../../constants/paths";
+
+import * as authActions from "../../actions/authActions";
+import * as authSelector from "../../selectors/authSelector";
 
 const LoginContainer = Loadable({
-  loader: () =>
-    import("../containers/LoginContainer" /* webpackChunkName: 'login' */),
+  loader: () => import("../Login" /* webpackChunkName: 'login' */),
   loading: LoaderLinear
 });
 
 const TodosContainer = Loadable({
-  loader: () =>
-    import("../containers/TodosContainer" /* webpackChunkName: 'todos' */),
+  loader: () => import("../Todos" /* webpackChunkName: 'todos' */),
   loading: LoaderLinear
 });
 
 const GoalsContainer = Loadable({
-  loader: () =>
-    import("../containers/GoalsContainer" /* webpackChunkName: 'goals' */),
+  loader: () => import("../Goals" /* webpackChunkName: 'goals' */),
   loading: LoaderLinear
 });
 
@@ -68,7 +70,22 @@ const routes = [
   }
 ];
 
-class Root extends Component {
+type Props = {
+  initAuth: () => void,
+  isAuthenticated: boolean,
+  // eslint-disable-next-line
+  isFetchingAuthentication: boolean,
+  logout: () => void
+};
+
+type State = {
+  shouldShowLoading: boolean,
+  showLoading: boolean,
+  shouldShowRoute: boolean,
+  showRoute: boolean
+};
+
+class Root extends Component<Props, State> {
   state = {
     shouldShowLoading: true,
     showLoading: true,
@@ -81,7 +98,7 @@ class Root extends Component {
     initAuth();
   }
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(props: Props, state: State) {
     if (props.isFetchingAuthentication && !state.showLoading) {
       return {
         ...state,
@@ -111,7 +128,7 @@ class Root extends Component {
     return null;
   }
 
-  onAnimationEnd = (node, done) => {
+  onAnimationEnd = (node: Object, done: () => void) => {
     const handleAnimationEnd = () => {
       done();
       const { shouldShowLoading, shouldShowRoute } = this.state;
@@ -205,12 +222,21 @@ class Root extends Component {
   }
 }
 
-Root.propTypes = {
-  initAuth: PropTypes.func.isRequired,
-  isAuthenticated: PropTypes.bool.isRequired,
-  // eslint-disable-next-line
-  isFetchingAuthentication: PropTypes.bool.isRequired,
-  logout: PropTypes.func.isRequired
-};
+const mapStateToProps = state => ({
+  isAuthenticated: authSelector.isAuthenticated(state),
+  isFetchingAuthentication: authSelector.isFetchingAuthentication(state)
+});
 
-export default Root;
+const mapDispatchToProps = dispatch => ({
+  initAuth: () => {
+    dispatch(authActions.initAuth());
+  },
+  logout: () => {
+    dispatch(authActions.logout());
+  }
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Root);

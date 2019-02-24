@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import Snackbar from "../layout/Snackbar";
+import Snackbar from "../../components/layout/Snackbar";
+import * as messageActions from "../../actions/messageActions";
 
 class Goals extends Component {
   componentDidMount() {}
@@ -31,4 +33,17 @@ Goals.propTypes = {
   hideMessage: PropTypes.func.isRequired
 };
 
-export default Goals;
+const mapStateToProps = state => ({
+  message: state.message
+});
+
+const mapDispatchToProps = dispatch => ({
+  hideMessage: () => {
+    dispatch(messageActions.hideMessage());
+  }
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Goals);

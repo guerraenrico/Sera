@@ -1,13 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import LoaderLinear from "../layout/LoaderLinear";
-import MainAddButton from "../layout/MainAddButton";
-import CategoriesFilterContainer from "../../containers/CategoriesFilterContainer";
-import VisibilityFilterContainer from "../../containers/VisibilityFilterContainer";
-import TasksContainer from "../../containers/TasksContainer";
-import DialogAdd from "./dialogAdd/DialogAdd";
-import Snackbar from "../layout/Snackbar";
+import LoaderLinear from "../../components/layout/LoaderLinear";
+import MainAddButton from "../../components/layout/MainAddButton";
+import CategoriesFilter from "../../components/todo/Category/CategoriesFilter";
+import VisibilityFilter from "../../components/todo/visibility/VisibilityFilters";
+import Tasks from "../../components/todo/Tasks";
+import DialogAdd from "../../components/todo/dialogAdd/DialogAdd";
+import Snackbar from "../../components/layout/Snackbar";
+
+import * as todoFiltersActions from "../../actions/todoFiltersActions";
+import * as messageActions from "../../actions/messageActions";
+import * as commonSelectors from "../../selectors/commonSelectors";
 
 class Todos extends Component {
   state = {
@@ -26,13 +31,13 @@ class Todos extends Component {
       <div className="content-app">
         <LoaderLinear show={showLoading} />
         <div id="main-top-bar">
-          <CategoriesFilterContainer />
-          <VisibilityFilterContainer />
+          <CategoriesFilter />
+          <VisibilityFilter />
           <MainAddButton
             onClick={() => this.setState({ isDialogAddOpen: true })}
           />
         </div>
-        <TasksContainer />
+        <Tasks />
         <DialogAdd
           open={isDialogAddOpen}
           onClose={() => this.setState({ isDialogAddOpen: false })}
@@ -59,4 +64,21 @@ Todos.propTypes = {
   showLoading: PropTypes.bool.isRequired
 };
 
-export default Todos;
+const mapStateToProps = state => ({
+  message: state.message,
+  showLoading: commonSelectors.showLoading(state)
+});
+
+const mapDispatchToProps = dispatch => ({
+  hideMessage: () => {
+    dispatch(messageActions.hideMessage());
+  },
+  initFetchAllCategories: () => {
+    dispatch(todoFiltersActions.fetchAllCategories());
+  }
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Todos);

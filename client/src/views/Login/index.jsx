@@ -2,12 +2,15 @@
 
 import React from "react";
 import GoogleLogin from "react-google-login";
+import { connect } from "react-redux";
 
-import Snackbar from "./layout/Snackbar";
-import { getCurrentBaseUrl } from "../utils/Common";
-import { SeraLogo } from "../assets/Svgs";
+import Snackbar from "../../components/layout/Snackbar";
+import { getCurrentBaseUrl } from "../../utils/Common";
+import { SeraLogo } from "../../assets/Svgs";
 
-import type { MessageState } from "../reducers/message";
+import * as authActions from "../../actions/authActions";
+import * as messageActions from "../../actions/messageActions";
+import type { MessageState } from "../../reducers/message";
 
 type Props = {
   message: MessageState,
@@ -69,4 +72,20 @@ const Login = ({ message, authenticateGoogleToken, hideMessage }: Props) => {
   );
 };
 
-export default Login;
+const mapStateToProps = state => ({
+  message: state.message
+});
+
+const mapDispatchToProps = dispatch => ({
+  authenticateGoogleToken: (idToken: string) => {
+    dispatch(authActions.authenticateGoogleToken(idToken));
+  },
+  hideMessage: () => {
+    dispatch(messageActions.hideMessage());
+  }
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Login);
