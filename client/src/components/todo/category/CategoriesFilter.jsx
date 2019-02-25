@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { TransitionGroup } from "react-transition-group";
 import scroll from "scroll";
 import ButtonScroll from "../../layout/ButtonScroll";
-import Category from ".";
+import Category from "./index";
 import Fade from "../../anims/Fade";
 
 import * as todoFiltersActions from "../../../actions/todoFiltersActions";

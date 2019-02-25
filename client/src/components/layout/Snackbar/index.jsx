@@ -1,19 +1,41 @@
+// @flow
+
 import React from "react";
-import PropTypes from "prop-types";
 import SnackbarAnim from "../../anims/SnackbarAnim";
 
-const Action = ({ onClick, text }) => (
-  <button className="button-action-snackbar" onClick={onClick}>
-    {text}
-  </button>
-);
+import { SnackbarContainer, Snackbar, Message, Action } from "./style";
 
-Action.propTypes = {
-  text: PropTypes.string.isRequired,
-  onClick: PropTypes.func.isRequired
+type ActionProps = {
+  +text: string,
+  +onClick: () => void
 };
 
-class Snackbar extends React.Component {
+const ActionComponent = ({ onClick, text }: ActionProps) => (
+  <Action onClick={onClick}>{text}</Action>
+);
+
+type SnackbarProps = {
+  +show: boolean,
+  +message: string,
+  +onClose: () => void,
+  +duration?: number,
+  +isError?: boolean,
+  +actionText?: string,
+  +actionClick?: void,
+  +verticalPostion?: string,
+  +horizontalPosition?: string
+};
+
+class SnackbarComponent extends React.Component<SnackbarProps> {
+  static defaultProps = {
+    duration: 5000,
+    isError: false,
+    actionText: "",
+    actionClick: undefined,
+    verticalPostion: "bottom",
+    horizontalPosition: "right"
+  };
+
   componentDidUpdate() {
     const { onClose, duration, show } = this.props;
 
@@ -39,36 +61,15 @@ class Snackbar extends React.Component {
         in={show}
         customClass={`${verticalPostion} ${horizontalPosition}`}
       >
-        <div className={`snackbar ${isError ? "error" : ""}`}>
-          <span className="snackbar-message">{message}</span>
+        <Snackbar className={`${isError ? "error" : ""}`}>
+          <Message>{message}</Message>
           {actionText !== "" && actionClick !== undefined && (
-            <Action onClick={actionClick} text={actionText} />
+            <ActionComponent onClick={actionClick} text={actionText} />
           )}
-        </div>
+        </Snackbar>
       </SnackbarAnim>
     );
   }
 }
 
-Snackbar.propTypes = {
-  show: PropTypes.bool.isRequired,
-  message: PropTypes.string.isRequired,
-  onClose: PropTypes.func.isRequired,
-  duration: PropTypes.number,
-  isError: PropTypes.bool,
-  actionText: PropTypes.string,
-  actionClick: PropTypes.func,
-  verticalPostion: PropTypes.oneOf(["top", "bottom"]),
-  horizontalPosition: PropTypes.oneOf(["left", "right"])
-};
-
-Snackbar.defaultProps = {
-  duration: 5000,
-  isError: false,
-  actionText: "",
-  actionClick: undefined,
-  verticalPostion: "bottom",
-  horizontalPosition: "right"
-};
-
-export default Snackbar;
+export default SnackbarComponent;
