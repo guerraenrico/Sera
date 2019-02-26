@@ -1,3 +1,8 @@
+export const commonSizes = {
+  containerBorderRadius: "10px",
+  containerMargin: "2.5rem"
+};
+
 export const snackbarSizes = {
   zIndex: 30,
   minHeight: "50px",
@@ -7,4 +12,10 @@ export const snackbarSizes = {
 
 export const snackbarActionSizes = {
   fontSize: "0.8rem"
+};
+
+export const drawerSizes = {
+  width: "55px",
+  itemWidth: "55px",
+  itemHeight: "55"
 };

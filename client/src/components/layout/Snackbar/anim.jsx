@@ -30,7 +30,7 @@ type Props = {
   +customClass?: string
 };
 
-const SnackbarAnim = ({ in: inProp, children, customClass = "" }: Props) => (
+const SnackbarAnim = ({ in: inProp, children, customClass }: Props) => (
   <Transition in={inProp} timeout={duration}>
     {state => (
       <SnackbarContainer
