@@ -1,9 +1,8 @@
 // @flow
 
 import React from "react";
-import SnackbarAnim from "../../anims/SnackbarAnim";
-
-import { SnackbarContainer, Snackbar, Message, Action } from "./style";
+import SnackbarAnim from "./anim";
+import { Snackbar, Message, Action } from "./style";
 
 type ActionProps = {
   +text: string,
@@ -59,12 +58,19 @@ class SnackbarComponent extends React.Component<SnackbarProps> {
     return (
       <SnackbarAnim
         in={show}
-        customClass={`${verticalPostion} ${horizontalPosition}`}
+        customClass={
+          verticalPostion !== undefined && horizontalPosition !== undefined
+            ? `${verticalPostion} ${horizontalPosition}`
+            : ""
+        }
       >
         <Snackbar className={`${isError ? "error" : ""}`}>
           <Message>{message}</Message>
           {actionText !== "" && actionClick !== undefined && (
-            <ActionComponent onClick={actionClick} text={actionText} />
+            <ActionComponent
+              onClick={actionClick}
+              text={actionText !== undefined ? actionText : ""}
+            />
           )}
         </Snackbar>
       </SnackbarAnim>
