@@ -1,16 +1,17 @@
+// @flow
 import React from "react";
-import PropTypes from "prop-types";
+import { LoaderTip, H1, H3 } from "./style";
 
-const LoaderTip = ({ phrase, author }) => (
-  <div id="content-loader-tip">
-    <h1>{phrase}</h1>
-    <h3>{author}</h3>
-  </div>
-);
-
-LoaderTip.propTypes = {
-  phrase: PropTypes.string.isRequired,
-  author: PropTypes.string.isRequired
+type Props = {
+  phrase: string,
+  author: string
 };
 
-export default LoaderTip;
+const LoaderTipComponent = ({ phrase, author }: Props) => (
+  <LoaderTip>
+    <H1>{phrase}</H1>
+    <H3>{author}</H3>
+  </LoaderTip>
+);
+
+export default LoaderTipComponent;
