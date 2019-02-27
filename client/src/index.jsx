@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 import Root from "./views/Root";
 import reducers from "./reducers";
 
-import "../style/main.sass";
+// import "../style/main.sass";
 
 /* eslint-disable no-underscore-dangle */
 const composeEnhancers =

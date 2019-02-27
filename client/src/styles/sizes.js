@@ -24,3 +24,8 @@ export const loaderTipSizes = {
   h1FontSize: "1.7rem",
   h3FontSize: "1.1rem"
 };
+
+export const page404Sizes = {
+  titleFontSize: "12rem",
+  descriptionFontSize: "1.2rem"
+};
