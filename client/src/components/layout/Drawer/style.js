@@ -23,12 +23,11 @@ export const Drawer = styled.div`
   height: 100vh;
 `;
 
-export const NavLink = styled(NavLinkBase)`
-  font-size: 1.4rem;
+const itemStyle = `
   position: relative;
   width: ${drawerSizes.itemWidth};
   height: ${drawerSizes.itemHeight};
-  color: ${drawerColors.itemColor};
+  color: ${drawerColors.itemIcon};
   text-decoration: none;
   background: none;
   outline: none;
@@ -38,6 +37,11 @@ export const NavLink = styled(NavLinkBase)`
   justify-self: end;
   box-sizing: border-box;
   transition: background 200ms ease-in;
+`;
+
+export const NavLink = styled(NavLinkBase)`
+  font-size: 1.4rem;
+  ${itemStyle}
 
   &:hover {
     color: ${drawerColors.itemIconHover};
@@ -56,4 +60,9 @@ export const Space = styled.div`
 export const ButtonItem = styled.button`
   font-size: 1.4rem;
   ${alignItemCenter}
+  ${itemStyle}
+
+  &:hover {
+    color: ${drawerColors.itemIconHover};
+  }
 `;

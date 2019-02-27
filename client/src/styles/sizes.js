@@ -17,5 +17,5 @@ export const snackbarActionSizes = {
 export const drawerSizes = {
   width: "55px",
   itemWidth: "55px",
-  itemHeight: "55"
+  itemHeight: "55px"
 };

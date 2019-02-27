@@ -30,3 +30,8 @@ export const drawerColors = {
   itemIconSelected: "#009688",
   itemIconHover: "#009688"
 };
+
+export const loaderLinearColor = {
+  background: "#050e19",
+  indicatorBackground: "#009688"
+};

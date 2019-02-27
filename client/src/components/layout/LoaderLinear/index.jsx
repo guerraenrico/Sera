@@ -1,10 +1,26 @@
-import React from "react";
-import PropTypes from "prop-types";
+// @flow
+import React, { Component } from "react";
 import Fade from "../../anims/Fade";
+import { LoaderLinear } from "./style";
 
 const delay = 1000;
 
-class LoaderLinear extends React.Component {
+type Props = {
+  // eslint-disable-next-line
+  show?: boolean
+};
+
+type State = {
+  shouldShow: boolean,
+  startTimer: boolean,
+  clearTimer: boolean
+};
+
+class LoaderLinearComponent extends Component<Props, State> {
+  static defaultProps = {
+    show: false
+  };
+
   state = {
     shouldShow: false,
     startTimer: false,
@@ -13,7 +29,7 @@ class LoaderLinear extends React.Component {
 
   timeout = null;
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps: Props, prevState: State) {
     if (prevState) {
       if (nextProps.show) {
         return {
@@ -51,19 +67,10 @@ class LoaderLinear extends React.Component {
     const { shouldShow } = this.state;
     return (
       <Fade in={shouldShow}>
-        <div className="loader" />
+        <LoaderLinear />
       </Fade>
     );
   }
 }
 
-LoaderLinear.propTypes = {
-  // eslint-disable-next-line
-  show: PropTypes.bool
-};
-
-LoaderLinear.defaultProps = {
-  show: false
-};
-
-export default LoaderLinear;
+export default LoaderLinearComponent;
