@@ -10,7 +10,7 @@ type Props = {
 
 const ButtonComplete = ({ onClick, completed }: Props) => (
   <Button className={`${completed ? "completed" : ""}`} onClick={onClick}>
-    <Icon className={`icon-check ${completed ? "completed" : ""}`} />
+    <Icon className="icon-check" />
   </Button>
 );
 

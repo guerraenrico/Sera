@@ -7,7 +7,7 @@ export const Button = styled.button`
   background: none;
   height: 28px;
   width: 28px;
-  background-color: ${buttonDeleteTaskColors.background}
+  background-color: ${buttonDeleteTaskColors.background};
   outline: none;
   border: none;
   cursor: pointer;
@@ -17,19 +17,21 @@ export const Button = styled.button`
   padding: 0;
   box-sizing: border-box;
   border-radius: 50%;
-  transition: background 200ms ease-in
+  transition: background 200ms ease-in;
 
-  &:hover
-    background-color: ${buttonDeleteTaskColors.backgroundHover}
+  &:hover {
+    background-color: ${buttonDeleteTaskColors.backgroundHover};
+  }
 `;
 
 export const Icon = styled.i`
   margin: auto;
   font-size: 0.9em;
-  color: ${buttonDeleteTaskColors.icon}
+  color: ${buttonDeleteTaskColors.icon};
   transition: color 200ms ease-in;
-  padding: 0
+  padding: 0;
 
-  &:hover
-    color: ${buttonDeleteTaskColors.iconHover}
+  ${Button}:hover & {
+    color: ${buttonDeleteTaskColors.iconHover};
+  }
 `;
