@@ -31,7 +31,23 @@ export const drawerColors = {
   itemIconHover: "#009688"
 };
 
-export const loaderLinearColor = {
+export const loaderLinearColors = {
   background: "#050e19",
   indicatorBackground: "#009688"
+};
+
+export const buttonDeleteTaskColors = {
+  background: "#0c1622",
+  backgroundHover: "#c74747",
+  icon: "#c74747",
+  iconHover: "#FFFFFF"
+};
+
+export const buttonCompleteTaskColors = {
+  background: "#0c1622",
+  backgroundHover: commonColors.accent,
+  icon: commonColors.accent,
+  iconHover: "#FFFFFF",
+  iconCompleted: "rgba(255, 255, 255, 0.5)",
+  backgroundCompleted: "rgba(0, 150, 136, 0.5)"
 };

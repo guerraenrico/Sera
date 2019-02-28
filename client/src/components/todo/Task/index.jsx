@@ -2,8 +2,8 @@
 import React from "react";
 import Collapse from "../../anims/Collapse";
 import Fade from "../../anims/Fade";
-import ButtonCompleteTask from "./ButtonCompleteTask";
-import ButtonDeleteTask from "./ButtonDeleteTask";
+import ButtonComplete from "./components/ButtonComplete";
+import ButtonDelete from "./components/ButtonDelete";
 import { toSimpleDateFormat } from "../../../utils/Common";
 import labels from "../../../constants/labels";
 
@@ -79,13 +79,10 @@ class TaskComponent extends React.Component<Props, State> {
             {task.title}
           </Title>
           <Fade in={collapsed}>
-            <ButtonDeleteTask onClick={onDelete} />
+            <ButtonDelete onClick={onDelete} />
           </Fade>
           {onComplete !== undefined && (
-            <ButtonCompleteTask
-              onClick={onComplete}
-              completed={task.completed}
-            />
+            <ButtonComplete onClick={onComplete} completed={task.completed} />
           )}
         </Header>
         <ContentDate>{this.renderDate()}</ContentDate>

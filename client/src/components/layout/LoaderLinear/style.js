@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import { loaderLinearColor } from "../../../styles/colors";
+import { loaderLinearColors } from "../../../styles/colors";
 
 const loading = keyframes`
   from
@@ -24,7 +24,7 @@ export const LoaderLinear = styled.div`
   top: 0
   left: 0
   overflow: hidden
-  background-color: ${loaderLinearColor.background}
+  background-color: ${loaderLinearColors.background}
   z-index: 1
 
   &:before
@@ -34,7 +34,7 @@ export const LoaderLinear = styled.div`
   left: -200px
   width: 200px
   height: 4px
-  background-color: ${loaderLinearColor.indicatorBackground}
+  background-color: ${loaderLinearColors.indicatorBackground}
   animation: ${loading} 2s linear infinite
 `;
 
