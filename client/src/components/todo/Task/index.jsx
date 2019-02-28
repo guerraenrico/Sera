@@ -21,7 +21,7 @@ import {
 
 type Props = {
   onDelete?: () => void,
-  onComplete?: Task => void,
+  onComplete?: () => void,
   task: Task
 };
 type State = {
@@ -69,18 +69,16 @@ class TaskComponent extends React.Component<Props, State> {
     const { task, onDelete, onComplete } = this.props;
     const { collapsed } = this.state;
     return (
-      <Item>
+      <Item className={`${task.completed ? "completed" : ""}`}>
         <Header>
-          <Title
-            className={`${task.completed ? "task-title-completed" : ""}`}
-            onClick={() => this.onTitleClick()}
-            role="presentation"
-          >
+          <Title onClick={() => this.onTitleClick()} role="presentation">
             {task.title}
           </Title>
-          <Fade in={collapsed}>
-            <ButtonDelete onClick={onDelete} />
-          </Fade>
+          {onDelete !== undefined && (
+            <Fade in={collapsed}>
+              <ButtonDelete onClick={onDelete} />
+            </Fade>
+          )}
           {onComplete !== undefined && (
             <ButtonComplete onClick={onComplete} completed={task.completed} />
           )}
