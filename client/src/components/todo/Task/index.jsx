@@ -1,5 +1,5 @@
-﻿import React from "react";
-import PropTypes from "prop-types";
+﻿// @flow
+import React from "react";
 import Collapse from "../../anims/Collapse";
 import Fade from "../../anims/Fade";
 import ButtonCompleteTask from "./ButtonCompleteTask";
@@ -7,7 +7,33 @@ import ButtonDeleteTask from "./ButtonDeleteTask";
 import { toSimpleDateFormat } from "../../../utils/Common";
 import labels from "../../../constants/labels";
 
-class Task extends React.Component {
+import type { Task } from "../../../models/task";
+
+import {
+  Item,
+  Header,
+  Title,
+  ContentDate,
+  Date,
+  ContentDescription,
+  Description
+} from "./style";
+
+type Props = {
+  onDelete?: () => void,
+  onComplete?: Task => void,
+  task: Task
+};
+type State = {
+  collapsed: boolean
+};
+
+class TaskComponent extends React.Component<Props, State> {
+  static defaultProps = {
+    onDelete: undefined,
+    onComplete: undefined
+  };
+
   state = {
     collapsed: false
   };
@@ -17,43 +43,41 @@ class Task extends React.Component {
     this.setState({ collapsed: !collapsed });
   };
 
-  renderDate() {
+  renderDate = () => {
     const { task } = this.props;
     if (task.completed) {
       return (
-        <p className="complete-date">
+        <Date className="complete">
           {`${labels.labelPartialCompleted} ${
             task.completedAt ? toSimpleDateFormat(task.completedAt) : ""
           }`}
-        </p>
+        </Date>
       );
     }
     return (
-      <p className="complete-within-date">
+      <Date className="complete-within">
         {`${labels.labelPartialToCompleted} ${
           task.todoWithin
             ? toSimpleDateFormat(task.todoWithin)
             : labels.labelNotSet
         }`}
-      </p>
+      </Date>
     );
-  }
+  };
 
   render() {
     const { task, onDelete, onComplete } = this.props;
     const { collapsed } = this.state;
     return (
-      <div className="task-item">
-        <div className="task-header">
-          <p
-            className={`task-title ${
-              task.completed ? "task-title-completed" : ""
-            }`}
+      <Item>
+        <Header>
+          <Title
+            className={`${task.completed ? "task-title-completed" : ""}`}
             onClick={() => this.onTitleClick()}
             role="presentation"
           >
             {task.title}
-          </p>
+          </Title>
           <Fade in={collapsed}>
             <ButtonDeleteTask onClick={onDelete} />
           </Fade>
@@ -63,38 +87,26 @@ class Task extends React.Component {
               completed={task.completed}
             />
           )}
-        </div>
-        <div className="task-date">{this.renderDate()}</div>
+        </Header>
+        <ContentDate>{this.renderDate()}</ContentDate>
         <Collapse in={collapsed}>
-          <div key={task.description} className="task-body">
-            <p className="task-description">
-              {task.description !== undefined && task.description !== "" ? (
-                task.description
-              ) : (
-                <span className="empty">{labels.labelNoDescription}</span>
-              )}
-            </p>
-          </div>
+          <ContentDescription key={task.description}>
+            <Description
+              className={`${
+                task.description !== undefined && task.description !== ""
+                  ? "empty"
+                  : ""
+              }`}
+            >
+              {task.description !== undefined && task.description !== ""
+                ? task.description
+                : labels.labelNoDescription}
+            </Description>
+          </ContentDescription>
         </Collapse>
-      </div>
+      </Item>
     );
   }
 }
 
-Task.propTypes = {
-  onDelete: PropTypes.func,
-  onComplete: PropTypes.func,
-  task: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    title: PropTypes.string.isRequired,
-    completed: PropTypes.bool.isRequired,
-    completedAt: PropTypes.shape({})
-  }).isRequired
-};
-
-Task.defaultProps = {
-  onDelete: undefined,
-  onComplete: undefined
-};
-
-export default Task;
+export default TaskComponent;

@@ -29,3 +29,9 @@ export const page404Sizes = {
   titleFontSize: "12rem",
   descriptionFontSize: "1.2rem"
 };
+
+export const taskSizes = {
+  titleFontSize: "1.6em",
+  dateFontSize: "0.7rem",
+  descriptionFontSize: "0.9em"
+};
