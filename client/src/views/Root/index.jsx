@@ -20,6 +20,8 @@ import * as paths from "../../constants/paths";
 import * as authActions from "../../actions/authActions";
 import * as authSelector from "../../selectors/authSelector";
 
+import { Container, FlexContainer } from './style'
+
 const LoginContainer = Loadable({
   loader: () => import("../Login" /* webpackChunkName: 'login' */),
   loading: LoaderLinear
@@ -169,8 +171,8 @@ class Root extends Component<Props, State> {
     const nextPath = isAuthenticated ? paths.TODOS : paths.LOGIN;
     return (
       <Router>
-        <div id="main-container">
-          <div id="flex-container">
+        <Container>
+          <FlexContainer>
             <Route exact path="/" render={() => <Redirect to={nextPath} />} />
             {routes.map(route => {
               if (route.Drawer !== undefined) {
@@ -201,8 +203,8 @@ class Root extends Component<Props, State> {
                 />
               ))}
             </Switch>
-          </div>
-        </div>
+          </FlexContainer>
+        </Container>
       </Router>
     );
   };
