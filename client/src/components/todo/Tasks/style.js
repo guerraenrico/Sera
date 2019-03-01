@@ -6,7 +6,7 @@ import { commonSizes } from "../../../styles/sizes";
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: ${commonColors.backgroundDark}
+  background-color: ${commonColors.backgroundDark};
   box-sizing: border-box;
   -webkit-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);

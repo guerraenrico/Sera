@@ -22,7 +22,9 @@ type Props = {
   moreToLoad: boolean,
   fetchTasks: (Array<string>, boolean, number, number) => void,
   categoriesId: Array<string>,
-  completed: boolean
+  completed: boolean,
+  // eslint-disable-next-line
+  skip: number
 };
 
 type State = {
@@ -38,7 +40,7 @@ const initialState: State = {
 class Tasks extends React.Component<Props, State> {
   state = initialState;
 
-  static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps: Props, prevState: State) {
     if (nextProps.skip !== prevState.skip) {
       return {
         skip: nextProps.skip
