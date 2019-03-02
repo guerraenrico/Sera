@@ -7,7 +7,11 @@ export const commonColors = {
   backgroundDark: "#050e19",
   backgroundNight: "#020810",
   iconButton: "#2d3b4d",
-  iconButtonHover: "#FFF"
+  iconButtonHover: "#FFF",
+  buttonBorder: "1px solid #1e252f",
+  buttonBorderHover: "1px solid #009688",
+  textButton: "#35383c",
+  textButtonHover: "#475b75"
 };
 
 export const snackbarColors = {

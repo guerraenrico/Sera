@@ -12,6 +12,19 @@ import * as authActions from "../../actions/authActions";
 import * as messageActions from "../../actions/messageActions";
 import type { MessageState } from "../../reducers/message";
 
+import {
+  Container,
+  LoginContainer,
+  ContentDeclaration,
+  Title,
+  Description,
+  ContentLogo,
+  ButtonGoogleLogin,
+  GoogleIcon,
+  ContentTip,
+  Tip
+} from "./style";
+
 type Props = {
   message: MessageState,
   authenticateGoogleToken: string => void,
@@ -25,16 +38,16 @@ const Login = ({ message, authenticateGoogleToken, hideMessage }: Props) => {
     }
   };
   return (
-    <div className="content-app">
-      <div id="content-login">
-        <div id="content-declaration">
-          <h2 className="title">This is an Experimental App</h2>
-          <p className="description">
+    <Container>
+      <LoginContainer>
+        <ContentDeclaration>
+          <Title>This is an Experimental App</Title>
+          <Description>
             Dont use to store your confidential data. This app is Highly
             experimental and has been created only for my personal test
-          </p>
-        </div>
-        <div id="content-logo">{SeraLogo}</div>
+          </Description>
+        </ContentDeclaration>
+        <ContentLogo>{SeraLogo}</ContentLogo>
         <GoogleLogin
           clientId="489823671693-0vvlltnvkavfa37o2jl123jb57ulcphu.apps.googleusercontent.com"
           onSuccess={responseGoogle}
@@ -43,32 +56,28 @@ const Login = ({ message, authenticateGoogleToken, hideMessage }: Props) => {
           responseType="code"
           redirectUri={getCurrentBaseUrl}
           render={renderProps => (
-            <button
-              className="main-button button-google-login"
-              onClick={renderProps.onClick}
-              type="button"
-            >
-              <span className="icon-google-g">
+            <ButtonGoogleLogin onClick={renderProps.onClick}>
+              <GoogleIcon className="icon-google-g">
                 <span className="path1" />
                 <span className="path2" />
                 <span className="path3" />
                 <span className="path4" />
-              </span>
+              </GoogleIcon>
               <span>Log in with Google</span>
-            </button>
+            </ButtonGoogleLogin>
           )}
         />
-        <div id="content-tip">
-          <h2>“Don’t wish it was easier wish you were better”</h2>
-        </div>
-      </div>
+        <ContentTip>
+          <Tip>“Don’t wish it was easier wish you were better”</Tip>
+        </ContentTip>
+      </LoginContainer>
       <Snackbar
         show={message.show}
         isError={message.isError}
         message={message.text}
         onClose={() => hideMessage()}
       />
-    </div>
+    </Container>
   );
 };
 

@@ -20,7 +20,7 @@ import * as paths from "../../constants/paths";
 import * as authActions from "../../actions/authActions";
 import * as authSelector from "../../selectors/authSelector";
 
-import { Container, FlexContainer } from './style'
+import { Container, FlexContainer } from "./style";
 
 const LoginContainer = Loadable({
   loader: () => import("../Login" /* webpackChunkName: 'login' */),

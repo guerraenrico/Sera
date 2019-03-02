@@ -1,5 +1,5 @@
+// @flow
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import LoaderLinear from "../../components/layout/LoaderLinear";
@@ -14,7 +14,22 @@ import * as todoFiltersActions from "../../actions/todoFiltersActions";
 import * as messageActions from "../../actions/messageActions";
 import * as commonSelectors from "../../selectors/commonSelectors";
 
-class Todos extends Component {
+import type { MessageState } from "../../reducers/message";
+
+import { ContentApp, MainTopBar } from "./style";
+
+type Props = {
+  message: MessageState,
+  hideMessage: () => void,
+  initFetchAllCategories: () => void,
+  showLoading: boolean
+};
+
+type State = {
+  isDialogAddOpen: boolean
+};
+
+class Todos extends Component<Props, State> {
   state = {
     isDialogAddOpen: false
   };
@@ -28,15 +43,15 @@ class Todos extends Component {
     const { isDialogAddOpen } = this.state;
     const { message, hideMessage, showLoading } = this.props;
     return (
-      <div className="content-app">
+      <ContentApp>
         <LoaderLinear show={showLoading} />
-        <div id="main-top-bar">
+        <MainTopBar>
           <CategoriesFilter />
           <VisibilityFilter />
           <MainAddButton
             onClick={() => this.setState({ isDialogAddOpen: true })}
           />
-        </div>
+        </MainTopBar>
         <Tasks />
         <DialogAdd
           open={isDialogAddOpen}
@@ -48,21 +63,10 @@ class Todos extends Component {
           message={message.text}
           onClose={() => hideMessage()}
         />
-      </div>
+      </ContentApp>
     );
   }
 }
-
-Todos.propTypes = {
-  message: PropTypes.shape({
-    show: PropTypes.bool.isRequired,
-    isError: PropTypes.bool.isRequired,
-    text: PropTypes.string.isRequired
-  }).isRequired,
-  hideMessage: PropTypes.func.isRequired,
-  initFetchAllCategories: PropTypes.func.isRequired,
-  showLoading: PropTypes.bool.isRequired
-};
 
 const mapStateToProps = state => ({
   message: state.message,
