@@ -31,9 +31,9 @@ router.get("/", (req, res) =>
           categoriesId
         );
         handleResponse(res, tasks, session.accessToken);
-      } catch (err) {
-        console.log("err", JSON.stringify(err));
-        handleError(res, ApiErrors.ErrorReadTask(err), session.accessToken);
+      } catch (e) {
+        console.log("err", JSON.stringify(e));
+        handleError(res, ApiErrors.ErrorReadTask(e), session.accessToken);
       }
     })
   )

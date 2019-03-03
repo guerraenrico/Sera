@@ -1,4 +1,5 @@
 const { ObjectId } = require("mongodb");
+const Category = require("./Category");
 
 /* eslint dot-notation: 0 */
 const Schema = {
@@ -9,29 +10,29 @@ const Schema = {
     completed: "completed",
     todoWithin: "todoWithin",
     completedAt: "completedAt",
-    categoryId: "categoryId",
+    categories: "categories",
     createdAt: "createdAt",
     userId: "userId"
   }
 };
 
-const New = (
+const New = ({
   title = "",
   description = "",
   todoWithin = undefined,
-  categoryId = "",
+  categories = [],
   completed = false,
   completedAt = undefined,
   userId = "",
   createdAt = undefined,
   id = undefined
-) => ({
+}) => ({
   ...(id !== undefined && { id }),
   [Schema.fields.title]: title,
   [Schema.fields.description]: description,
   [Schema.fields.todoWithin]: todoWithin,
   [Schema.fields.completedAt]: completedAt,
-  [Schema.fields.categoryId]: categoryId,
+  [Schema.fields.categories]: categories,
   [Schema.fields.completed]: completed,
   [Schema.fields.createdAt]: createdAt,
   [Schema.fields.userId]: userId
@@ -44,32 +45,28 @@ const CreateFromBodyRequest = (body, userId) => {
   if (body.todoWithin === undefined || body.todoWithin === "") {
     return undefined;
   }
-  if (body.categoryId === undefined || body.categoryId === "") {
-    return undefined;
-  }
-  return New(
-    body.title,
-    body.description,
-    body.todoWithin,
-    body.categoryId,
-    false,
-    undefined,
+  return New({
+    title: body.title,
+    description: body.description,
+    todoWithin: body.todoWithin,
+    categories: body.categories.map(cat => Category.New(cat)),
     userId
-  );
+  });
 };
 
-const CreateFromDocument = taskDocument =>
-  New(
-    taskDocument[Schema.fields.title],
-    taskDocument[Schema.fields.description],
-    taskDocument[Schema.fields.todoWithin],
-    taskDocument[Schema.fields.categoryId],
-    taskDocument[Schema.fields.completed],
-    taskDocument[Schema.fields.completedAt],
-    taskDocument[Schema.fields.userId],
-    taskDocument[Schema.fields.createdAt],
-    taskDocument["_id"]
-  );
+const CreateFromDocument = taskDocument => {
+  let fields = {};
+  Object.keys(Schema.fields).forEach(key => {
+    fields = {
+      ...fields,
+      [Schema.fields[key]]: taskDocument[Schema.fields[key]]
+    };
+  });
+  return New({
+    ...fields,
+    id: taskDocument["_id"]
+  });
+};
 
 const CreateFromDocuments = taskDocuments =>
   taskDocuments.map(doc => CreateFromDocument(doc));
@@ -80,13 +77,13 @@ const GetAllAsync = async (
   limit,
   skip,
   completed,
-  categoriesId
+  categoriesId = []
 ) => {
   const filter = {
     $and: [
       { [Schema.fields.completed]: completed },
-      categoriesId[0] !== "0"
-        ? { [Schema.fields.categoryId]: { $in: categoriesId } }
+      categoriesId.length > 0 && categoriesId[0] !== "0"
+        ? { [`${Schema.fields.categories}.id`]: { $in: categoriesId } }
         : {},
       { [Schema.fields.userId]: userId }
     ]

@@ -16,6 +16,7 @@ import type {
 } from "../reducers/todoTasks";
 
 import type { Task } from "../models/task";
+import type { Category } from "../models/category";
 import type { ThunkAction } from "../reducers";
 
 const requestFetchTasks = (limit: number, skip): RequestFetchTasksAction => ({
@@ -119,7 +120,7 @@ export const deleteTask = (id: string = ""): ThunkAction => async (
 export const addTask = (
   title: string = "",
   description: string = "",
-  category: { id: string } = { id: "" },
+  category: Category,
   todoWithin: Date,
   callback: () => void
 ): ThunkAction => async (dispatch, getState) => {
@@ -130,7 +131,7 @@ export const addTask = (
       {
         title,
         description,
-        categoryId: category.id,
+        categories: [category],
         todoWithin
       },
       Methods.POST,
