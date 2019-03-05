@@ -2,6 +2,8 @@
 import React from "react";
 import ButtonDelete from "./components/ButtonDelete";
 
+import { Chip, Text } from "./style";
+
 import type { Category } from "../../../models/category";
 
 type Props = {
@@ -30,14 +32,10 @@ const CategoryComponent = ({ category, onClick, onDelete }: Props) => {
   };
 
   return (
-    <div
-      className="category-chip align-items-center"
-      onClick={onChipClick}
-      role="presentation"
-    >
-      <span className="category-text">{category.name}</span>
+    <Chip onClick={onChipClick} role="presentation">
+      <Text>{category.name}</Text>
       {onDelete !== undefined && <ButtonDelete onClick={onDeleteClick} />}
-    </div>
+    </Chip>
   );
 };
 

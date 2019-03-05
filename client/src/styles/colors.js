@@ -56,7 +56,14 @@ export const buttonCompleteTaskColors = {
   backgroundCompleted: "rgba(0, 150, 136, 0.5)"
 };
 
+export const categoryChipColors = {
+  text: "#fafafa",
+  textHover: "#ffffff",
+  background: commonColors.accent,
+  backgroundHover: "#009688"
+};
+
 export const buttonDeleteCategoryChipColors = {
-  icon: "#2d3b4d",
-  iconHover: "#ffffff"
+  icon: "#0C9487",
+  iconHover: "#fafafa"
 };

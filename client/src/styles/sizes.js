@@ -36,3 +36,10 @@ export const taskSizes = {
   descriptionFontSize: "0.9em",
   itemMargin: "2.5rem"
 };
+
+export const categoryChipSize = {
+  paddingSmall: "8px",
+  padding: "15px",
+  textSmall: "0.7em",
+  text: "1em"
+};
