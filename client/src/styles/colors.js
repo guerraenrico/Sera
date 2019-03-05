@@ -41,14 +41,14 @@ export const loaderLinearColors = {
 };
 
 export const buttonDeleteTaskColors = {
-  background: "#0c1622",
+  background: commonColors.backgroundDark,
   backgroundHover: "#c74747",
   icon: "#c74747",
   iconHover: "#FFFFFF"
 };
 
 export const buttonCompleteTaskColors = {
-  background: "#0c1622",
+  background: commonColors.backgroundDark,
   backgroundHover: commonColors.accent,
   icon: commonColors.accent,
   iconHover: "#FFFFFF",
