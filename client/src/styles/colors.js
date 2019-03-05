@@ -55,3 +55,8 @@ export const buttonCompleteTaskColors = {
   iconCompleted: "rgba(255, 255, 255, 0.5)",
   backgroundCompleted: "rgba(0, 150, 136, 0.5)"
 };
+
+export const buttonDeleteCategoryChipColors = {
+  icon: "#2d3b4d",
+  iconHover: "#ffffff"
+};

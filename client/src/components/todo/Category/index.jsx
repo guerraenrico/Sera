@@ -1,46 +1,48 @@
-﻿import React from "react";
-import PropTypes from "prop-types";
-import ButtonDeleteCategory from "./ButtonDeleteCategory";
+﻿// @flow
+import React from "react";
+import ButtonDelete from "./components/ButtonDelete";
 
-const Category = ({ category, selected, onClick, onDelete }) => {
-  let cssClass = "";
+import type { Category } from "../../../models/category";
 
+type Props = {
+  category: Category,
+  onDelete?: Category => void,
+  onClick: Category => void
+};
+
+const CategoryComponent = ({ category, onClick, onDelete }: Props) => {
   const onChipClick = e => {
-    onClick(category, e);
-  };
-  const onDeleteClick = () => {
-    onDelete(category);
+    if (
+      e.target.tagName.toLowerCase() !== "i" &&
+      e.target.tagName.toLowerCase() !== "button"
+    ) {
+      onClick(category, e);
+    }
   };
 
-  if (selected) {
-    cssClass = "category-selected";
-  }
+  const onDeleteClick = e => {
+    if (
+      e.target.tagName.toLowerCase() === "i" &&
+      e.target.tagName.toLowerCase() === "button"
+    ) {
+      onDelete(category);
+    }
+  };
+
   return (
     <div
-      className={`${cssClass} category-chip align-items-center`}
+      className="category-chip align-items-center"
       onClick={onChipClick}
       role="presentation"
     >
       <span className="category-text">{category.name}</span>
-      {category.id !== "0" && onDelete !== undefined && (
-        <ButtonDeleteCategory onClick={onDeleteClick} />
-      )}
+      {onDelete !== undefined && <ButtonDelete onClick={onDeleteClick} />}
     </div>
   );
 };
 
-Category.propTypes = {
-  onDelete: PropTypes.func,
-  onClick: PropTypes.func.isRequired,
-  category: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired
-  }).isRequired,
-  selected: PropTypes.bool.isRequired
-};
-
-Category.defaultProps = {
+CategoryComponent.defaultProps = {
   onDelete: undefined
 };
 
-export default Category;
+export default CategoryComponent;
