@@ -19,9 +19,11 @@ export const alignItemCenter = `
 `;
 
 export const mainContainer = `
+  font-family: ${fontFamily};
   position: relative;
   width: 100%;
   margin: 0 auto 0 auto;
+  background-color: ${commonColors.backgroundDark}
 `;
 
 export const flexContainer = `
@@ -33,7 +35,7 @@ export const flexContainer = `
 
 export const contentApp = `
   width: calc(100% - ${drawerSizes.width} - ${commonSizes.containerMargin});
-  margin: ${commonSizes.containerMargin} ${commonSizes.containerMargin}
+  margin: 0 ${commonSizes.containerMargin}
   ${commonSizes.containerMargin} 0;
 `;
 

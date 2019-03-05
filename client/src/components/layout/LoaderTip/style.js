@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { loaderTipSizes } from "../../../styles/sizes";
+import { commonColors } from "../../../styles/colors";
 
 export const LoaderTip = styled.div`
   height: 100vh;
@@ -7,6 +8,7 @@ export const LoaderTip = styled.div`
   flex-flow: column;
   justify-content: center;
   align-items: center;
+  background-color: ${commonColors.backgroundDark};
 `;
 
 export const H1 = styled.h1`

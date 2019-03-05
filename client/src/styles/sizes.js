@@ -1,6 +1,6 @@
 export const commonSizes = {
   containerBorderRadius: "10px",
-  containerMargin: "2.5rem"
+  containerMargin: "5rem"
 };
 
 export const snackbarSizes = {
@@ -33,5 +33,6 @@ export const page404Sizes = {
 export const taskSizes = {
   titleFontSize: "1.6em",
   dateFontSize: "0.7rem",
-  descriptionFontSize: "0.9em"
+  descriptionFontSize: "0.9em",
+  itemMargin: "2.5rem"
 };

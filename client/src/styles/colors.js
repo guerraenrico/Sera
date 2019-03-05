@@ -1,15 +1,15 @@
 export const commonColors = {
-  accent: "#009688",
+  accent: "#1EBCAD",
   textPrimary: "#fff",
   textSecondary: "#a0acba",
   textThird: "#475b75",
-  background: "#0a1523",
-  backgroundDark: "#050e19",
-  backgroundNight: "#020810",
+  background: "#25292E",
+  backgroundDark: "#1F2226",
+  backgroundNight: "#181A1E",
   iconButton: "#2d3b4d",
   iconButtonHover: "#FFF",
   buttonBorder: "1px solid #1e252f",
-  buttonBorderHover: "1px solid #009688",
+  buttonBorderHover: "1px solid #1EBCAD",
   textButton: "#35383c",
   textButtonHover: "#475b75"
 };
@@ -28,16 +28,16 @@ export const snackbarActionColors = {
 };
 
 export const drawerColors = {
-  background: "#050e19",
+  background: "#181A1E",
   itemSelectedBackground: "#020810",
   itemIcon: "#97a0ab",
-  itemIconSelected: "#009688",
-  itemIconHover: "#009688"
+  itemIconSelected: "#1EBCAD",
+  itemIconHover: "#1EBCAD"
 };
 
 export const loaderLinearColors = {
-  background: "#050e19",
-  indicatorBackground: "#009688"
+  background: "#181A1E",
+  indicatorBackground: "#1EBCAD"
 };
 
 export const buttonDeleteTaskColors = {

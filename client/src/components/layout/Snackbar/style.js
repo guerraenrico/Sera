@@ -4,10 +4,10 @@ import { snackbarColors, snackbarActionColors } from "../../../styles/colors";
 import { snackbarSizes, snackbarActionSizes } from "../../../styles/sizes";
 
 export const SnackbarContainer = styled.div`
-  position: fixed
-  width: ${snackbarSizes.width}
-  min-height: ${snackbarSizes.minHeight}
-  margin: 30px
+  position: fixed;
+  width: ${snackbarSizes.width};
+  min-height: ${snackbarSizes.minHeight};
+  margin: 30px;
 `;
 
 export const Snackbar = styled.div`

@@ -33,8 +33,9 @@ const itemStyle = `
   outline: none;
   border: none;
   cursor: pointer;
-  align-self: center;
-  justify-self: end;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   box-sizing: border-box;
   transition: background 200ms ease-in;
 `;

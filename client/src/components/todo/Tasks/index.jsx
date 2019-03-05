@@ -66,13 +66,14 @@ class Tasks extends React.Component<Props, State> {
       <Container>
         <InfiniteScroll onScroll={this.onFetchTodoTasksNext}>
           <TransitionGroup>
-            {taskList.map(arg => (
-              <Resize key={arg.id}>
+            {taskList.map((task, i) => (
+              <Resize key={task.id}>
                 <TaskComponent
-                  key={arg.id}
-                  task={arg}
-                  onDelete={() => onDeleteTask(arg)}
-                  onComplete={() => onCompleteTask(arg)}
+                  key={task.id}
+                  last={i === taskList.length - 1}
+                  task={task}
+                  onDelete={() => onDeleteTask(task)}
+                  onComplete={() => onCompleteTask(task)}
                 />
               </Resize>
             ))}
