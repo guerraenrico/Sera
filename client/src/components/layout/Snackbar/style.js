@@ -15,10 +15,10 @@ export const Snackbar = styled.div`
   align-items: center;
   align-content: center;
   vertical-align: middle;
-  background-color: $snackbar-background-color;
+  background-color: ${snackbarColors.background};
   padding: 15px 20px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-  z-index: $snackbar-z-index;
+  z-index: ${snackbarSizes.zIndex};
   box-sizing: border-box;
 
   &.snackbar.errorbackground-color: ${snackbarColors.errorBackground};
@@ -48,7 +48,7 @@ export const Action = styled.button`
   transition: background 200ms ease-in;
 
   &:hover {
-    background-color: ${snackbarActionColors.backgroundHover}
-    color: ${snackbarActionColors.colorHover}
+    background-color: ${snackbarActionColors.backgroundHover};
+    color: ${snackbarActionColors.colorHover};
   }
 `;
