@@ -13,11 +13,9 @@ export const Item = styled.div`
   border-radius: ${commonSizes.containerBorderRadius};
   overflow: hidden;
   transition: height 500ms ease-in;
-  margin-bottom: ${props => (props.last ? 0 : taskSizes.itemMargin)};
 `;
 
-// -webkit-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-// box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+// padding-bottom: ${props => (props.last ? 0 : taskSizes.itemMargin)};
 
 export const Header = styled.div`
   position: relative;
@@ -69,6 +67,12 @@ export const Date = styled.p`
   }
 `;
 
+export const ContentCategories = styled.div`
+  display: flex;
+  flex-direction: row;
+  padding: 0 40px 30px 40px;
+`;
+
 export const ContentDescription = styled.div`
   position: relative;
   display: block;
@@ -78,7 +82,7 @@ export const ContentDescription = styled.div`
 
 export const Description = styled.p`
   font-size: ${taskSizes.descriptionFontSize};
-  color: ${commonColors.textSecondary}
+  color: ${commonColors.textSecondary};
   font-weight: 300;
   padding: 40px 55px;
   line-height: 1.5rem;

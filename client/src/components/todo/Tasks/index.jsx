@@ -13,15 +13,15 @@ import * as todoFiltersSelectors from "../../../selectors/todoFiltersSelectors";
 
 import type { Task } from "../../../models/task";
 
-import { Container } from "./style";
+import { Container, itemAnimationStyle } from "./style";
 
 type Props = {
   onDeleteTask: Task => void,
   onCompleteTask: Task => void,
   taskList: Array<Task>,
   moreToLoad: boolean,
-  fetchTasks: (Array<string>, boolean, number, number) => void,
-  categoriesId: Array<string>,
+  fetchTasks: (string, boolean, number, number) => void,
+  categoryFilterId: string,
   completed: boolean,
   // eslint-disable-next-line
   skip: number
@@ -49,14 +49,21 @@ class Tasks extends React.Component<Props, State> {
     return null;
   }
 
+  componentDidMount() {
+    const { categoryFilterId, completed, fetchTasks } = this.props;
+    const { limit, skip } = this.state;
+    fetchTasks(categoryFilterId, completed, limit, skip);
+    this.setState(state => ({ skip: state.skip + state.limit }));
+  }
+
   onFetchTodoTasksNext = () => {
-    const { categoriesId, completed, fetchTasks, moreToLoad } = this.props;
+    const { categoryFilterId, completed, fetchTasks, moreToLoad } = this.props;
     if (!moreToLoad) {
       return;
     }
     const { limit, skip } = this.state;
     const newSkip = skip + limit;
-    fetchTasks(categoriesId, completed, limit, newSkip);
+    fetchTasks(categoryFilterId, completed, limit, newSkip);
     this.setState(state => ({ skip: state.skip + state.limit }));
   };
 
@@ -67,10 +74,12 @@ class Tasks extends React.Component<Props, State> {
         <InfiniteScroll onScroll={this.onFetchTodoTasksNext}>
           <TransitionGroup>
             {taskList.map((task, i) => (
-              <Resize key={task.id}>
+              <Resize
+                key={task.id}
+                style={itemAnimationStyle(i === taskList.length - 1)}
+              >
                 <TaskComponent
                   key={task.id}
-                  last={i === taskList.length - 1}
                   task={task}
                   onDelete={() => onDeleteTask(task)}
                   onComplete={() => onCompleteTask(task)}
@@ -88,7 +97,7 @@ const mapStateToProps = state => ({
   taskList: todoTasksSelectors.getTaskList(state),
   skip: todoTasksSelectors.getSkip(state),
   moreToLoad: todoTasksSelectors.stillMoreToLoad(state),
-  categoriesId: todoFiltersSelectors.getSelectedCategoriesId(state),
+  categoryFilterId: todoFiltersSelectors.getSelectedCategoryId(state),
   completed: todoFiltersSelectors.visibilityOnlyCompleted(state)
 });
 
@@ -99,10 +108,10 @@ const mapDispatchToProps = dispatch => ({
   onCompleteTask: task => {
     dispatch(todoTasksActions.toogleTaskCompleted(task.id, task.completed));
   },
-  fetchTasks: (categoriesId, completed, limit, skip) => {
+  fetchTasks: (categoryFilterId, completed, limit, skip) => {
     dispatch(
       todoTasksActions.fetchTasksByCategory(
-        categoriesId,
+        categoryFilterId && [categoryFilterId],
         completed,
         limit,
         skip

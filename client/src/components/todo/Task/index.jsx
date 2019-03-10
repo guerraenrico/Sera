@@ -2,6 +2,7 @@
 import React from "react";
 import Collapse from "../../anims/Collapse";
 import Fade from "../../anims/Fade";
+import Category from "../Category";
 import ButtonComplete from "./components/ButtonComplete";
 import ButtonDelete from "./components/ButtonDelete";
 import { toSimpleDateFormat } from "../../../utils/Common";
@@ -15,15 +16,15 @@ import {
   Title,
   ContentDate,
   Date,
+  ContentCategories,
   ContentDescription,
   Description
 } from "./style";
 
 type Props = {
-  onDelete?: () => void,
-  onComplete?: () => void,
-  task: Task,
-  last?: boolean
+  +onDelete?: () => void,
+  +onComplete?: () => void,
+  +task: Task
 };
 type State = {
   collapsed: boolean
@@ -32,8 +33,7 @@ type State = {
 class TaskComponent extends React.Component<Props, State> {
   static defaultProps = {
     onDelete: undefined,
-    onComplete: undefined,
-    last: false
+    onComplete: undefined
   };
 
   state = {
@@ -45,7 +45,7 @@ class TaskComponent extends React.Component<Props, State> {
     this.setState({ collapsed: !collapsed });
   };
 
-  renderDate = () => {
+  dateToRender = () => {
     const { task } = this.props;
     if (task.completed) {
       return (
@@ -67,11 +67,29 @@ class TaskComponent extends React.Component<Props, State> {
     );
   };
 
+  categoriesToRender = (task: Task) => {
+    const { categories } = task;
+    if (categories === undefined || categories.length === 0) {
+      return undefined;
+    }
+    return (
+      <ContentCategories>
+        {categories.map(cat => (
+          <Category
+            key={`${task.id}_${cat.id}`}
+            category={cat}
+            onClick={() => {}}
+          />
+        ))}
+      </ContentCategories>
+    );
+  };
+
   render() {
-    const { task, onDelete, onComplete, last } = this.props;
+    const { task, onDelete, onComplete } = this.props;
     const { collapsed } = this.state;
     return (
-      <Item last={last} className={`${task.completed ? "completed" : ""}`}>
+      <Item className={`${task.completed ? "completed" : ""}`}>
         <Header>
           <Title onClick={() => this.onTitleClick()} role="presentation">
             {task.title}
@@ -85,14 +103,15 @@ class TaskComponent extends React.Component<Props, State> {
             <ButtonComplete onClick={onComplete} completed={task.completed} />
           )}
         </Header>
-        <ContentDate>{this.renderDate()}</ContentDate>
+        <ContentDate>{this.dateToRender()}</ContentDate>
+        {this.categoriesToRender(task)}
         <Collapse in={collapsed}>
           <ContentDescription key={task.description}>
             <Description
               className={`${
                 task.description !== undefined && task.description !== ""
-                  ? "empty"
-                  : ""
+                  ? ""
+                  : "empty"
               }`}
             >
               {task.description !== undefined && task.description !== ""

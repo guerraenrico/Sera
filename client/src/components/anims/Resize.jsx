@@ -35,7 +35,7 @@ const onExited = node => {
   style.opacity = 0;
 };
 
-const Resize = ({ children, ...props }) => (
+const Resize = ({ children, style, ...props }) => (
   <Transition
     {...props}
     onEnter={onEnter}
@@ -47,7 +47,8 @@ const Resize = ({ children, ...props }) => (
     {() => (
       <div
         style={{
-          ...defaultStyle
+          ...defaultStyle,
+          ...style
         }}
       >
         {children}
@@ -57,7 +58,12 @@ const Resize = ({ children, ...props }) => (
 );
 
 Resize.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+  style: PropTypes.shape()
+};
+
+Resize.defaultProps = {
+  style: {}
 };
 
 export default Resize;
