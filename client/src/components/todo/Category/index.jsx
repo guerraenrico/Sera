@@ -7,9 +7,9 @@ import { Chip, Text } from "./style";
 import type { Category } from "../../../models/category";
 
 type Props = {
-  category: Category,
-  onDelete?: Category => void,
-  onClick: Category => void
+  +category: Category,
+  +onDelete?: Category => void,
+  +onClick: Category => void
 };
 
 const CategoryComponent = ({ category, onClick, onDelete }: Props) => {
@@ -18,14 +18,15 @@ const CategoryComponent = ({ category, onClick, onDelete }: Props) => {
       e.target.tagName.toLowerCase() !== "i" &&
       e.target.tagName.toLowerCase() !== "button"
     ) {
-      onClick(category, e);
+      onClick(category);
     }
   };
 
-  const onDeleteClick = e => {
+  const onDeleteClick = (e: {}) => {
     if (
       e.target.tagName.toLowerCase() === "i" &&
-      e.target.tagName.toLowerCase() === "button"
+      e.target.tagName.toLowerCase() === "button" &&
+      onDelete !== undefined
     ) {
       onDelete(category);
     }
@@ -34,7 +35,9 @@ const CategoryComponent = ({ category, onClick, onDelete }: Props) => {
   return (
     <Chip onClick={onChipClick} role="presentation">
       <Text>{category.name}</Text>
-      {onDelete !== undefined && <ButtonDelete onClick={onDeleteClick} />}
+      {onDelete !== undefined && (
+        <ButtonDelete onClick={e => onDeleteClick(e)} />
+      )}
     </Chip>
   );
 };

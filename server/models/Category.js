@@ -68,6 +68,23 @@ const DeleteAsync = async (db, userId, id) =>
     $and: [{ _id: ObjectId(id.toString()) }, { [Schema.fields.userId]: userId }]
   });
 
+const SearchAsync = async (db, userId, text) => {
+  let regex = "";
+  const words = text.split(" ");
+  words.forEach(word => {
+    regex = `${regex}(.*${word})`;
+  });
+  const filter = {
+    $and: [
+      { [Schema.fields.userId]: userId },
+      { [Schema.fields.name]: { $regex: `${regex}`, $options: "i" } }
+    ]
+  };
+  const query = db.collection(Schema.name).find(filter);
+  const categoriesDocs = await query.toArray();
+  return CreateFromDocuments(categoriesDocs);
+};
+
 module.exports = {
   Schema,
   New,
@@ -77,5 +94,6 @@ module.exports = {
   GetAllAsync,
   GetAllFilteredAsync,
   InsertAsync,
-  DeleteAsync
+  DeleteAsync,
+  SearchAsync
 };

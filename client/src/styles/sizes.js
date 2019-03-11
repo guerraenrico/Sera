@@ -3,6 +3,11 @@ export const commonSizes = {
   containerMargin: "5rem"
 };
 
+export const buttonIconSizes = {
+  iconFontSize: "2.5rem",
+  margin: "0 1.5rem"
+};
+
 export const snackbarSizes = {
   zIndex: 30,
   minHeight: "50px",
@@ -37,9 +42,14 @@ export const taskSizes = {
   itemMargin: "2.5rem"
 };
 
-export const categoryChipSize = {
+export const categoryChipSizes = {
   paddingSmall: "8px",
   padding: "15px",
   textSmall: "0.7em",
   text: "1em"
+};
+
+export const searchSizes = {
+  suggestionMargin: "1rem",
+  suggestionsPadding: "1rem"
 };

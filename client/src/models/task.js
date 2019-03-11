@@ -1,4 +1,6 @@
 // @flow
+import type { Category } from "./category";
+
 export type Task = {
   id: string,
   title: string,
@@ -8,5 +10,6 @@ export type Task = {
   completedAt: Date | void,
   categoryId: string,
   createdAt: Date,
-  userId: string
+  userId: string,
+  categories: Array<Category> | void
 };

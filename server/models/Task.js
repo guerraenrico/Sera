@@ -82,7 +82,7 @@ const GetAllAsync = async (
   const filter = {
     $and: [
       { [Schema.fields.completed]: completed },
-      categoriesId.length > 0 && categoriesId[0] !== "0"
+      categoriesId.length > 0 && categoriesId[0] !== ""
         ? { [`${Schema.fields.categories}.id`]: { $in: categoriesId } }
         : {},
       { [Schema.fields.userId]: userId }

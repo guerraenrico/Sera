@@ -5,16 +5,17 @@ import { throttle } from "lodash";
 const waitTime = 500;
 
 class InfiniteScroll extends React.Component {
+  onScrollThrottle = undefined;
+
   componentDidMount() {
-    window.addEventListener("scroll", throttle(this.onScroll, waitTime), false);
+    this.onScrollThrottle = throttle(this.onScroll, waitTime);
+    window.addEventListener("scroll", this.onScrollThrottle, false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener(
-      "scroll",
-      throttle(this.onScroll, waitTime),
-      false
-    );
+    if (this.onScrollThrottle !== undefined) {
+      window.removeEventListener("scroll", this.onScrollThrottle, false);
+    }
   }
 
   onScroll = () => {

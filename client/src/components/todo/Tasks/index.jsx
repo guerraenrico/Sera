@@ -79,7 +79,6 @@ class Tasks extends React.Component<Props, State> {
                 style={itemAnimationStyle(i === taskList.length - 1)}
               >
                 <TaskComponent
-                  key={task.id}
                   task={task}
                   onDelete={() => onDeleteTask(task)}
                   onComplete={() => onCompleteTask(task)}

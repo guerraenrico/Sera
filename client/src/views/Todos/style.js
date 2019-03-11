@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 import { contentApp } from "../../styles/common";
+import { commonSizes } from "../../styles/sizes";
 
 export const ContentApp = styled.div`
   ${contentApp}
@@ -10,5 +11,13 @@ export const MainTopBar = styled.div`
   position: relative;
   display: flex;
   flex-direction: row;
-  padding: 0 0 $container-margin 0;
+  padding: ${commonSizes.containerMargin} 0;
+`;
+
+export const ContentTopBarActions = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 `;

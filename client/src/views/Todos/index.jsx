@@ -3,25 +3,24 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import LoaderLinear from "../../components/layout/LoaderLinear";
-import MainAddButton from "../../components/layout/MainAddButton";
-import CategoriesFilter from "../../components/todo/Category/CategoriesFilter";
-import VisibilityFilter from "../../components/todo/visibility/VisibilityFilters";
+import ButtonIcon from "../../components/layout/ButtonIcon";
+// import CategoriesFilter from "../../components/todo/Category/CategoriesFilter";
+// import VisibilityFilter from "../../components/todo/visibility/VisibilityFilters";
+import Search from "../../components/todo/Search";
 import Tasks from "../../components/todo/Tasks";
 import DialogAdd from "../../components/todo/dialogAdd/DialogAdd";
 import Snackbar from "../../components/layout/Snackbar";
 
-import * as todoFiltersActions from "../../actions/todoFiltersActions";
 import * as messageActions from "../../actions/messageActions";
 import * as commonSelectors from "../../selectors/commonSelectors";
 
 import type { MessageState } from "../../reducers/message";
 
-import { ContentApp, MainTopBar } from "./style";
+import { ContentApp, MainTopBar, ContentTopBarActions } from "./style";
 
 type Props = {
   message: MessageState,
   hideMessage: () => void,
-  initFetchAllCategories: () => void,
   showLoading: boolean
 };
 
@@ -34,11 +33,6 @@ class Todos extends Component<Props, State> {
     isDialogAddOpen: false
   };
 
-  componentDidMount() {
-    const { initFetchAllCategories } = this.props;
-    initFetchAllCategories();
-  }
-
   render() {
     const { isDialogAddOpen } = this.state;
     const { message, hideMessage, showLoading } = this.props;
@@ -46,11 +40,16 @@ class Todos extends Component<Props, State> {
       <ContentApp>
         <LoaderLinear show={showLoading} />
         <MainTopBar>
-          <CategoriesFilter />
-          <VisibilityFilter />
-          <MainAddButton
-            onClick={() => this.setState({ isDialogAddOpen: true })}
-          />
+          {/* <CategoriesFilter />
+          <VisibilityFilter /> */}
+          <Search />
+          <ContentTopBarActions>
+            <ButtonIcon onClick={() => {}} className="icon-filter" />
+            <ButtonIcon
+              onClick={() => this.setState({ isDialogAddOpen: true })}
+              className="icon-add"
+            />
+          </ContentTopBarActions>
         </MainTopBar>
         <Tasks />
         <DialogAdd
@@ -76,9 +75,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   hideMessage: () => {
     dispatch(messageActions.hideMessage());
-  },
-  initFetchAllCategories: () => {
-    dispatch(todoFiltersActions.fetchAllCategories());
   }
 });
 

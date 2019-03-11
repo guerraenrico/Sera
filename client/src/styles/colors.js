@@ -11,7 +11,13 @@ export const commonColors = {
   buttonBorder: "1px solid #1e252f",
   buttonBorderHover: "1px solid #1EBCAD",
   textButton: "#35383c",
-  textButtonHover: "#475b75"
+  textButtonHover: "#475b75",
+  inputPlaceholder: "#3C4148"
+};
+
+export const buttonIconColors = {
+  icon: commonColors.textSecondary,
+  iconHover: commonColors.textPrimary
 };
 
 export const snackbarColors = {
