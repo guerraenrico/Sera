@@ -5,7 +5,11 @@ import { debounce } from "lodash";
 import { TransitionGroup } from "react-transition-group";
 
 import Resize from "../../anims/Resize";
-import { searchCategory } from "../../../actions/todoFiltersActions";
+import {
+  searchCategory,
+  setSelectedCategory,
+  cleanSelectedCategory
+} from "../../../actions/todoFiltersActions";
 
 import CategoryComponent from "../Category";
 import type { Category } from "../../../models/category";
@@ -22,12 +26,14 @@ import {
 const waitTime = 300;
 
 type Props = {
-  doSearchCategory: (string, (Array<Category>) => void) => void
+  doSearchCategory: (string, (Array<Category>) => void) => void,
+  doSetSelectedCategory: Category => void,
+  doCleanSelectedCategory: () => void
 };
 
 type State = {
   text: string,
-  categories?: Array<Category>,
+  categories: Array<Category>,
   suggestionsVisible: boolean,
   inputHeight: number
 };
@@ -35,7 +41,7 @@ type State = {
 class SearchComponent extends Component<Props, State> {
   state = {
     text: "",
-    categories: undefined,
+    categories: [],
     suggestionsVisible: false,
     inputHeight: 0
   };
@@ -74,18 +80,22 @@ class SearchComponent extends Component<Props, State> {
   };
 
   handleOnInputBlur = () => {
-    this.setState({ suggestionsVisible: false, categories: undefined });
+    this.setState({ suggestionsVisible: false, categories: [] });
+  };
+
+  handleOnCategoryClick = category => {
+    const { doSetSelectedCategory } = this.props;
+    doSetSelectedCategory(category);
   };
 
   searchCategories = () => {
     const { text } = this.state;
     const { doSearchCategory } = this.props;
     if (text === "") {
-      this.setState({ suggestionsVisible: false, categories: undefined });
+      this.setState({ suggestionsVisible: false, categories: [] });
       return;
     }
     doSearchCategory(text, categories => {
-      console.log("categories", categories);
       this.setState({ suggestionsVisible: true, categories });
     });
   };
@@ -108,17 +118,19 @@ class SearchComponent extends Component<Props, State> {
           className={`${suggestionsVisible ? "" : "empty"}`}
         >
           <TransitionGroup>
-            {categories !== undefined &&
-              categories.map((category, i) => (
-                <Resize
-                  key={category.id}
-                  style={itemAnimationStyle(i === categories.length - 1)}
-                >
-                  <Suggestion>
-                    <CategoryComponent category={category} onClick={() => {}} />
-                  </Suggestion>
-                </Resize>
-              ))}
+            {categories.map((category, i) => (
+              <Resize
+                key={category.id}
+                style={itemAnimationStyle(i === categories.length - 1)}
+              >
+                <Suggestion>
+                  <CategoryComponent
+                    category={category}
+                    onClick={this.handleOnCategoryClick}
+                  />
+                </Suggestion>
+              </Resize>
+            ))}
           </TransitionGroup>
         </Suggestions>
       </Container>
@@ -127,7 +139,10 @@ class SearchComponent extends Component<Props, State> {
 }
 
 const mapDispatchToProps = dispatch => ({
-  doSearchCategory: (text, callback) => dispatch(searchCategory(text, callback))
+  doSearchCategory: (text, callback) =>
+    dispatch(searchCategory(text, callback)),
+  doSetSelectedCategory: category => dispatch(setSelectedCategory(category)),
+  doCleanSelectedCategory: () => dispatch(cleanSelectedCategory())
 });
 
 export default connect(

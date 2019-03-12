@@ -46,6 +46,10 @@ export const Input = styled.input`
   }
 `;
 
+export const Suggestion = styled.div`
+  position: relative;
+`;
+
 export const Suggestions = styled.div`
   position: absolute;
   top: ${props => props.top}px;
@@ -63,14 +67,5 @@ export const Suggestions = styled.div`
   &.empty {
     height: 0;
     visibility: hidden;
-  }
-`;
-
-export const Suggestion = styled.div`
-  position: relative;
-  margin-bottom: ${searchSizes.suggestionMargin};
-
-  &:last-child {
-    margin-bottom: 0;
   }
 `;

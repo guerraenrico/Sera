@@ -31,7 +31,7 @@ const onExit = node => {
 
 const onExited = node => {
   const { style } = node;
-  style.height = "0px";
+  style.height = 0;
   style.opacity = 0;
 };
 
@@ -48,7 +48,7 @@ const Resize = ({ children, style, ...props }) => (
       <div
         style={{
           ...defaultStyle,
-          ...style
+          ...(props.in ? style : {})
         }}
       >
         {children}
@@ -59,6 +59,7 @@ const Resize = ({ children, style, ...props }) => (
 
 Resize.propTypes = {
   children: PropTypes.node.isRequired,
+  in: PropTypes.bool.isRequired,
   style: PropTypes.shape()
 };
 
