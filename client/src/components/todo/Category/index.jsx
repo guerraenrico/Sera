@@ -22,7 +22,7 @@ const CategoryComponent = ({ category, onClick, onDelete }: Props) => {
     }
   };
 
-  const onDeleteClick = (e: {}) => {
+  const onDeleteClick = e => {
     if (
       (e.target.tagName.toLowerCase() === "i" ||
         e.target.tagName.toLowerCase() === "button") &&

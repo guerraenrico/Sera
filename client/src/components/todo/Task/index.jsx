@@ -2,13 +2,14 @@
 import React from "react";
 import Collapse from "../../anims/Collapse";
 import Fade from "../../anims/Fade";
-import Category from "../Category";
+import CategoryComponent from "../Category";
 import ButtonComplete from "./components/ButtonComplete";
 import ButtonDelete from "./components/ButtonDelete";
 import { toSimpleDateFormat } from "../../../utils/Common";
 import labels from "../../../constants/labels";
 
 import type { Task } from "../../../models/task";
+import type { Category } from "../../../models/category";
 
 import {
   Item,
@@ -24,6 +25,7 @@ import {
 type Props = {
   +onDelete?: () => void,
   +onComplete?: () => void,
+  +onCategoryClick: Category => void,
   +task: Task
 };
 type State = {
@@ -68,6 +70,7 @@ class TaskComponent extends React.Component<Props, State> {
   };
 
   categoriesToRender = (task: Task) => {
+    const { onCategoryClick } = this.props;
     const { categories } = task;
     if (categories === undefined || categories.length === 0) {
       return undefined;
@@ -75,10 +78,10 @@ class TaskComponent extends React.Component<Props, State> {
     return (
       <ContentCategories>
         {categories.map(cat => (
-          <Category
+          <CategoryComponent
             key={`${task.id}_${cat.id}`}
             category={cat}
-            onClick={() => {}}
+            onClick={onCategoryClick}
           />
         ))}
       </ContentCategories>

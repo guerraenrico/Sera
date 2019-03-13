@@ -7,17 +7,20 @@ import TaskComponent from "../Task";
 import InfiniteScroll from "../../layout/InfiniteScroll";
 import { queryItemsLimit } from "../../../constants/config";
 
+import { setSelectedCategory } from "../../../actions/todoFiltersActions";
 import * as todoTasksActions from "../../../actions/todoTasksActions";
 import * as todoTasksSelectors from "../../../selectors/todoTasksSelectors";
 import * as todoFiltersSelectors from "../../../selectors/todoFiltersSelectors";
 
 import type { Task } from "../../../models/task";
+import type { Category } from "../../../models/category";
 
 import { Container, itemAnimationStyle } from "./style";
 
 type Props = {
   onDeleteTask: Task => void,
   onCompleteTask: Task => void,
+  doSetSelectedCategory: Category => void,
   taskList: Array<Task>,
   moreToLoad: boolean,
   fetchTasks: (string, boolean, number, number) => void,
@@ -68,7 +71,12 @@ class Tasks extends React.Component<Props, State> {
   };
 
   render() {
-    const { taskList, onDeleteTask, onCompleteTask } = this.props;
+    const {
+      taskList,
+      onDeleteTask,
+      onCompleteTask,
+      doSetSelectedCategory
+    } = this.props;
     return (
       <Container>
         <InfiniteScroll onScroll={this.onFetchTodoTasksNext}>
@@ -82,6 +90,7 @@ class Tasks extends React.Component<Props, State> {
                   task={task}
                   onDelete={() => onDeleteTask(task)}
                   onComplete={() => onCompleteTask(task)}
+                  onCategoryClick={category => doSetSelectedCategory(category)}
                 />
               </Resize>
             ))}
@@ -107,6 +116,7 @@ const mapDispatchToProps = dispatch => ({
   onCompleteTask: task => {
     dispatch(todoTasksActions.toogleTaskCompleted(task.id, task.completed));
   },
+  doSetSelectedCategory: category => dispatch(setSelectedCategory(category)),
   fetchTasks: (categoryFilterId, completed, limit, skip) => {
     dispatch(
       todoTasksActions.fetchTasksByCategory(
