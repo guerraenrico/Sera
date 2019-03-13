@@ -50,6 +50,7 @@ export const categoryChipSizes = {
 };
 
 export const searchSizes = {
+  contentSearchMinHeight: "70px",
   suggestionMargin: "1rem",
   suggestionsPadding: "1rem"
 };

@@ -20,13 +20,14 @@ export const ContentSearch = styled.div`
   position: relative;
   display: flex;
   flex: 1;
+  min-height: ${searchSizes.contentSearchMinHeight};
   margin: 0;
 `;
 
-export const ContentCategory = styled.div`
+export const ContentSelectedCategory = styled.div`
   position: relative;
   display: flex;
-  flex: 1;
+  align-items: center;
   margin: 0;
 `;
 

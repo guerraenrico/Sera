@@ -6,13 +6,18 @@ import { Chip, Text } from "./style";
 
 import type { Category } from "../../../models/category";
 
+type Normal = "normal";
+type Small = "small";
+type Size = Small | Normal;
+
 type Props = {
   +category: Category,
   +onDelete?: Category => void,
-  +onClick: Category => void
+  +onClick: Category => void,
+  +size?: Size
 };
 
-const CategoryComponent = ({ category, onClick, onDelete }: Props) => {
+const CategoryComponent = ({ category, onClick, onDelete, size }: Props) => {
   const onChipClick = e => {
     if (
       e.target.tagName.toLowerCase() !== "i" &&
@@ -33,7 +38,7 @@ const CategoryComponent = ({ category, onClick, onDelete }: Props) => {
   };
 
   return (
-    <Chip onClick={onChipClick} role="presentation">
+    <Chip onClick={onChipClick} className={size} role="presentation">
       <Text>{category.name}</Text>
       {onDelete !== undefined && <ButtonDelete onClick={onDeleteClick} />}
     </Chip>
@@ -41,7 +46,8 @@ const CategoryComponent = ({ category, onClick, onDelete }: Props) => {
 };
 
 CategoryComponent.defaultProps = {
-  onDelete: undefined
+  onDelete: undefined,
+  size: "normal"
 };
 
 export default CategoryComponent;

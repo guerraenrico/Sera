@@ -18,7 +18,7 @@ import type { Category } from "../../../models/category";
 import {
   Container,
   ContentSearch,
-  ContentCategory,
+  ContentSelectedCategory,
   ContentInput,
   Input,
   Suggestions,
@@ -132,13 +132,13 @@ class SearchComponent extends Component<Props, State> {
     );
     if (selectedCategory !== undefined && selectedCategory !== null) {
       itemToRender = (
-        <ContentCategory>
+        <ContentSelectedCategory>
           <CategoryComponent
             category={selectedCategory}
             onClick={() => {}}
             onDelete={this.handleOnCategoryClearClick}
           />
-        </ContentCategory>
+        </ContentSelectedCategory>
       );
     }
     return (
@@ -158,6 +158,7 @@ class SearchComponent extends Component<Props, State> {
                   <CategoryComponent
                     category={category}
                     onClick={this.handleOnCategoryClick}
+                    size="small"
                   />
                 </Suggestion>
               </Resize>

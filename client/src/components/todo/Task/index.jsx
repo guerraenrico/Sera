@@ -82,6 +82,7 @@ class TaskComponent extends React.Component<Props, State> {
             key={`${task.id}_${cat.id}`}
             category={cat}
             onClick={onCategoryClick}
+            size="small"
           />
         ))}
       </ContentCategories>
