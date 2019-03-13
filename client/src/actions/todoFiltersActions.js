@@ -176,12 +176,18 @@ export const changeVisibility = (visibility: Visibility): ThunkAction => (
   return dispatch(fetchTasks(getState()));
 };
 
-export const setSelectedCategory = (
-  category: Category
-): ThunkAction => dispatch => {
+export const setSelectedCategory = (category: Category): ThunkAction => (
+  dispatch,
+  getState
+) => {
   dispatch(selectCategory(category));
+  dispatch(fetchTasks(getState()));
 };
 
-export const cleanSelectedCategory = (): ThunkAction => dispatch => {
+export const cleanSelectedCategory = (): ThunkAction => (
+  dispatch,
+  getState
+) => {
   dispatch(clearSelectedCategory());
+  dispatch(fetchTasks(getState()));
 };

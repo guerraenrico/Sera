@@ -10,12 +10,15 @@ import {
   setSelectedCategory,
   cleanSelectedCategory
 } from "../../../actions/todoFiltersActions";
+import { getCategoryFilter } from "../../../selectors/todoFiltersSelectors";
 
 import CategoryComponent from "../Category";
 import type { Category } from "../../../models/category";
 
 import {
   Container,
+  ContentSearch,
+  ContentCategory,
   ContentInput,
   Input,
   Suggestions,
@@ -26,9 +29,10 @@ import {
 const waitTime = 300;
 
 type Props = {
-  doSearchCategory: (string, (Array<Category>) => void) => void,
-  doSetSelectedCategory: Category => void,
-  doCleanSelectedCategory: () => void
+  +selectedCategory?: Category,
+  +doSearchCategory: (string, (Array<Category>) => void) => void,
+  +doSetSelectedCategory: Category => void,
+  +doCleanSelectedCategory: () => void
 };
 
 type State = {
@@ -39,6 +43,10 @@ type State = {
 };
 
 class SearchComponent extends Component<Props, State> {
+  static defaultProps = {
+    selectedCategory: undefined
+  };
+
   state = {
     text: "",
     categories: [],
@@ -48,11 +56,11 @@ class SearchComponent extends Component<Props, State> {
 
   debounceSearch = undefined;
 
-  contentInput = undefined;
+  contentSearch = undefined;
 
   constructor(props) {
     super(props);
-    this.contentInput = React.createRef();
+    this.contentSearch = React.createRef();
   }
 
   componentDidMount() {
@@ -60,8 +68,11 @@ class SearchComponent extends Component<Props, State> {
       leading: false,
       trailing: true
     });
-    if (this.contentInput !== undefined) {
-      this.setState({ inputHeight: this.contentInput.current.clientHeight });
+    if (
+      this.contentSearch !== undefined &&
+      this.contentSearch.current !== undefined
+    ) {
+      this.setState({ inputHeight: this.contentSearch.current.clientHeight });
     }
   }
 
@@ -71,7 +82,7 @@ class SearchComponent extends Component<Props, State> {
     }
   }
 
-  handleOnTextChange = (e: {}) => {
+  handleOnTextChange = e => {
     const text = e.target.value;
     this.setState({ text });
     if (this.debounceSearch !== undefined) {
@@ -85,7 +96,13 @@ class SearchComponent extends Component<Props, State> {
 
   handleOnCategoryClick = category => {
     const { doSetSelectedCategory } = this.props;
+    this.setState({ text: "" });
     doSetSelectedCategory(category);
+  };
+
+  handleOnCategoryClearClick = () => {
+    const { doCleanSelectedCategory } = this.props;
+    doCleanSelectedCategory();
   };
 
   searchCategories = () => {
@@ -102,17 +119,31 @@ class SearchComponent extends Component<Props, State> {
 
   render() {
     const { text, categories, suggestionsVisible, inputHeight } = this.state;
-
+    const { selectedCategory } = this.props;
+    let itemToRender = (
+      <ContentInput>
+        <Input
+          value={text}
+          placeholder="Type to search"
+          onChange={e => this.handleOnTextChange(e)}
+          onBlur={this.handleOnInputBlur}
+        />
+      </ContentInput>
+    );
+    if (selectedCategory !== undefined && selectedCategory !== null) {
+      itemToRender = (
+        <ContentCategory>
+          <CategoryComponent
+            category={selectedCategory}
+            onClick={() => {}}
+            onDelete={this.handleOnCategoryClearClick}
+          />
+        </ContentCategory>
+      );
+    }
     return (
       <Container>
-        <ContentInput ref={this.contentInput}>
-          <Input
-            value={text}
-            placeholder="Type to search"
-            onChange={e => this.handleOnTextChange(e)}
-            onBlur={this.handleOnInputBlur}
-          />
-        </ContentInput>
+        <ContentSearch ref={this.contentSearch}>{itemToRender}</ContentSearch>
         <Suggestions
           top={inputHeight}
           className={`${suggestionsVisible ? "" : "empty"}`}
@@ -138,6 +169,10 @@ class SearchComponent extends Component<Props, State> {
   }
 }
 
+const mapStateToProps = state => ({
+  selectedCategory: getCategoryFilter(state)
+});
+
 const mapDispatchToProps = dispatch => ({
   doSearchCategory: (text, callback) =>
     dispatch(searchCategory(text, callback)),
@@ -146,6 +181,6 @@ const mapDispatchToProps = dispatch => ({
 });
 
 export default connect(
-  undefined,
+  mapStateToProps,
   mapDispatchToProps
 )(SearchComponent);

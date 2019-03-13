@@ -59,12 +59,13 @@ const Resize = ({ children, style, ...props }) => (
 
 Resize.propTypes = {
   children: PropTypes.node.isRequired,
-  in: PropTypes.bool.isRequired,
+  in: PropTypes.bool,
   style: PropTypes.shape()
 };
 
 Resize.defaultProps = {
-  style: {}
+  style: {},
+  in: undefined
 };
 
 export default Resize;

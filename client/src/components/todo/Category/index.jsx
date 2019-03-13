@@ -24,8 +24,8 @@ const CategoryComponent = ({ category, onClick, onDelete }: Props) => {
 
   const onDeleteClick = (e: {}) => {
     if (
-      e.target.tagName.toLowerCase() === "i" &&
-      e.target.tagName.toLowerCase() === "button" &&
+      (e.target.tagName.toLowerCase() === "i" ||
+        e.target.tagName.toLowerCase() === "button") &&
       onDelete !== undefined
     ) {
       onDelete(category);
@@ -35,9 +35,7 @@ const CategoryComponent = ({ category, onClick, onDelete }: Props) => {
   return (
     <Chip onClick={onChipClick} role="presentation">
       <Text>{category.name}</Text>
-      {onDelete !== undefined && (
-        <ButtonDelete onClick={e => onDeleteClick(e)} />
-      )}
+      {onDelete !== undefined && <ButtonDelete onClick={onDeleteClick} />}
     </Chip>
   );
 };

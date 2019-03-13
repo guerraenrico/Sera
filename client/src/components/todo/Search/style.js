@@ -16,6 +16,20 @@ export const Container = styled.div`
   margin: 0;
 `;
 
+export const ContentSearch = styled.div`
+  position: relative;
+  display: flex;
+  flex: 1;
+  margin: 0;
+`;
+
+export const ContentCategory = styled.div`
+  position: relative;
+  display: flex;
+  flex: 1;
+  margin: 0;
+`;
+
 export const ContentInput = styled.div`
   position: relative;
   display: flex;
