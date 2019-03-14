@@ -62,6 +62,12 @@ export const buttonCompleteTaskColors = {
   backgroundCompleted: "rgba(0, 150, 136, 0.5)"
 };
 
+export const buttonAddCategoryTaskColors = {
+  background: "rgba(0,0,0,0)",
+  icon: commonColors.textThird,
+  iconHover: commonColors.textSecondary
+};
+
 export const categoryChipColors = {
   text: "#fafafa",
   textHover: "#ffffff",

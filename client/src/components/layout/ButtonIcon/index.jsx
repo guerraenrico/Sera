@@ -5,12 +5,12 @@ import { Button, Icon } from "./style";
 
 type Props = {
   +onClick: () => void,
-  className: string
+  iconClassName: string
 };
 
-const ButtonIcon = ({ onClick, className }: Props) => (
+const ButtonIcon = ({ onClick, iconClassName }: Props) => (
   <Button onClick={onClick}>
-    <Icon className={className} />
+    <Icon className={iconClassName} />
   </Button>
 );
 

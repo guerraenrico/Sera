@@ -5,6 +5,7 @@ import Fade from "../../anims/Fade";
 import CategoryComponent from "../Category";
 import ButtonComplete from "./components/ButtonComplete";
 import ButtonDelete from "./components/ButtonDelete";
+import ButtonAdd from "./components/ButtonAdd";
 import { toSimpleDateFormat } from "../../../utils/Common";
 import labels from "../../../constants/labels";
 
@@ -72,7 +73,7 @@ class TaskComponent extends React.Component<Props, State> {
   categoriesToRender = (task: Task) => {
     const { onCategoryClick } = this.props;
     const { categories } = task;
-    if (categories === undefined || categories.length === 0) {
+    if (categories === undefined) {
       return undefined;
     }
     return (
@@ -85,6 +86,9 @@ class TaskComponent extends React.Component<Props, State> {
             size="small"
           />
         ))}
+        <ButtonAdd onClick={() => {}} withMargin={categories.length > 0}>
+          {categories.length === 0 ? "Category" : undefined}
+        </ButtonAdd>
       </ContentCategories>
     );
   };
