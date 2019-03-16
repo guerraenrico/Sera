@@ -42,6 +42,10 @@ export const taskSizes = {
   itemMargin: "2.5rem"
 };
 
+export const buttonAddCategoryTaskSizes = {
+  height: "24px"
+};
+
 export const categoryChipSizes = {
   paddingSmall: "8px",
   padding: "15px",
@@ -51,6 +55,12 @@ export const categoryChipSizes = {
 
 export const searchSizes = {
   contentSearchMinHeight: "70px",
+  suggestionMargin: "1rem",
+  suggestionsPadding: "1rem"
+};
+
+export const categoryAutocompleteSizes = {
+  contentSearchMinHeight: "33px",
   suggestionMargin: "1rem",
   suggestionsPadding: "1rem"
 };

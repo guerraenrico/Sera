@@ -9,7 +9,7 @@ export const DrawerContainer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  width: ${drawerSizes.width};
+  min-width: ${drawerSizes.width};
   background-color: ${drawerColors.background};
   margin: 0 ${commonSizes.containerMargin} 0 0;
   -webkit-box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);

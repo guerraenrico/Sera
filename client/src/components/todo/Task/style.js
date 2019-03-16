@@ -6,12 +6,10 @@ import { taskSizes, commonSizes } from "../../../styles/sizes";
 export const Item = styled.div`
   position: relative;
   display: block;
-  overflow: hidden;
   background-color: ${commonColors.background};
   box-sizing: border-box;
   -webkit-border-radius: ${commonSizes.containerBorderRadius};
   border-radius: ${commonSizes.containerBorderRadius};
-  overflow: hidden;
   transition: height 500ms ease-in;
 `;
 

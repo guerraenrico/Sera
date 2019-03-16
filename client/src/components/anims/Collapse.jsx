@@ -5,18 +5,21 @@ import { Transition } from "react-transition-group";
 const duration = 300;
 
 const defaultStyle = {
-  transition: `height ${duration}ms ease-in-out`,
-  height: 0
+  transition: `all ${duration}ms ease-in-out`,
+  height: 0,
+  opacity: 0
 };
 
 const onEnter = node => {
   const { style } = node;
   style.height = `${node.firstElementChild.offsetHeight}px`;
+  style.opacity = 1;
 };
 
 const onExit = node => {
   const { style } = node;
   style.height = "0px";
+  style.opacity = 0;
 };
 
 const Collapse = ({ in: inProp, children }) => (

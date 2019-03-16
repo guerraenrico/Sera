@@ -6,6 +6,7 @@ import CategoryComponent from "../Category";
 import ButtonComplete from "./components/ButtonComplete";
 import ButtonDelete from "./components/ButtonDelete";
 import ButtonAdd from "./components/ButtonAdd";
+import CategoryAutocomplete from "./components/CategoryAutocomplete";
 import { toSimpleDateFormat } from "../../../utils/Common";
 import labels from "../../../constants/labels";
 
@@ -30,7 +31,8 @@ type Props = {
   +task: Task
 };
 type State = {
-  collapsed: boolean
+  collapsed: boolean,
+  addingCategory?: boolean
 };
 
 class TaskComponent extends React.Component<Props, State> {
@@ -40,7 +42,8 @@ class TaskComponent extends React.Component<Props, State> {
   };
 
   state = {
-    collapsed: false
+    collapsed: false,
+    addingCategory: false
   };
 
   onTitleClick = () => {
@@ -71,10 +74,28 @@ class TaskComponent extends React.Component<Props, State> {
   };
 
   categoriesToRender = (task: Task) => {
+    const { addingCategory } = this.state;
     const { onCategoryClick } = this.props;
     const { categories } = task;
     if (categories === undefined) {
       return undefined;
+    }
+    let contentAction = (
+      <ButtonAdd
+        onClick={() => this.setState({ addingCategory: true })}
+        withMargin={categories.length > 0}
+      >
+        {categories.length === 0 ? "Category" : undefined}
+      </ButtonAdd>
+    );
+    if (addingCategory) {
+      contentAction = (
+        <CategoryAutocomplete
+          withMargin={categories.length > 0}
+          onSelectCategory={category => this.setState({ addingCategory: true })}
+          onCancel={() => this.setState({ addingCategory: false })}
+        />
+      );
     }
     return (
       <ContentCategories>
@@ -86,9 +107,7 @@ class TaskComponent extends React.Component<Props, State> {
             size="small"
           />
         ))}
-        <ButtonAdd onClick={() => {}} withMargin={categories.length > 0}>
-          {categories.length === 0 ? "Category" : undefined}
-        </ButtonAdd>
+        {contentAction}
       </ContentCategories>
     );
   };

@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
 import { buttonAddCategoryTaskColors } from "../../../../../styles/colors";
+import { buttonAddCategoryTaskSizes } from "../../../../../styles/sizes";
 
 export const Button = styled.button`
   display: inherit;
   background: none;
-  height: 20px;
-  width: 20px;
+  height: ${buttonAddCategoryTaskSizes.height};
   background-color: ${buttonAddCategoryTaskColors.background};
   outline: none;
   border: none;

@@ -44,10 +44,10 @@ class Todos extends Component<Props, State> {
           <VisibilityFilter /> */}
           <Search />
           <ContentTopBarActions>
-            <ButtonIcon onClick={() => {}} className="icon-filter" />
+            <ButtonIcon onClick={() => {}} iconClassName="icon-filter" />
             <ButtonIcon
               onClick={() => this.setState({ isDialogAddOpen: true })}
-              className="icon-add"
+              iconClassName="icon-add"
             />
           </ContentTopBarActions>
         </MainTopBar>
