@@ -5,7 +5,6 @@ import Fade from "../../anims/Fade";
 import CategoryComponent from "../Category";
 import ButtonComplete from "./components/ButtonComplete";
 import ButtonDelete from "./components/ButtonDelete";
-import ButtonAdd from "./components/ButtonAdd";
 import CategoryAutocomplete from "./components/CategoryAutocomplete";
 import { toSimpleDateFormat } from "../../../utils/Common";
 import labels from "../../../constants/labels";
@@ -45,8 +44,7 @@ class TaskComponent extends React.Component<Props, State> {
   };
 
   state = {
-    collapsed: false,
-    addingCategory: false
+    collapsed: false
   };
 
   onTitleClick = () => {
@@ -77,27 +75,11 @@ class TaskComponent extends React.Component<Props, State> {
   };
 
   categoriesToRender = (task: Task) => {
-    const { addingCategory } = this.state;
+    // const { addingCategory } = this.state;
     const { onCategoryClick, onSetCategory, onRemoveCategory } = this.props;
     const { categories } = task;
     if (categories === undefined) {
       return undefined;
-    }
-    let contentAction = (
-      <ButtonAdd onClick={() => this.setState({ addingCategory: true })}>
-        {categories.length === 0 ? "Category" : undefined}
-      </ButtonAdd>
-    );
-    if (addingCategory) {
-      contentAction = (
-        <CategoryAutocomplete
-          onSelectCategory={category => {
-            onSetCategory(category);
-            this.setState({ addingCategory: false });
-          }}
-          onCancel={() => this.setState({ addingCategory: false })}
-        />
-      );
     }
     return (
       <ContentCategories>
@@ -112,7 +94,10 @@ class TaskComponent extends React.Component<Props, State> {
             />
           </ContentCategory>
         ))}
-        {contentAction}
+        <CategoryAutocomplete
+          onSelectCategory={onSetCategory}
+          fullAddButton={categories.length === 0}
+        />
       </ContentCategories>
     );
   };

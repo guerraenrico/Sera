@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { debounce } from "lodash";
 import { TransitionGroup } from "react-transition-group";
 
+import ButtonAdd from "../ButtonAdd";
+
 import Resize from "../../../../anims/Resize";
 import {
   addCategory,
@@ -29,14 +31,15 @@ type Props = {
   +withMargin: boolean,
   +doSearchCategory: (string, (Array<Category>) => void) => void,
   +onSelectCategory: Category => void,
-  +onCancel: () => void
+  +fullAddButton: boolean
 };
 
 type State = {
   text: string,
   categories: Array<Category>,
   suggestionsVisible: boolean,
-  inputHeight: number
+  inputHeight: number,
+  searchingCategory: boolean
 };
 
 class SearchComponent extends Component<Props, State> {
@@ -44,7 +47,8 @@ class SearchComponent extends Component<Props, State> {
     text: "",
     categories: [],
     suggestionsVisible: false,
-    inputHeight: 0
+    inputHeight: 0,
+    searchingCategory: false
   };
 
   debounceSearch = undefined;
@@ -89,7 +93,7 @@ class SearchComponent extends Component<Props, State> {
   };
 
   handleOnInputBlur = () => {
-    // this.cancel();
+    this.cancel();
   };
 
   handleOnKeyPress = e => {
@@ -109,8 +113,12 @@ class SearchComponent extends Component<Props, State> {
   };
 
   cancel = () => {
-    const { onCancel } = this.props;
-    onCancel();
+    this.setState({
+      text: "",
+      suggestionsVisible: false,
+      categories: [],
+      searchingCategory: false
+    });
   };
 
   searchCategories = () => {
@@ -126,21 +134,36 @@ class SearchComponent extends Component<Props, State> {
   };
 
   render() {
-    const { text, categories, suggestionsVisible, inputHeight } = this.state;
-    const { withMargin } = this.props;
+    const {
+      text,
+      categories,
+      suggestionsVisible,
+      inputHeight,
+      searchingCategory
+    } = this.state;
+    const { withMargin, fullAddButton } = this.props;
+
+    let contentAction = (
+      <ButtonAdd onClick={() => this.setState({ searchingCategory: true })}>
+        {fullAddButton ? "Category" : undefined}
+      </ButtonAdd>
+    );
+    if (searchingCategory) {
+      contentAction = (
+        <ContentInput>
+          <Input
+            value={text}
+            placeholder="Type to search"
+            onChange={e => this.handleOnTextChange(e)}
+            onBlur={this.handleOnInputBlur}
+            autoFocus
+          />
+        </ContentInput>
+      );
+    }
     return (
       <Container withMargin={withMargin}>
-        <ContentSearch ref={this.contentSearch}>
-          <ContentInput>
-            <Input
-              value={text}
-              placeholder="Type to search"
-              onChange={e => this.handleOnTextChange(e)}
-              onBlur={this.handleOnInputBlur}
-              autoFocus
-            />
-          </ContentInput>
-        </ContentSearch>
+        <ContentSearch ref={this.contentSearch}>{contentAction}</ContentSearch>
         <Suggestions
           top={inputHeight}
           className={`${suggestionsVisible ? "" : "empty"}`}
