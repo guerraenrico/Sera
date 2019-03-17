@@ -8,9 +8,9 @@ const duration = {
 };
 
 const defaultStyle = {
-  transition: `all ${duration.enter}ms ease-in-out`,
-  height: 0,
-  opacity: 0
+  transition: `all ${duration.enter}ms ease-in-out`
+  // height: 0,
+  // opacity: 0
 };
 
 const onEnter = node => {

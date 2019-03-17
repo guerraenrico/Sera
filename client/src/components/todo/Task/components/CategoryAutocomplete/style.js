@@ -14,7 +14,6 @@ export const Container = styled.div`
   flex: 1;
   flex-direction: column;
   margin: 0;
-  margin-left: ${props => (props.withMargin ? "10px" : "0")};
 `;
 
 export const ContentSearch = styled.div`
@@ -71,14 +70,10 @@ export const Suggestions = styled.div`
   position: absolute;
   top: ${props => props.top}px;
   left: 0;
-  right: 0;
   padding: ${categoryAutocompleteSizes.suggestionsPadding};
   box-sizing: border-box;
-  background-image: linear-gradient(
-    to right,
-    rgba(24, 26, 30, 0.7),
-    rgba(24, 26, 30, 0)
-  );
+  background-color: ${commonColors.backgroundNight};
+  box-shadow: 0 30px 50px rgba(0, 0, 0, 0.3);
   z-index: 1;
 
   &.empty {

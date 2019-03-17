@@ -16,7 +16,6 @@ export const Button = styled.button`
   padding: 0;
   box-sizing: border-box;
   border-radius: 50%;
-  margin-left: ${props => (props.withMargin ? "10px" : "0")};
 `;
 
 export const Text = styled.span`

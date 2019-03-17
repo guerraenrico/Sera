@@ -71,11 +71,17 @@ export const ContentCategories = styled.div`
   padding: 0 40px 30px 40px;
 `;
 
+export const ContentCategory = styled.div`
+  padding: 0 10px 0 0;
+`;
+
 export const ContentDescription = styled.div`
   position: relative;
   display: block;
   overflow: hidden;
   background-color: ${commonColors.backgroundNight};
+  border-bottom-right-radius: ${commonSizes.containerBorderRadius};
+  border-bottom-left-radius: ${commonSizes.containerBorderRadius};
 `;
 
 export const Description = styled.p`

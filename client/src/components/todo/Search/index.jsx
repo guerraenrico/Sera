@@ -72,6 +72,7 @@ class SearchComponent extends Component<Props, State> {
       this.contentSearch !== undefined &&
       this.contentSearch.current !== undefined
     ) {
+      // $FlowFixMe
       this.setState({ inputHeight: this.contentSearch.current.clientHeight });
     }
   }

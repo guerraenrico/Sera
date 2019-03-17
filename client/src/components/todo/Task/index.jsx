@@ -20,6 +20,7 @@ import {
   ContentDate,
   Date,
   ContentCategories,
+  ContentCategory,
   ContentDescription,
   Description
 } from "./style";
@@ -28,6 +29,8 @@ type Props = {
   +onDelete?: () => void,
   +onComplete?: () => void,
   +onCategoryClick: Category => void,
+  +onSetCategory: Category => void,
+  +onRemoveCategory: Category => void,
   +task: Task
 };
 type State = {
@@ -75,24 +78,23 @@ class TaskComponent extends React.Component<Props, State> {
 
   categoriesToRender = (task: Task) => {
     const { addingCategory } = this.state;
-    const { onCategoryClick } = this.props;
+    const { onCategoryClick, onSetCategory, onRemoveCategory } = this.props;
     const { categories } = task;
     if (categories === undefined) {
       return undefined;
     }
     let contentAction = (
-      <ButtonAdd
-        onClick={() => this.setState({ addingCategory: true })}
-        withMargin={categories.length > 0}
-      >
+      <ButtonAdd onClick={() => this.setState({ addingCategory: true })}>
         {categories.length === 0 ? "Category" : undefined}
       </ButtonAdd>
     );
     if (addingCategory) {
       contentAction = (
         <CategoryAutocomplete
-          withMargin={categories.length > 0}
-          onSelectCategory={category => this.setState({ addingCategory: true })}
+          onSelectCategory={category => {
+            onSetCategory(category);
+            this.setState({ addingCategory: false });
+          }}
           onCancel={() => this.setState({ addingCategory: false })}
         />
       );
@@ -100,12 +102,15 @@ class TaskComponent extends React.Component<Props, State> {
     return (
       <ContentCategories>
         {categories.map(cat => (
-          <CategoryComponent
-            key={`${task.id}_${cat.id}`}
-            category={cat}
-            onClick={onCategoryClick}
-            size="small"
-          />
+          <ContentCategory>
+            <CategoryComponent
+              key={`${task.id}_${cat.id}`}
+              category={cat}
+              onClick={onCategoryClick}
+              onDelete={onRemoveCategory}
+              size="small"
+            />
+          </ContentCategory>
         ))}
         {contentAction}
       </ContentCategories>

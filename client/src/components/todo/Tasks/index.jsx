@@ -5,7 +5,6 @@ import { TransitionGroup } from "react-transition-group";
 import Resize from "../../anims/Resize";
 import TaskComponent from "../Task";
 import InfiniteScroll from "../../layout/InfiniteScroll";
-import { queryItemsLimit } from "../../../constants/config";
 
 import { setSelectedCategory } from "../../../actions/todoFiltersActions";
 import * as todoTasksActions from "../../../actions/todoTasksActions";
@@ -18,56 +17,44 @@ import type { Category } from "../../../models/category";
 import { Container, itemAnimationStyle } from "./style";
 
 type Props = {
-  onDeleteTask: Task => void,
-  onCompleteTask: Task => void,
-  doSetSelectedCategory: Category => void,
-  taskList: Array<Task>,
-  moreToLoad: boolean,
-  fetchTasks: (string, boolean, number, number) => void,
-  categoryFilterId: string,
-  completed: boolean,
+  +onDeleteTask: Task => void,
+  +onCompleteTask: Task => void,
+  +doSetSelectedCategory: Category => void,
+  +doSetCategoryToTask: (Task, Category) => void,
+  +doRemoveCategoryToTask: (Task, Category) => void,
+  +taskList: Array<Task>,
+  +moreToLoad: boolean,
+  +fetchTasks: (string, boolean, number, ?number) => void,
+  +categoryFilterId: string,
+  +completed: boolean,
   // eslint-disable-next-line
-  skip: number
+  +skip: number
 };
 
-type State = {
-  limit: number,
-  skip: number
-};
+type State = {};
 
-const initialState: State = {
-  limit: queryItemsLimit,
-  skip: 0
-};
+const initialState: State = {};
 
 class Tasks extends React.Component<Props, State> {
   state = initialState;
 
-  static getDerivedStateFromProps(nextProps: Props, prevState: State) {
-    if (nextProps.skip !== prevState.skip) {
-      return {
-        skip: nextProps.skip
-      };
-    }
-    return null;
-  }
-
   componentDidMount() {
-    const { categoryFilterId, completed, fetchTasks } = this.props;
-    const { limit, skip } = this.state;
-    fetchTasks(categoryFilterId, completed, limit, skip);
-    this.setState(state => ({ skip: state.skip + state.limit }));
+    const { categoryFilterId, completed, fetchTasks, skip } = this.props;
+    fetchTasks(categoryFilterId, completed, skip);
   }
 
   onFetchTodoTasksNext = () => {
-    const { categoryFilterId, completed, fetchTasks, moreToLoad } = this.props;
+    const {
+      categoryFilterId,
+      completed,
+      fetchTasks,
+      moreToLoad,
+      skip
+    } = this.props;
     if (!moreToLoad) {
       return;
     }
-    const { limit, skip } = this.state;
-    const newSkip = skip + limit;
-    fetchTasks(categoryFilterId, completed, limit, newSkip);
-    this.setState(state => ({ skip: state.skip + state.limit }));
+    fetchTasks(categoryFilterId, completed, skip);
   };
 
   render() {
@@ -75,7 +62,9 @@ class Tasks extends React.Component<Props, State> {
       taskList,
       onDeleteTask,
       onCompleteTask,
-      doSetSelectedCategory
+      doSetSelectedCategory,
+      doSetCategoryToTask,
+      doRemoveCategoryToTask
     } = this.props;
     return (
       <Container>
@@ -91,6 +80,12 @@ class Tasks extends React.Component<Props, State> {
                   onDelete={() => onDeleteTask(task)}
                   onComplete={() => onCompleteTask(task)}
                   onCategoryClick={category => doSetSelectedCategory(category)}
+                  onSetCategory={category =>
+                    doSetCategoryToTask(task, category)
+                  }
+                  onRemoveCategory={category =>
+                    doRemoveCategoryToTask(task, category)
+                  }
                 />
               </Resize>
             ))}
@@ -117,13 +112,17 @@ const mapDispatchToProps = dispatch => ({
     dispatch(todoTasksActions.toogleTaskCompleted(task.id, task.completed));
   },
   doSetSelectedCategory: category => dispatch(setSelectedCategory(category)),
-  fetchTasks: (categoryFilterId, completed, limit, skip) => {
+  doSetCategoryToTask: (task, category) =>
+    dispatch(todoTasksActions.setCategoryToTask(task, category)),
+  doRemoveCategoryToTask: (task, category) =>
+    dispatch(todoTasksActions.removeCategoryToTask(task, category)),
+  fetchTasks: (categoryFilterId, completed, skip, limit) => {
     dispatch(
       todoTasksActions.fetchTasksByCategory(
         categoryFilterId && [categoryFilterId],
         completed,
-        limit,
-        skip
+        skip,
+        limit
       )
     );
   }

@@ -29,7 +29,9 @@ const CategoryComponent = ({ category, onClick, onDelete, size }: Props) => {
 
   const onDeleteClick = e => {
     if (
+      // $FlowFixMe
       (e.target.tagName.toLowerCase() === "i" ||
+        // $FlowFixMe
         e.target.tagName.toLowerCase() === "button") &&
       onDelete !== undefined
     ) {

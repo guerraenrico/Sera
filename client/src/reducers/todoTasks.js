@@ -26,7 +26,8 @@ export type RemoveTaskAction = {
 };
 export type UpdateTaskLocalAction = {
   type: "UPDATE_TASK_LOCAL",
-  task: Task
+  id: string,
+  data: Object
 };
 
 export type TodoTasksAction =
@@ -100,8 +101,8 @@ const todoTasks = (
         ...state,
         items: [
           ...state.items.map(task =>
-            // $FlowFixMe remove flow error on action.task
-            task.id === action.task.id ? { ...action.task } : task
+            // $FlowFixMe remove flow error on action.data
+            task.id === action.id ? { ...task, ...action.data } : task
           )
         ]
       };

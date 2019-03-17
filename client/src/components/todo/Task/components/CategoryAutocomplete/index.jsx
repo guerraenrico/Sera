@@ -16,7 +16,6 @@ import type { Category } from "../../../../../models/category";
 import {
   Container,
   ContentSearch,
-  ContentSelectedCategory,
   ContentInput,
   Input,
   Suggestions,
@@ -27,7 +26,6 @@ import {
 const waitTime = 300;
 
 type Props = {
-  +selectedCategory?: Category,
   +withMargin: boolean,
   +doSearchCategory: (string, (Array<Category>) => void) => void,
   +onSelectCategory: Category => void,
@@ -42,10 +40,6 @@ type State = {
 };
 
 class SearchComponent extends Component<Props, State> {
-  static defaultProps = {
-    selectedCategory: undefined
-  };
-
   state = {
     text: "",
     categories: [],
@@ -71,8 +65,10 @@ class SearchComponent extends Component<Props, State> {
       this.contentSearch !== undefined &&
       this.contentSearch.current !== undefined
     ) {
+      // $FlowFixMe
       this.setState({ inputHeight: this.contentSearch.current.clientHeight });
     }
+    // $FlowFixMe
     document.addEventListener("keydown", this.handleOnKeyPress, false);
   }
 
@@ -80,6 +76,7 @@ class SearchComponent extends Component<Props, State> {
     if (this.debounceSearch !== undefined) {
       this.debounceSearch.cancel();
     }
+    // $FlowFixMe
     document.removeEventListener("keydown", this.handleOnKeyPress, false);
   }
 
@@ -92,7 +89,6 @@ class SearchComponent extends Component<Props, State> {
   };
 
   handleOnInputBlur = () => {
-    // this.setState({ suggestionsVisible: false, categories: [] });
     // this.cancel();
   };
 
@@ -111,8 +107,6 @@ class SearchComponent extends Component<Props, State> {
     this.setState({ text: "" });
     onSelectCategory(category);
   };
-
-  handleOnCategoryClearClick = () => {};
 
   cancel = () => {
     const { onCancel } = this.props;
@@ -133,33 +127,20 @@ class SearchComponent extends Component<Props, State> {
 
   render() {
     const { text, categories, suggestionsVisible, inputHeight } = this.state;
-    const { selectedCategory, withMargin } = this.props;
-    let itemToRender = (
-      <ContentInput>
-        <Input
-          value={text}
-          placeholder="Type to search"
-          onChange={e => this.handleOnTextChange(e)}
-          onBlur={this.handleOnInputBlur}
-          autoFocus
-        />
-      </ContentInput>
-    );
-    if (selectedCategory !== undefined && selectedCategory !== null) {
-      itemToRender = (
-        <ContentSelectedCategory>
-          <CategoryComponent
-            category={selectedCategory}
-            onClick={() => {}}
-            onDelete={this.handleOnCategoryClearClick}
-            size="small"
-          />
-        </ContentSelectedCategory>
-      );
-    }
+    const { withMargin } = this.props;
     return (
       <Container withMargin={withMargin}>
-        <ContentSearch ref={this.contentSearch}>{itemToRender}</ContentSearch>
+        <ContentSearch ref={this.contentSearch}>
+          <ContentInput>
+            <Input
+              value={text}
+              placeholder="Type to search"
+              onChange={e => this.handleOnTextChange(e)}
+              onBlur={this.handleOnInputBlur}
+              autoFocus
+            />
+          </ContentInput>
+        </ContentSearch>
         <Suggestions
           top={inputHeight}
           className={`${suggestionsVisible ? "" : "empty"}`}

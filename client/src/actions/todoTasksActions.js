@@ -45,16 +45,17 @@ const removeTaskLocal = (taskIndex: number): RemoveTaskAction => ({
   taskIndex
 });
 
-const updateTaskLocal = (task: Task): UpdateTaskLocalAction => ({
+const updateTaskLocal = (id, data): UpdateTaskLocalAction => ({
   type: "UPDATE_TASK_LOCAL",
-  task
+  id,
+  data
 });
 
 export const fetchTasksByCategory = (
   categoriesId: string[] = [],
   completed: boolean = false,
-  limit: number = queryItemsLimit,
-  skip: number = 0
+  skip: number = 0,
+  limit: number = queryItemsLimit
 ): ThunkAction => async (dispatch, getState) => {
   dispatch(requestFetchTasks(limit, skip));
   try {
@@ -96,15 +97,14 @@ export const deleteTask = (id: string = ""): ThunkAction => async (
   getState
 ) => {
   try {
+    const { items } = getState().todoTasks;
+    const todoArgumentIndex = items.findIndex(
+      todoArgument => todoArgument.id === id
+    );
+    dispatch(removeTaskLocal(todoArgumentIndex));
     const { accessToken } = getState().auth;
     const response = await callApi("tasks", id, Methods.DELETE, accessToken);
-    if (response.success) {
-      const { items } = getState().todoTasks;
-      const todoArgumentIndex = items.findIndex(
-        todoArgument => todoArgument.id === id
-      );
-      dispatch(removeTaskLocal(todoArgumentIndex));
-    } else {
+    if (!response.success) {
       if (shouldRefreshToken(response)) {
         await dispatch(refreshAccessToken());
         dispatch(deleteTask(id));
@@ -170,7 +170,8 @@ export const toogleTaskCompleted = (
   isCompleted: boolean = false
 ): ThunkAction => async (dispatch, getState) => {
   const completed = !isCompleted;
-  const completedAt = completed ? new Date() : null;
+  const completedAt = completed ? new Date() : undefined;
+  dispatch(updateTaskLocal(id, { completed, completedAt }));
   try {
     const { accessToken } = getState().auth;
     const response = await callApi(
@@ -179,19 +180,68 @@ export const toogleTaskCompleted = (
       Methods.PATCH,
       accessToken
     );
-    if (response.success) {
-      const fetchedTask = response.data;
-      const task = {
-        ...fetchedTask,
-        completedAt: fetchedTask.completedAt
-          ? new Date(fetchedTask.completedAt)
-          : undefined
-      };
-      dispatch(updateTaskLocal(task));
-    } else {
+    if (!response.success) {
       if (shouldRefreshToken(response)) {
         await dispatch(refreshAccessToken());
         dispatch(toogleTaskCompleted(id, isCompleted));
+        return;
+      }
+      dispatch(showMessageError(response.error.message));
+    }
+  } catch (error) {
+    dispatch(showMessageError(error.message));
+  }
+};
+
+export const setCategoryToTask = (
+  task: Task,
+  category: Category
+): ThunkAction => async (dispatch, getState) => {
+  // $FlowFixMe
+  const updatedData = { categories: [...task.categories, category] };
+  dispatch(updateTaskLocal(task.id, updatedData));
+  try {
+    const { accessToken } = getState().auth;
+    const response = await callApi(
+      "tasks",
+      { ...task, ...updatedData },
+      Methods.PATCH,
+      accessToken
+    );
+    if (!response.success) {
+      if (shouldRefreshToken(response)) {
+        await dispatch(refreshAccessToken());
+        dispatch(setCategoryToTask(task, category));
+        return;
+      }
+      dispatch(showMessageError(response.error.message));
+    }
+  } catch (error) {
+    dispatch(showMessageError(error.message));
+  }
+};
+
+export const removeCategoryToTask = (
+  task: Task,
+  category: Category
+): ThunkAction => async (dispatch, getState) => {
+  const updatedData = {
+    // $FlowFixMe
+    categories: task.categories.filter(cat => cat.id !== category.id)
+  };
+  dispatch(updateTaskLocal(task.id, updatedData));
+  try {
+    const { accessToken } = getState().auth;
+    const response = await callApi(
+      "tasks",
+      { ...task, ...updatedData },
+      Methods.PATCH,
+      accessToken
+    );
+    if (!response.success) {
+      if (shouldRefreshToken(response)) {
+        await dispatch(refreshAccessToken());
+        dispatch(removeCategoryToTask(task, category));
         return;
       }
       dispatch(showMessageError(response.error.message));

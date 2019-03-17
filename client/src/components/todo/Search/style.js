@@ -69,14 +69,9 @@ export const Suggestions = styled.div`
   position: absolute;
   top: ${props => props.top}px;
   left: 0;
-  right: 0;
   padding: ${searchSizes.suggestionsPadding};
-  box-sizing: border-box;
-  background-image: linear-gradient(
-    to right,
-    rgba(24, 26, 30, 0.7),
-    rgba(24, 26, 30, 0)
-  );
+  background-color: ${commonColors.backgroundNight};
+  box-shadow: 0 30px 50px rgba(0, 0, 0, 0.3);
   z-index: 1;
 
   &.empty {
