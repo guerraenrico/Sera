@@ -211,13 +211,56 @@ export const setCategoryToTask = (
     if (!response.success) {
       if (shouldRefreshToken(response)) {
         await dispatch(refreshAccessToken());
-        dispatch(setCategoryToTask(task, category));
-        return;
+        return dispatch(setCategoryToTask(task, category));
       }
       dispatch(showMessageError(response.error.message));
     }
+    return response;
   } catch (error) {
     dispatch(showMessageError(error.message));
+    return { success: false };
+  }
+};
+
+export const createAndSetCategoryToTask = (
+  task: Task,
+  name: string
+): ThunkAction => async (dispatch, getState) => {
+  try {
+    // const dummyId = `${task.id}${name}`;
+    // const updatedData = {
+    //   // $FlowFixMe
+    //   categories: [...task.categories, { id: dummyId, name }]
+    // };
+    // dispatch(updateTaskLocal(task.id, updatedData));
+    const { accessToken } = getState().auth;
+    const response = await callApi(
+      "categories",
+      { name },
+      Methods.POST,
+      accessToken
+    );
+    if (response.success) {
+      const category = response.data;
+      // const createdCategoryData = {
+      //   categories: [
+      //     // $FlowFixMe
+      //     ...task.categories.filter(cat => cat.id !== dummyId),
+      //     category
+      //   ]
+      // };
+      // dispatch(updateTaskLocal(task.id, createdCategoryData));
+      return dispatch(setCategoryToTask(task, category));
+    }
+    if (shouldRefreshToken(response)) {
+      await dispatch(refreshAccessToken());
+      return dispatch(createAndSetCategoryToTask(task, name));
+    }
+    dispatch(showMessageError(response.error.message));
+    return response;
+  } catch (error) {
+    dispatch(showMessageError(error.message));
+    return { success: false };
   }
 };
 
@@ -241,12 +284,13 @@ export const removeCategoryToTask = (
     if (!response.success) {
       if (shouldRefreshToken(response)) {
         await dispatch(refreshAccessToken());
-        dispatch(removeCategoryToTask(task, category));
-        return;
+        return dispatch(removeCategoryToTask(task, category));
       }
       dispatch(showMessageError(response.error.message));
     }
+    return response;
   } catch (error) {
     dispatch(showMessageError(error.message));
+    return { success: false };
   }
 };

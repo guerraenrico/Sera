@@ -31,6 +31,7 @@ type Props = {
   +withMargin: boolean,
   +doSearchCategory: (string, (Array<Category>) => void) => void,
   +onSelectCategory: Category => void,
+  +onCreateCategory: string => void,
   +fullAddButton: boolean
 };
 
@@ -72,16 +73,12 @@ class SearchComponent extends Component<Props, State> {
       // $FlowFixMe
       this.setState({ inputHeight: this.contentSearch.current.clientHeight });
     }
-    // $FlowFixMe
-    document.addEventListener("keydown", this.handleOnKeyPress, false);
   }
 
   componentWillUnmount() {
     if (this.debounceSearch !== undefined) {
       this.debounceSearch.cancel();
     }
-    // $FlowFixMe
-    document.removeEventListener("keydown", this.handleOnKeyPress, false);
   }
 
   handleOnTextChange = e => {
@@ -92,13 +89,23 @@ class SearchComponent extends Component<Props, State> {
     }
   };
 
+  handleOnInputFocus = () => {
+    // $FlowFixMe
+    document.addEventListener("keydown", this.handleOnKeyPress, false);
+  };
+
   handleOnInputBlur = () => {
     this.cancel();
   };
 
   handleOnKeyPress = e => {
+    const { onCreateCategory } = this.props;
+    const { text } = this.state;
     if (e.key === "Enter") {
-      console.log("do validate");
+      if (text !== "") {
+        onCreateCategory(text);
+      }
+      this.cancel();
       return;
     }
     if (e.key === "Escape") {
@@ -113,6 +120,8 @@ class SearchComponent extends Component<Props, State> {
   };
 
   cancel = () => {
+    // $FlowFixMe
+    document.removeEventListener("keydown", this.handleOnKeyPress, false);
     this.setState({
       text: "",
       suggestionsVisible: false,
@@ -129,7 +138,7 @@ class SearchComponent extends Component<Props, State> {
       return;
     }
     doSearchCategory(text, categories => {
-      this.setState({ suggestionsVisible: true, categories });
+      this.setState({ suggestionsVisible: categories.length > 0, categories });
     });
   };
 
@@ -155,6 +164,7 @@ class SearchComponent extends Component<Props, State> {
             value={text}
             placeholder="Type to search"
             onChange={e => this.handleOnTextChange(e)}
+            onFocus={this.handleOnInputFocus}
             onBlur={this.handleOnInputBlur}
             autoFocus
           />

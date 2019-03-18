@@ -29,6 +29,7 @@ type Props = {
   +onComplete?: () => void,
   +onCategoryClick: Category => void,
   +onSetCategory: Category => void,
+  +onCreateCategory: string => void,
   +onRemoveCategory: Category => void,
   +task: Task
 };
@@ -76,7 +77,12 @@ class TaskComponent extends React.Component<Props, State> {
 
   categoriesToRender = (task: Task) => {
     // const { addingCategory } = this.state;
-    const { onCategoryClick, onSetCategory, onRemoveCategory } = this.props;
+    const {
+      onCategoryClick,
+      onSetCategory,
+      onCreateCategory,
+      onRemoveCategory
+    } = this.props;
     const { categories } = task;
     if (categories === undefined) {
       return undefined;
@@ -84,7 +90,7 @@ class TaskComponent extends React.Component<Props, State> {
     return (
       <ContentCategories>
         {categories.map(cat => (
-          <ContentCategory>
+          <ContentCategory key={`cntcat${task.id}_${cat.id}`}>
             <CategoryComponent
               key={`${task.id}_${cat.id}`}
               category={cat}
@@ -96,6 +102,7 @@ class TaskComponent extends React.Component<Props, State> {
         ))}
         <CategoryAutocomplete
           onSelectCategory={onSetCategory}
+          onCreateCategory={onCreateCategory}
           fullAddButton={categories.length === 0}
         />
       </ContentCategories>
