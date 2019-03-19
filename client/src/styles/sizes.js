@@ -8,15 +8,30 @@ export const buttonIconSizes = {
   margin: "0 1.5rem"
 };
 
+export const inputSizes = {
+  small: {
+    fontSize: "0.8em",
+    padding: "0"
+  },
+  normal: {
+    fontSize: "0.9em",
+    padding: "0"
+  },
+  large: {
+    fontSize: "1.2em",
+    padding: "0"
+  }
+};
+
 export const snackbarSizes = {
   zIndex: 30,
   minHeight: "50px",
   width: "300px",
-  messageFontSize: "0.8rem"
+  messageFontSize: "0.8em"
 };
 
 export const snackbarActionSizes = {
-  fontSize: "0.8rem"
+  fontSize: "0.8em"
 };
 
 export const drawerSizes = {
@@ -26,18 +41,18 @@ export const drawerSizes = {
 };
 
 export const loaderTipSizes = {
-  h1FontSize: "1.7rem",
-  h3FontSize: "1.1rem"
+  h1FontSize: "1.7em",
+  h3FontSize: "1.1em"
 };
 
 export const page404Sizes = {
-  titleFontSize: "12rem",
-  descriptionFontSize: "1.2rem"
+  titleFontSize: "12em",
+  descriptionFontSize: "1.2em"
 };
 
 export const taskSizes = {
   titleFontSize: "1.6em",
-  dateFontSize: "0.7rem",
+  dateFontSize: "0.7em",
   descriptionFontSize: "0.9em",
   itemMargin: "2.5rem"
 };
