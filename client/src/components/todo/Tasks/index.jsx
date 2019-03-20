@@ -29,14 +29,16 @@ type Props = {
   +categoryFilterId: string,
   +completed: boolean,
   // eslint-disable-next-line
-  +skip: number
+  +skip: number,
+  +creatingTask: boolean,
+  +onAbortCreatingTask: () => void
 };
 
 type State = {};
 
 const initialState: State = {};
 
-class Tasks extends React.Component<Props, State> {
+class Tasks extends React.PureComponent<Props, State> {
   state = initialState;
 
   componentDidMount() {
@@ -66,12 +68,23 @@ class Tasks extends React.Component<Props, State> {
       doSetSelectedCategory,
       doSetCategoryToTask,
       doCreateAndSetCategoryToTask,
-      doRemoveCategoryToTask
+      doRemoveCategoryToTask,
+      creatingTask,
+      onAbortCreatingTask
     } = this.props;
     return (
       <Container>
         <InfiniteScroll onScroll={this.onFetchTodoTasksNext}>
           <TransitionGroup>
+            {creatingTask && (
+              <Resize key="creation_task" style={itemAnimationStyle(false)}>
+                <TaskComponent
+                  creating
+                  onUndo={onAbortCreatingTask}
+                  onCreate={task => {}}
+                />
+              </Resize>
+            )}
             {taskList.map((task, i) => (
               <Resize
                 key={`rsz${task.id}`}

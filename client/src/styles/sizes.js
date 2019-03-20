@@ -10,15 +10,15 @@ export const buttonIconSizes = {
 
 export const inputSizes = {
   small: {
-    fontSize: "0.8em",
+    fontSize: "0.7em",
     padding: "0"
   },
   normal: {
-    fontSize: "0.9em",
+    fontSize: "1.2em",
     padding: "0"
   },
   large: {
-    fontSize: "1.2em",
+    fontSize: "1.6em",
     padding: "0"
   }
 };

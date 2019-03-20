@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from "react";
+import React from "react";
 import { connect } from "react-redux";
 
 import LoaderLinear from "../../components/layout/LoaderLinear";
@@ -25,16 +25,22 @@ type Props = {
 };
 
 type State = {
-  isDialogAddOpen: boolean
+  isDialogAddOpen: boolean,
+  creatingTask: boolean
 };
 
-class Todos extends Component<Props, State> {
+class Todos extends React.PureComponent<Props, State> {
   state = {
-    isDialogAddOpen: false
+    isDialogAddOpen: false,
+    creatingTask: false
+  };
+
+  handleAbortCreatingTask = () => {
+    this.setState({ creatingTask: false });
   };
 
   render() {
-    const { isDialogAddOpen } = this.state;
+    const { isDialogAddOpen, creatingTask } = this.state;
     const { message, hideMessage, showLoading } = this.props;
     return (
       <ContentApp>
@@ -46,12 +52,15 @@ class Todos extends Component<Props, State> {
           <ContentTopBarActions>
             <ButtonIcon onClick={() => {}} iconClassName="icon-filter" />
             <ButtonIcon
-              onClick={() => this.setState({ isDialogAddOpen: true })}
+              onClick={() => this.setState({ creatingTask: true })}
               iconClassName="icon-add"
             />
           </ContentTopBarActions>
         </MainTopBar>
-        <Tasks />
+        <Tasks
+          creatingTask={creatingTask}
+          onAbortCreatingTask={this.handleAbortCreatingTask}
+        />
         <DialogAdd
           open={isDialogAddOpen}
           onClose={() => this.setState({ isDialogAddOpen: false })}

@@ -13,7 +13,7 @@ type Props = {
 };
 type State = {};
 
-class TaskComponent extends React.Component<Props, State> {
+class TaskComponent extends React.PureComponent<Props, State> {
   static defaultProps = {
     creating: false
   };
@@ -26,7 +26,7 @@ class TaskComponent extends React.Component<Props, State> {
     if (creating) {
       component = <EditableTaskComponent {...this.props} />;
     }
-    return <React.Fragment>{component}</React.Fragment>;
+    return <>{component}</>;
   }
 }
 

@@ -38,7 +38,7 @@ type State = {
   addingCategory?: boolean
 };
 
-class StaticTaskComponent extends React.Component<StaticProps, State> {
+class StaticTaskComponent extends React.PureComponent<StaticProps, State> {
   static defaultProps = {
     onDelete: undefined,
     onComplete: undefined
