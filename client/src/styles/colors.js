@@ -1,4 +1,5 @@
 export const commonColors = {
+  accentLight: "#31D8C8",
   accent: "#1EBCAD",
   textPrimary: "#fff",
   textSecondary: "#a0acba",
@@ -13,6 +14,17 @@ export const commonColors = {
   textButton: "#35383c",
   textButtonHover: "#475b75",
   inputPlaceholder: "#3C4148"
+};
+
+export const buttonColors = {
+  default: {
+    text: commonColors.textSecondary,
+    textHover: commonColors.textPrimary
+  },
+  accent: {
+    text: commonColors.accent,
+    textHover: commonColors.accentLight
+  }
 };
 
 export const buttonIconColors = {
@@ -72,7 +84,7 @@ export const categoryChipColors = {
   text: "#fafafa",
   textHover: "#ffffff",
   background: commonColors.accent,
-  backgroundHover: "#009688"
+  backgroundHover: commonColors.accentLight
 };
 
 export const buttonDeleteCategoryChipColors = {
