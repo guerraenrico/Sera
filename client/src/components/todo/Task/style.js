@@ -95,3 +95,21 @@ export const Description = styled.p`
     font-style: italic;
   }
 `;
+
+// Editable
+
+export const ContentEditItem = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+export const ContentEditInputs = styled.div`
+  flex: 1;
+`;
+
+export const ContentEditActions = styled.div`
+  display: flex;
+  flex-direction: row;
+  box-sizing: border-box;
+  padding: 0 40px;
+`;

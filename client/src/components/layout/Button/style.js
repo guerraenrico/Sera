@@ -13,6 +13,7 @@ export const Button = styled.button`
   align-self: center;
   justify-self: end;
   padding: 0;
+  margin: 0 1.5rem;
   box-sizing: border-box;
   border-radius: 50%;
 `;

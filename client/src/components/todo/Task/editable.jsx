@@ -9,7 +9,15 @@ import labels from "../../../constants/labels";
 import type { Task } from "../../../models/task";
 import type { Category } from "../../../models/category";
 
-import { Item, Header, ContentDate, Date } from "./style";
+import {
+  Item,
+  Header,
+  ContentDate,
+  Date,
+  ContentEditItem,
+  ContentEditInputs,
+  ContentEditActions
+} from "./style";
 
 export type EditableProps = {
   +onUndo: () => void,
@@ -68,26 +76,32 @@ class EditableTaskComponent extends React.PureComponent<EditableProps, State> {
     const { title, description, todoWithin } = this.state;
     return (
       <Item>
-        <Header>
-          <Input
-            value={title.text}
-            placeholder="Type a title"
-            onChange={this.handleOnTextChange("title")}
-            size="large"
-          />
-        </Header>
-        <ContentDate>
-          <Input
-            value={description.text}
-            placeholder="Type a description"
-            onChange={this.handleOnTextChange("description")}
-            size="small"
-          />
-        </ContentDate>
-        <Button onClick={onUndo}>UNDO</Button>
-        <Button color="accent" onClick={onCreate}>
-          CONFIRM
-        </Button>
+        <ContentEditItem>
+          <ContentEditInputs>
+            <Header>
+              <Input
+                value={title.text}
+                placeholder="Type a title"
+                onChange={this.handleOnTextChange("title")}
+                size="large"
+              />
+            </Header>
+            <ContentDate>
+              <Input
+                value={description.text}
+                placeholder="Type a description"
+                onChange={this.handleOnTextChange("description")}
+                size="small"
+              />
+            </ContentDate>
+          </ContentEditInputs>
+          <ContentEditActions>
+            <Button onClick={onUndo}>UNDO</Button>
+            <Button color="accent" onClick={onCreate}>
+              CONFIRM
+            </Button>
+          </ContentEditActions>
+        </ContentEditItem>
       </Item>
     );
   }
