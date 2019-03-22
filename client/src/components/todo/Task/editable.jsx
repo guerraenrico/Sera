@@ -1,7 +1,9 @@
 // @flow
 import React from "react";
+
 import Input from "../../layout/Input";
 import Button from "../../layout/Button";
+import DatePicker from "../../layout/DatePicker";
 
 import { toSimpleDateFormat } from "../../../utils/Common";
 import labels from "../../../constants/labels";
@@ -12,10 +14,10 @@ import type { Category } from "../../../models/category";
 import {
   Item,
   Header,
-  ContentDate,
-  Date,
   ContentEditItem,
   ContentEditInputs,
+  ContentEditDate,
+  ContentEditDescription,
   ContentEditActions
 } from "./style";
 
@@ -60,7 +62,7 @@ class EditableTaskComponent extends React.PureComponent<EditableProps, State> {
       error: ""
     },
     todoWithin: {
-      date: undefined,
+      date: new Date(),
       valid: false,
       error: ""
     }
@@ -68,11 +70,30 @@ class EditableTaskComponent extends React.PureComponent<EditableProps, State> {
 
   handleOnTextChange = (name: string) => e =>
     this.setState({
-      [name]: { text: e.target.value, valid: false, error: "" }
+      [name]: { text: e.target.value, valid: true, error: "" }
     });
 
+  handleOnDateChange = e => {
+    this.setState({
+      todoWithin: { date: e.target.value, valid: true, error: "" }
+    });
+  };
+
+  handleOnButtonConfirmClick = () => {
+    const { onCreate } = this.props;
+    const { title, description, todoWithin } = this.state;
+    if (title.text === "") {
+      return;
+    }
+    onCreate({
+      title: title.text,
+      description: description.text,
+      todoWithin: todoWithin.date
+    });
+  };
+
   render() {
-    const { task, onUndo, onCreate } = this.props;
+    const { task, onUndo } = this.props;
     const { title, description, todoWithin } = this.state;
     return (
       <Item>
@@ -86,18 +107,30 @@ class EditableTaskComponent extends React.PureComponent<EditableProps, State> {
                 size="large"
               />
             </Header>
-            <ContentDate>
+            <ContentEditDate>
+              <DatePicker
+                size="small"
+                calendarClassName="dark-calendar"
+                onChange={this.handleOnDateChange}
+                value={todoWithin.date}
+                minDate={new Date()}
+                locale="en-US"
+                clearIcon={<i className="icon-delete" />}
+                calendarIcon={<i className="icon-calendar" />}
+              />
+            </ContentEditDate>
+            <ContentEditDescription>
               <Input
                 value={description.text}
                 placeholder="Type a description"
                 onChange={this.handleOnTextChange("description")}
                 size="small"
               />
-            </ContentDate>
+            </ContentEditDescription>
           </ContentEditInputs>
           <ContentEditActions>
             <Button onClick={onUndo}>UNDO</Button>
-            <Button color="accent" onClick={onCreate}>
+            <Button color="accent" onClick={this.handleOnButtonConfirmClick}>
               CONFIRM
             </Button>
           </ContentEditActions>

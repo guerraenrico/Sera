@@ -1,7 +1,9 @@
 import styled from "styled-components";
+import DatePicker from "react-date-picker";
 
 import { commonColors } from "../../../styles/colors";
-import { taskSizes, commonSizes } from "../../../styles/sizes";
+import { taskSizes, commonSizes, inputSizes } from "../../../styles/sizes";
+import { fontFamily } from "../../../styles/common";
 
 export const Item = styled.div`
   position: relative;
@@ -105,6 +107,16 @@ export const ContentEditItem = styled.div`
 
 export const ContentEditInputs = styled.div`
   flex: 1;
+`;
+
+export const ContentEditDate = styled.div`
+  position: relative;
+  padding: 0 40px 15px 40px;
+`;
+
+export const ContentEditDescription = styled.div`
+  position: relative;
+  padding: 0 40px 30px 40px;
 `;
 
 export const ContentEditActions = styled.div`

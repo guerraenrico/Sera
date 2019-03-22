@@ -32,6 +32,10 @@ export const buttonIconColors = {
   iconHover: commonColors.textPrimary
 };
 
+export const datePickerColors = {
+  input: commonColors.textSecondary
+};
+
 export const snackbarColors = {
   errorBackground: "#F44336",
   background: "#2196F3",

@@ -92,37 +92,11 @@ export const fetchTasksByCategory = (
   }
 };
 
-export const deleteTask = (id: string = ""): ThunkAction => async (
-  dispatch,
-  getState
-) => {
-  try {
-    const { items } = getState().todoTasks;
-    const todoArgumentIndex = items.findIndex(
-      todoArgument => todoArgument.id === id
-    );
-    dispatch(removeTaskLocal(todoArgumentIndex));
-    const { accessToken } = getState().auth;
-    const response = await callApi("tasks", id, Methods.DELETE, accessToken);
-    if (!response.success) {
-      if (shouldRefreshToken(response)) {
-        await dispatch(refreshAccessToken());
-        dispatch(deleteTask(id));
-        return;
-      }
-      dispatch(showMessageError(response.error.message));
-    }
-  } catch (error) {
-    dispatch(showMessageError(error.message));
-  }
-};
-
 export const addTask = (
   title: string = "",
   description: string = "",
-  category: Category,
-  todoWithin: Date,
-  callback: () => void
+  category?: Category,
+  todoWithin: Date
 ): ThunkAction => async (dispatch, getState) => {
   try {
     const { accessToken } = getState().auth;
@@ -131,7 +105,7 @@ export const addTask = (
       {
         title,
         description,
-        categories: [category],
+        categories: category ? [category] : [],
         todoWithin
       },
       Methods.POST,
@@ -149,13 +123,36 @@ export const addTask = (
           : undefined
       };
       dispatch(addTaskLocal(task));
-      if (callback !== undefined) {
-        callback();
-      }
     } else {
       if (shouldRefreshToken(response)) {
         await dispatch(refreshAccessToken());
-        dispatch(addTask(title, description, category, todoWithin, callback));
+        return dispatch(addTask(title, description, category, todoWithin));
+      }
+      dispatch(showMessageError(response.error.message));
+    }
+    return response;
+  } catch (error) {
+    dispatch(showMessageError(error.message));
+    return { success: false };
+  }
+};
+
+export const deleteTask = (id: string = ""): ThunkAction => async (
+  dispatch,
+  getState
+) => {
+  try {
+    const { items } = getState().todoTasks;
+    const todoArgumentIndex = items.findIndex(
+      todoArgument => todoArgument.id === id
+    );
+    dispatch(removeTaskLocal(todoArgumentIndex));
+    const { accessToken } = getState().auth;
+    const response = await callApi("tasks", id, Methods.DELETE, accessToken);
+    if (!response.success) {
+      if (shouldRefreshToken(response)) {
+        await dispatch(refreshAccessToken());
+        dispatch(deleteTask(id));
         return;
       }
       dispatch(showMessageError(response.error.message));

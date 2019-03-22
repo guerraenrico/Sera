@@ -19,6 +19,7 @@ import { Container, itemAnimationStyle } from "./style";
 type Props = {
   +onDeleteTask: Task => void,
   +onCompleteTask: Task => void,
+  +doAddTask: Task => void,
   +doSetSelectedCategory: Category => void,
   +doSetCategoryToTask: (Task, Category) => void,
   +doCreateAndSetCategoryToTask: (Task, string) => void,
@@ -65,6 +66,7 @@ class Tasks extends React.PureComponent<Props, State> {
       taskList,
       onDeleteTask,
       onCompleteTask,
+      doAddTask,
       doSetSelectedCategory,
       doSetCategoryToTask,
       doCreateAndSetCategoryToTask,
@@ -81,7 +83,13 @@ class Tasks extends React.PureComponent<Props, State> {
                 <TaskComponent
                   creating
                   onUndo={onAbortCreatingTask}
-                  onCreate={task => {}}
+                  onCreate={async (task: Task) => {
+                    const response = await doAddTask(task);
+                    console.log("response", response);
+                    if (response.success) {
+                      onAbortCreatingTask();
+                    }
+                  }}
                 />
               </Resize>
             )}
@@ -124,23 +132,39 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onDeleteTask: task => {
+  onDeleteTask: (task: Task) => {
     dispatch(todoTasksActions.deleteTask(task.id));
   },
-  onCompleteTask: task => {
+  onCompleteTask: (task: Task) => {
     dispatch(todoTasksActions.toogleTaskCompleted(task.id, task.completed));
   },
-  doSetSelectedCategory: category => dispatch(setSelectedCategory(category)),
-  doSetCategoryToTask: (task, category) =>
+  doAddTask: (task: Task) => {
+    dispatch(
+      todoTasksActions.addTask(
+        task.title,
+        task.description,
+        undefined,
+        task.todoWithin
+      )
+    );
+  },
+  doSetSelectedCategory: (category: Category) =>
+    dispatch(setSelectedCategory(category)),
+  doSetCategoryToTask: (task: Task, category: Category) =>
     dispatch(todoTasksActions.setCategoryToTask(task, category)),
-  doCreateAndSetCategoryToTask: (task, name) =>
+  doCreateAndSetCategoryToTask: (task: Task, name: string) =>
     dispatch(todoTasksActions.createAndSetCategoryToTask(task, name)),
-  doRemoveCategoryToTask: (task, category) =>
+  doRemoveCategoryToTask: (task: Task, category: Category) =>
     dispatch(todoTasksActions.removeCategoryToTask(task, category)),
-  fetchTasks: (categoryFilterId, completed, skip, limit) => {
+  fetchTasks: (
+    categoryFilterId: string,
+    completed: boolean,
+    skip: number,
+    limit: number
+  ) => {
     dispatch(
       todoTasksActions.fetchTasksByCategory(
-        categoryFilterId && [categoryFilterId],
+        categoryFilterId ? [categoryFilterId] : [],
         completed,
         skip,
         limit

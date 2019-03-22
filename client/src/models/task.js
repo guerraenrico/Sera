@@ -6,7 +6,7 @@ export type Task = {
   title: string,
   description: string,
   completed: boolean,
-  todoWithin: Date | void,
+  todoWithin: Date,
   completedAt: Date | void,
   categoryId: string,
   createdAt: Date,
