@@ -5,7 +5,6 @@ import Input from "../../layout/Input";
 import Button from "../../layout/Button";
 import DatePicker from "../../layout/DatePicker";
 
-import { toSimpleDateFormat } from "../../../utils/Common";
 import labels from "../../../constants/labels";
 
 import type { Task } from "../../../models/task";
@@ -23,7 +22,7 @@ import {
 
 export type EditableProps = {
   +onUndo: () => void,
-  +onCreate: Task => void,
+  +onCreate: ({}) => void,
   +task?: Task
 };
 
@@ -68,12 +67,12 @@ class EditableTaskComponent extends React.PureComponent<EditableProps, State> {
     }
   };
 
-  handleOnTextChange = (name: string) => e =>
+  handleOnTextChange = (name: string) => (e: Object) =>
     this.setState({
       [name]: { text: e.target.value, valid: true, error: "" }
     });
 
-  handleOnDateChange = e => {
+  handleOnDateChange = (e: Object) => {
     this.setState({
       todoWithin: { date: e.target.value, valid: true, error: "" }
     });
@@ -102,7 +101,7 @@ class EditableTaskComponent extends React.PureComponent<EditableProps, State> {
             <Header>
               <Input
                 value={title.text}
-                placeholder="Type a title"
+                placeholder={labels.placeHolderTitle}
                 onChange={this.handleOnTextChange("title")}
                 size="large"
               />

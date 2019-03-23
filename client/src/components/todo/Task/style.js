@@ -1,9 +1,7 @@
 import styled from "styled-components";
-import DatePicker from "react-date-picker";
 
 import { commonColors } from "../../../styles/colors";
-import { taskSizes, commonSizes, inputSizes } from "../../../styles/sizes";
-import { fontFamily } from "../../../styles/common";
+import { taskSizes, commonSizes } from "../../../styles/sizes";
 
 export const Item = styled.div`
   position: relative;

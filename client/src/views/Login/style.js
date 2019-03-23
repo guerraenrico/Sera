@@ -32,6 +32,7 @@ export const Description = styled.p`
   font-weight: 500;
   font-size: 1rem;
   text-align: center;
+  color: ${commonColors.textPrimary};
 `;
 
 export const ContentLogo = styled.div`
