@@ -7,10 +7,7 @@ import { TransitionGroup } from "react-transition-group";
 import ButtonAdd from "../ButtonAdd";
 
 import Resize from "../../../../anims/Resize";
-import {
-  addCategory,
-  searchCategory
-} from "../../../../../actions/todoFiltersActions";
+import { searchCategory } from "../../../../../actions/todoFiltersActions";
 
 import CategoryComponent from "../../../Category";
 import type { Category } from "../../../../../models/category";
@@ -201,9 +198,7 @@ class SearchComponent extends Component<Props, State> {
 }
 
 const mapDispatchToProps = dispatch => ({
-  doSearchCategory: (text, callback) =>
-    dispatch(searchCategory(text, callback)),
-  doAddCategory: (text, callback) => dispatch(addCategory(text, callback))
+  doSearchCategory: (text, callback) => dispatch(searchCategory(text, callback))
 });
 
 export default connect(

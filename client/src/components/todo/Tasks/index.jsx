@@ -13,13 +13,14 @@ import * as todoFiltersSelectors from "../../../selectors/todoFiltersSelectors";
 
 import type { Task } from "../../../models/task";
 import type { Category } from "../../../models/category";
+import type { Response } from "../../../models/response";
 
 import { Container, itemAnimationStyle } from "./style";
 
 type Props = {
   +onDeleteTask: Task => void,
   +onCompleteTask: Task => void,
-  +doAddTask: Task => void,
+  +doAddTask: Task => Promise<Response>,
   +doSetSelectedCategory: Category => void,
   +doSetCategoryToTask: (Task, Category) => void,
   +doCreateAndSetCategoryToTask: (Task, string) => void,
@@ -132,13 +133,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onDeleteTask: (task: Task) => {
-    dispatch(todoTasksActions.deleteTask(task.id));
-  },
-  onCompleteTask: (task: Task) => {
-    dispatch(todoTasksActions.toogleTaskCompleted(task.id, task.completed));
-  },
-  doAddTask: (task: Task) => {
+  onDeleteTask: (task: Task) => dispatch(todoTasksActions.deleteTask(task.id)),
+  onCompleteTask: (task: Task) =>
+    dispatch(todoTasksActions.toogleTaskCompleted(task.id, task.completed)),
+  doAddTask: (task: Task) =>
     dispatch(
       todoTasksActions.addTask(
         task.title,
@@ -146,8 +144,7 @@ const mapDispatchToProps = dispatch => ({
         undefined,
         task.todoWithin
       )
-    );
-  },
+    ),
   doSetSelectedCategory: (category: Category) =>
     dispatch(setSelectedCategory(category)),
   doSetCategoryToTask: (task: Task, category: Category) =>
@@ -161,7 +158,7 @@ const mapDispatchToProps = dispatch => ({
     completed: boolean,
     skip: number,
     limit: number
-  ) => {
+  ) =>
     dispatch(
       todoTasksActions.fetchTasksByCategory(
         categoryFilterId ? [categoryFilterId] : [],
@@ -169,8 +166,7 @@ const mapDispatchToProps = dispatch => ({
         skip,
         limit
       )
-    );
-  }
+    )
 });
 
 export default connect(
