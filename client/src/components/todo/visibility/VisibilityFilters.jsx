@@ -1,6 +1,10 @@
 import React from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import VisibilitySwitch from "./VisibilitySwitch";
+
+import * as todoFiltersActions from "../../../actions/todoFiltersActions";
+import * as todoFiltersSelectors from "../../../selectors/todoFiltersSelectors";
 
 const VisibilityFilter = ({
   selectedVisibilityFilter,
@@ -35,4 +39,16 @@ VisibilityFilter.propTypes = {
   onVisibilitySwitchClick: PropTypes.func.isRequired
 };
 
-export default VisibilityFilter;
+const mapStateToProps = state => ({
+  selectedVisibilityFilter: todoFiltersSelectors.getVisibilityFilter(state)
+});
+
+const mapDispatchToProps = dispatch => ({
+  onVisibilitySwitchClick: visibility => () =>
+    dispatch(todoFiltersActions.changeVisibility(visibility))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(VisibilityFilter);

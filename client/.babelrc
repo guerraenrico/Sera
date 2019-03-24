@@ -14,7 +14,15 @@
   "plugins": [
     "@babel/plugin-syntax-dynamic-import",
     "@babel/plugin-proposal-class-properties",
-    "babel-plugin-transform-dynamic-import"
+    "babel-plugin-transform-dynamic-import",
+    "babel-plugin-styled-components"
+    // [
+    //   "babel-plugin-root-import",
+    //   {
+    //     "rootPathPrefix": "~",
+    //     "rootPathSuffix": "./src"
+    //   }
+    // ]
   ],
   "comments": true
 }
