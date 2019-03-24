@@ -44,28 +44,30 @@ type State = {
   todoWithin: ControlDate
 };
 
+const initialState = {
+  title: {
+    text: "",
+    valid: false,
+    error: ""
+  },
+  description: {
+    text: "",
+    valid: false,
+    error: ""
+  },
+  todoWithin: {
+    date: new Date(),
+    valid: false,
+    error: ""
+  }
+};
+
 class EditableTaskComponent extends React.PureComponent<EditableProps, State> {
   static defaultProps = {
     task: undefined
   };
 
-  state = {
-    title: {
-      text: "",
-      valid: false,
-      error: ""
-    },
-    description: {
-      text: "",
-      valid: false,
-      error: ""
-    },
-    todoWithin: {
-      date: new Date(),
-      valid: false,
-      error: ""
-    }
-  };
+  state = initialState;
 
   handleOnTextChange = (name: string) => (e: Object) =>
     this.setState({
@@ -89,6 +91,7 @@ class EditableTaskComponent extends React.PureComponent<EditableProps, State> {
       description: description.text,
       todoWithin: todoWithin.date
     });
+    this.setState(initialState);
   };
 
   render() {

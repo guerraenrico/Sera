@@ -86,7 +86,6 @@ class Tasks extends React.PureComponent<Props, State> {
                   onUndo={onAbortCreatingTask}
                   onCreate={async (task: Task) => {
                     const response = await doAddTask(task);
-                    console.log("response", response);
                     if (response.success) {
                       onAbortCreatingTask();
                     }

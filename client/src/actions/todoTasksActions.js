@@ -130,7 +130,6 @@ export const addTask = (
       }
       dispatch(showMessageError(response.error.message));
     }
-    console.log("response add task", response);
     return response;
   } catch (error) {
     dispatch(showMessageError(error.message));

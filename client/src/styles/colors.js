@@ -32,6 +32,14 @@ export const buttonIconColors = {
   iconHover: commonColors.textPrimary
 };
 
+export const switchColors = {
+  background: "#181A1E",
+  optionSelectedBackground: "#020810",
+  optionIcon: "#97a0ab",
+  optionIconSelected: "#1EBCAD",
+  optionIconHover: "#1EBCAD"
+};
+
 export const datePickerColors = {
   input: commonColors.textSecondary
 };

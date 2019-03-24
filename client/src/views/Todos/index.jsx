@@ -8,7 +8,8 @@ import ButtonIcon from "../../components/layout/ButtonIcon";
 // import VisibilityFilter from "../../components/todo/visibility/VisibilityFilters";
 import Search from "../../components/todo/Search";
 import Tasks from "../../components/todo/Tasks";
-import DialogAdd from "../../components/todo/dialogAdd/DialogAdd";
+// import DialogAdd from "../../components/todo/dialogAdd/DialogAdd";
+import Filters from "../../components/todo/Filters";
 import Snackbar from "../../components/layout/Snackbar";
 
 import * as messageActions from "../../actions/messageActions";
@@ -25,13 +26,13 @@ type Props = {
 };
 
 type State = {
-  isDialogAddOpen: boolean,
+  isFilterOpen: boolean,
   creatingTask: boolean
 };
 
 class Todos extends React.PureComponent<Props, State> {
   state = {
-    isDialogAddOpen: false,
+    isFilterOpen: false,
     creatingTask: false
   };
 
@@ -40,7 +41,7 @@ class Todos extends React.PureComponent<Props, State> {
   };
 
   render() {
-    const { isDialogAddOpen, creatingTask } = this.state;
+    const { isFilterOpen, creatingTask } = this.state;
     const { message, hideMessage, showLoading } = this.props;
     return (
       <ContentApp>
@@ -50,7 +51,10 @@ class Todos extends React.PureComponent<Props, State> {
           <VisibilityFilter /> */}
           <Search />
           <ContentTopBarActions>
-            <ButtonIcon onClick={() => {}} iconClassName="icon-filter" />
+            <ButtonIcon
+              onClick={() => this.setState({ isFilterOpen: true })}
+              iconClassName="icon-filter"
+            />
             <ButtonIcon
               onClick={() => this.setState({ creatingTask: true })}
               iconClassName="icon-add"
@@ -61,9 +65,9 @@ class Todos extends React.PureComponent<Props, State> {
           creatingTask={creatingTask}
           onAbortCreatingTask={this.handleAbortCreatingTask}
         />
-        <DialogAdd
-          open={isDialogAddOpen}
-          onClose={() => this.setState({ isDialogAddOpen: false })}
+        <Filters
+          open={isFilterOpen}
+          onClose={() => this.setState({ isFilterOpen: false })}
         />
         <Snackbar
           show={message.show}
