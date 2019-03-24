@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import labels from "../../../constants/labels";
-import Category from "../category/Category";
+import Category from "../Category";
 import { ADD_TASK } from "../../../constants/steps";
 import { showMessageInfo } from "../../../actions/messageActions";
 

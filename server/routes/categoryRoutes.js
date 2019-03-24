@@ -33,6 +33,23 @@ router.get("/", (req, res) =>
   )
 );
 
+// Search Categories
+
+router.get("/search", (req, res) =>
+  connection(db =>
+    needAuth(db, req, res, async session => {
+      const text = req.query.text || "";
+      try {
+        const categories = await Category.SearchAsync(db, session.userId, text);
+        handleResponse(res, categories, session.accessToken);
+      } catch (err) {
+        console.log("err", JSON.stringify(err));
+        handleError(res, ApiErrors.ErrorReadCategory(err), session.accessToken);
+      }
+    })
+  )
+);
+
 // Insert Category
 
 router.post("/", (req, res) =>

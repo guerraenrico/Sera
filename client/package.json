@@ -1,6 +1,6 @@
 {
   "name": "sera_client",
-  "version": "2.0.4",
+  "version": "3.0.0",
   "private": true,
   "description": "client side of sera",
   "main": "src/index.js",
@@ -23,12 +23,12 @@
     "autoprefixer": "^9.4.7",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.0",
+    "babel-plugin-styled-components": "^1.10.0",
     "babel-plugin-transform-dynamic-import": "^2.1.0",
     "css-loader": "^2.1.0",
     "eslint": "^5.13.0",
     "eslint-config-airbnb": "^17.1.0",
     "eslint-config-prettier": "^4.0.0",
-    "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.4",
@@ -46,9 +46,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
-    "babel-jest": "^24.1.0",
     "dateformat": "^3.0.3",
-    "jest": "^24.1.0",
     "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
     "react": "^16.8.1",
@@ -65,6 +63,7 @@
     "regenerator-runtime": "^0.13.1",
     "reselect": "^4.0.0",
     "scroll": "^3.0.0",
-    "store": "^2.0.12"
+    "store": "^2.0.12",
+    "styled-components": "^4.1.3"
   }
 }
