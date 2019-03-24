@@ -23,17 +23,17 @@ import * as authSelector from "../../selectors/authSelector";
 import { Container, FlexContainer } from "./style";
 
 const LoginContainer = Loadable({
-  loader: () => import("../Login" /* webpackChunkName: 'login' */),
+  loader: () => import(/* webpackChunkName: 'login' */ "../Login"),
   loading: LoaderLinear
 });
 
 const TodosContainer = Loadable({
-  loader: () => import("../Todos" /* webpackChunkName: 'todos' */),
+  loader: () => import(/* webpackChunkName: 'todos' */ "../Todos"),
   loading: LoaderLinear
 });
 
 const GoalsContainer = Loadable({
-  loader: () => import("../Goals" /* webpackChunkName: 'goals' */),
+  loader: () => import(/* webpackChunkName: 'goals' */ "../Goals"),
   loading: LoaderLinear
 });
 

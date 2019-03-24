@@ -46,9 +46,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5",
-    "babel-jest": "^24.1.0",
     "dateformat": "^3.0.3",
-    "jest": "^24.1.0",
     "lodash": "^4.17.11",
     "prop-types": "^15.6.2",
     "react": "^16.8.1",

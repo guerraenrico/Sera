@@ -11,10 +11,12 @@ import reducers from "./reducers";
 import "../style/main.sass";
 
 /* eslint-disable no-underscore-dangle */
-const composeEnhancers =
-  typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
-    : compose;
+// const composeEnhancers =
+//   typeof window === "object" && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+//     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
+//     : compose;
+
+const composeEnhancers = compose;
 
 const enhancer = composeEnhancers(applyMiddleware(thunk));
 
