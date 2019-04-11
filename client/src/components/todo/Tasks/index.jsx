@@ -101,10 +101,7 @@ class Tasks extends React.PureComponent<Props, State> {
                 <div ref={provided.innerRef} {...provided.droppableProps}>
                   <TransitionGroup>
                     {creatingTask && (
-                      <Resize
-                        key="creation_task"
-                        style={itemAnimationStyle(false)}
-                      >
+                      <Resize key="creation_task">
                         <TaskComponent
                           creating
                           onUndo={onAbortCreatingTask}
