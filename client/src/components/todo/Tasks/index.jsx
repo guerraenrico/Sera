@@ -2,6 +2,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { TransitionGroup } from "react-transition-group";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Resize from "../../anims/Resize";
 import TaskComponent from "../Task";
 import InfiniteScroll from "../../layout/InfiniteScroll";
@@ -62,6 +63,8 @@ class Tasks extends React.PureComponent<Props, State> {
     fetchTasks(categoryFilterId, completed, skip);
   };
 
+  onDragEnd = result => {};
+
   render() {
     const {
       taskList,
@@ -76,49 +79,64 @@ class Tasks extends React.PureComponent<Props, State> {
       onAbortCreatingTask
     } = this.props;
     return (
-      <Container>
-        <InfiniteScroll onScroll={this.onFetchTodoTasksNext}>
-          <TransitionGroup>
-            {creatingTask && (
-              <Resize key="creation_task" style={itemAnimationStyle(false)}>
-                <TaskComponent
-                  creating
-                  onUndo={onAbortCreatingTask}
-                  onCreate={async (task: Task) => {
-                    const response = await doAddTask(task);
-                    if (response.success) {
-                      onAbortCreatingTask();
-                    }
-                  }}
-                />
-              </Resize>
-            )}
-            {taskList.map((task, i) => (
-              <Resize
-                key={`rsz${task.id}`}
-                style={itemAnimationStyle(i === taskList.length - 1)}
-              >
-                <TaskComponent
-                  key={task.id}
-                  task={task}
-                  onDelete={() => onDeleteTask(task)}
-                  onComplete={() => onCompleteTask(task)}
-                  onCategoryClick={category => doSetSelectedCategory(category)}
-                  onSetCategory={category =>
-                    doSetCategoryToTask(task, category)
-                  }
-                  onCreateCategory={name =>
-                    doCreateAndSetCategoryToTask(task, name)
-                  }
-                  onRemoveCategory={category =>
-                    doRemoveCategoryToTask(task, category)
-                  }
-                />
-              </Resize>
-            ))}
-          </TransitionGroup>
-        </InfiniteScroll>
-      </Container>
+      <DragDropContext onDragEnd={this.onDragEnd}>
+        <Container>
+          <InfiniteScroll onScroll={this.onFetchTodoTasksNext}>
+            <Droppable droppableId="tasks">
+              {provided => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  <TransitionGroup>
+                    {creatingTask && (
+                      <Resize
+                        key="creation_task"
+                        style={itemAnimationStyle(false)}
+                      >
+                        <TaskComponent
+                          creating
+                          onUndo={onAbortCreatingTask}
+                          onCreate={async (task: Task) => {
+                            const response = await doAddTask(task);
+                            if (response.success) {
+                              onAbortCreatingTask();
+                            }
+                          }}
+                        />
+                      </Resize>
+                    )}
+                    {taskList.map((task, i) => (
+                      <Resize
+                        key={`rsz${task.id}`}
+                        style={itemAnimationStyle(i === taskList.length - 1)}
+                      >
+                        <TaskComponent
+                          key={task.id}
+                          index={i}
+                          task={task}
+                          onDelete={() => onDeleteTask(task)}
+                          onComplete={() => onCompleteTask(task)}
+                          onCategoryClick={category =>
+                            doSetSelectedCategory(category)
+                          }
+                          onSetCategory={category =>
+                            doSetCategoryToTask(task, category)
+                          }
+                          onCreateCategory={name =>
+                            doCreateAndSetCategoryToTask(task, name)
+                          }
+                          onRemoveCategory={category =>
+                            doRemoveCategoryToTask(task, category)
+                          }
+                        />
+                      </Resize>
+                    ))}
+                    {provided.placeholder}
+                  </TransitionGroup>
+                </div>
+              )}
+            </Droppable>
+          </InfiniteScroll>
+        </Container>
+      </DragDropContext>
     );
   }
 }

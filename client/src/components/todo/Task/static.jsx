@@ -1,5 +1,6 @@
 // @flow
 import React from "react";
+import { Draggable } from "react-beautiful-dnd";
 import Collapse from "../../anims/Collapse";
 import Fade from "../../anims/Fade";
 import CategoryComponent from "../Category";
@@ -25,6 +26,7 @@ import {
 } from "./style";
 
 export type StaticProps = {
+  +index: number,
   +onDelete?: () => void,
   +onComplete?: () => void,
   +onCategoryClick: Category => void,
@@ -110,41 +112,52 @@ class StaticTaskComponent extends React.PureComponent<StaticProps, State> {
   };
 
   render() {
-    const { task, onDelete, onComplete } = this.props;
+    const { index, task, onDelete, onComplete } = this.props;
     const { collapsed } = this.state;
     return (
-      <Item className={`${task.completed ? "completed" : ""}`}>
-        <Header>
-          <Title onClick={() => this.onTitleClick()} role="presentation">
-            {task.title}
-          </Title>
-          {onDelete !== undefined && (
-            <Fade in={collapsed}>
-              <ButtonDelete onClick={onDelete} />
-            </Fade>
-          )}
-          {onComplete !== undefined && (
-            <ButtonComplete onClick={onComplete} completed={task.completed} />
-          )}
-        </Header>
-        <ContentDate>{this.dateToRender()}</ContentDate>
-        {this.categoriesToRender(task)}
-        <Collapse in={collapsed}>
-          <ContentDescription key={task.description}>
-            <Description
-              className={`${
-                task.description !== undefined && task.description !== ""
-                  ? ""
-                  : "empty"
-              }`}
-            >
-              {task.description !== undefined && task.description !== ""
-                ? task.description
-                : labels.labelNoDescription}
-            </Description>
-          </ContentDescription>
-        </Collapse>
-      </Item>
+      <Draggable draggableId={task.id} index={index}>
+        {provided => (
+          <Item
+            className={`${task.completed ? "completed" : ""}`}
+            {...provided.draggableProps}
+            ref={provided.innerRef}
+          >
+            <Header {...provided.dragHandleProps}>
+              <Title onClick={() => this.onTitleClick()} role="presentation">
+                {task.title}
+              </Title>
+              {onDelete !== undefined && (
+                <Fade in={collapsed}>
+                  <ButtonDelete onClick={onDelete} />
+                </Fade>
+              )}
+              {onComplete !== undefined && (
+                <ButtonComplete
+                  onClick={onComplete}
+                  completed={task.completed}
+                />
+              )}
+            </Header>
+            <ContentDate>{this.dateToRender()}</ContentDate>
+            {this.categoriesToRender(task)}
+            <Collapse in={collapsed}>
+              <ContentDescription key={task.description}>
+                <Description
+                  className={`${
+                    task.description !== undefined && task.description !== ""
+                      ? ""
+                      : "empty"
+                  }`}
+                >
+                  {task.description !== undefined && task.description !== ""
+                    ? task.description
+                    : labels.labelNoDescription}
+                </Description>
+              </ContentDescription>
+            </Collapse>
+          </Item>
+        )}
+      </Draggable>
     );
   }
 }
