@@ -6,10 +6,18 @@ import { taskSizes, commonSizes } from "../../../styles/sizes";
 export const Item = styled.div`
   position: relative;
   display: block;
+  transition: height 500ms ease-in;
+  padding-bottom: ${taskSizes.itemMargin};
+`;
+
+export const Content = styled.div`
+  position: relative;
+  display: block;
   background-color: ${commonColors.background};
   box-sizing: border-box;
-  -webkit-border-radius: ${commonSizes.containerBorderRadius};
   border-radius: ${commonSizes.containerBorderRadius};
+  box-shadow: ${props =>
+    props.isDragging ? "0 5px 20px rgba(0,0,0, 0.2)" : "none"};
   transition: height 500ms ease-in;
 `;
 

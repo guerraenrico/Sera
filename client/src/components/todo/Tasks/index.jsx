@@ -16,7 +16,7 @@ import type { Task } from "../../../models/task";
 import type { Category } from "../../../models/category";
 import type { Response } from "../../../models/response";
 
-import { Container, itemAnimationStyle } from "./style";
+import { Container } from "./style";
 
 type Props = {
   +onDeleteTask: Task => void,
@@ -118,10 +118,7 @@ class Tasks extends React.PureComponent<Props, State> {
                       </Resize>
                     )}
                     {taskList.map((task, i) => (
-                      <Resize
-                        key={`rsz${task.id}`}
-                        style={itemAnimationStyle(i === taskList.length - 1)}
-                      >
+                      <Resize key={`rsz${task.id}`}>
                         <TaskComponent
                           key={task.id}
                           index={i}

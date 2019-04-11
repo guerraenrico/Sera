@@ -15,6 +15,7 @@ import type { Category } from "../../../models/category";
 
 import {
   Item,
+  Content,
   Header,
   Title,
   ContentDate,
@@ -116,45 +117,47 @@ class StaticTaskComponent extends React.PureComponent<StaticProps, State> {
     const { collapsed } = this.state;
     return (
       <Draggable draggableId={task.id} index={index}>
-        {provided => (
+        {(provided, snapshot) => (
           <Item
             className={`${task.completed ? "completed" : ""}`}
             {...provided.draggableProps}
             ref={provided.innerRef}
           >
-            <Header {...provided.dragHandleProps}>
-              <Title onClick={() => this.onTitleClick()} role="presentation">
-                {task.title}
-              </Title>
-              {onDelete !== undefined && (
-                <Fade in={collapsed}>
-                  <ButtonDelete onClick={onDelete} />
-                </Fade>
-              )}
-              {onComplete !== undefined && (
-                <ButtonComplete
-                  onClick={onComplete}
-                  completed={task.completed}
-                />
-              )}
-            </Header>
-            <ContentDate>{this.dateToRender()}</ContentDate>
-            {this.categoriesToRender(task)}
-            <Collapse in={collapsed}>
-              <ContentDescription key={task.description}>
-                <Description
-                  className={`${
-                    task.description !== undefined && task.description !== ""
-                      ? ""
-                      : "empty"
-                  }`}
-                >
-                  {task.description !== undefined && task.description !== ""
-                    ? task.description
-                    : labels.labelNoDescription}
-                </Description>
-              </ContentDescription>
-            </Collapse>
+            <Content isDragging={snapshot.isDragging}>
+              <Header {...provided.dragHandleProps}>
+                <Title onClick={() => this.onTitleClick()} role="presentation">
+                  {task.title}
+                </Title>
+                {onDelete !== undefined && (
+                  <Fade in={collapsed}>
+                    <ButtonDelete onClick={onDelete} />
+                  </Fade>
+                )}
+                {onComplete !== undefined && (
+                  <ButtonComplete
+                    onClick={onComplete}
+                    completed={task.completed}
+                  />
+                )}
+              </Header>
+              <ContentDate>{this.dateToRender()}</ContentDate>
+              {this.categoriesToRender(task)}
+              <Collapse in={collapsed}>
+                <ContentDescription key={task.description}>
+                  <Description
+                    className={`${
+                      task.description !== undefined && task.description !== ""
+                        ? ""
+                        : "empty"
+                    }`}
+                  >
+                    {task.description !== undefined && task.description !== ""
+                      ? task.description
+                      : labels.labelNoDescription}
+                  </Description>
+                </ContentDescription>
+              </Collapse>
+            </Content>
           </Item>
         )}
       </Draggable>
