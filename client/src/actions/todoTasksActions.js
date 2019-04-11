@@ -12,7 +12,8 @@ import type {
   ErrorFetchTasksAction,
   AddTaskLocalAction,
   RemoveTaskAction,
-  UpdateTaskLocalAction
+  UpdateTaskLocalAction,
+  ChangeTaskOrderLocalAction
 } from "../reducers/todoTasks";
 
 import type { Task } from "../models/task";
@@ -49,6 +50,17 @@ const updateTaskLocal = (id, data): UpdateTaskLocalAction => ({
   type: "UPDATE_TASK_LOCAL",
   id,
   data
+});
+
+const changeTaskOrderLocal = (
+  id,
+  previousIndex,
+  nextIndex
+): ChangeTaskOrderLocalAction => ({
+  type: "CHANGE_TASK_ORDER_LOCAL",
+  id,
+  previousIndex,
+  nextIndex
 });
 
 export const fetchTasksByCategory = (
@@ -290,4 +302,12 @@ export const removeCategoryToTask = (
     dispatch(showMessageError(error.message));
     return { success: false };
   }
+};
+
+export const changeTaskOrder = (
+  previousIndex: number,
+  nextIndex: number,
+  taskId: string
+): ThunkAction => async (dispatch, getState) => {
+  dispatch(changeTaskOrderLocal(taskId, previousIndex, nextIndex));
 };

@@ -26,6 +26,7 @@ type Props = {
   +doSetCategoryToTask: (Task, Category) => void,
   +doCreateAndSetCategoryToTask: (Task, string) => void,
   +doRemoveCategoryToTask: (Task, Category) => void,
+  +doChangeTaskOrder: (number, number, string) => void,
   +taskList: Array<Task>,
   +moreToLoad: boolean,
   +fetchTasks: (string, boolean, number, ?number) => void,
@@ -63,7 +64,20 @@ class Tasks extends React.PureComponent<Props, State> {
     fetchTasks(categoryFilterId, completed, skip);
   };
 
-  onDragEnd = result => {};
+  onDragEnd = result => {
+    const { doChangeTaskOrder } = this.props;
+    const { destination, source, draggableId } = result;
+    if (!destination) {
+      return;
+    }
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+    doChangeTaskOrder(source.index, destination.index, draggableId);
+  };
 
   render() {
     const {
@@ -170,6 +184,14 @@ const mapDispatchToProps = dispatch => ({
     dispatch(todoTasksActions.createAndSetCategoryToTask(task, name)),
   doRemoveCategoryToTask: (task: Task, category: Category) =>
     dispatch(todoTasksActions.removeCategoryToTask(task, category)),
+  doChangeTaskOrder: (
+    previousIndex: number,
+    nextIndex: number,
+    taskId: string
+  ) =>
+    dispatch(
+      todoTasksActions.changeTaskOrder(previousIndex, nextIndex, taskId)
+    ),
   fetchTasks: (
     categoryFilterId: string,
     completed: boolean,
