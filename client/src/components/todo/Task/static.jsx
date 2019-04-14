@@ -16,6 +16,8 @@ import type { Category } from "../../../models/category";
 import {
   Item,
   Content,
+  Handle,
+  HandleIcon,
   Header,
   Title,
   ContentDate,
@@ -124,7 +126,10 @@ class StaticTaskComponent extends React.PureComponent<StaticProps, State> {
             ref={provided.innerRef}
           >
             <Content isDragging={snapshot.isDragging}>
-              <Header {...provided.dragHandleProps}>
+              <Handle {...provided.dragHandleProps}>
+                <HandleIcon className="icon-handle" />
+              </Handle>
+              <Header>
                 <Title onClick={() => this.onTitleClick()} role="presentation">
                   {task.title}
                 </Title>

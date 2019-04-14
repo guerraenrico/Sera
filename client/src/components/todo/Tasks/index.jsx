@@ -92,6 +92,7 @@ class Tasks extends React.PureComponent<Props, State> {
       creatingTask,
       onAbortCreatingTask
     } = this.props;
+    console.log("task list", taskList);
     return (
       <DragDropContext onDragEnd={this.onDragEnd}>
         <Container>

@@ -21,14 +21,35 @@ export const Content = styled.div`
   transition: height 500ms ease-in;
 `;
 
-// padding-bottom: ${props => (props.last ? 0 : taskSizes.itemMargin)};
+export const Handle = styled.div`
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  box-sizing: border-box;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  padding: 0.5rem;
+`;
+
+export const HandleIcon = styled.i`
+  margin: auto;
+  font-size: 1.2em;
+  color: ${commonColors.iconButton};
+  transition: color 200ms ease-in;
+  padding: 0;
+
+  ${Handle}:hover & {
+    color: ${commonColors.iconButtonHover};
+  }
+`;
 
 export const Header = styled.div`
   position: relative;
   display: flex;
   overflow: hidden;
   box-sizing: border-box;
-  padding: 30px 40px 15px 40px;
+  padding: ${props => (props.paddingTop ? "30px" : "0")} 40px 15px 40px;
 `;
 
 export const Title = styled.p`
