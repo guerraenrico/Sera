@@ -9,7 +9,6 @@ const duration = {
 
 const defaultStyle = {
   transition: `all ${duration.enter}ms ease-in-out`,
-  // FIXME: comment next 2 lines to resolbe problem show task while navigate between screens
   height: 0,
   opacity: 0
 };
@@ -30,7 +29,7 @@ const onExit = node => {
   style.height = `${node.firstElementChild.offsetHeight}px`;
 };
 
-const onExited = node => {
+const onExiting = node => {
   const { style } = node;
   style.height = 0;
   style.opacity = 0;
@@ -39,10 +38,11 @@ const onExited = node => {
 const Resize = ({ children, style, ...props }) => (
   <Transition
     {...props}
+    appear
     onEnter={onEnter}
     onEntered={onEntered}
     onExit={onExit}
-    onExited={onExited}
+    onExiting={onExiting}
     timeout={duration}
   >
     {() => (
