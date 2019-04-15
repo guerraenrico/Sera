@@ -12,7 +12,8 @@ const Schema = {
     completedAt: "completedAt",
     categories: "categories",
     createdAt: "createdAt",
-    userId: "userId"
+    userId: "userId",
+    position: "position"
   }
 };
 
@@ -25,6 +26,7 @@ const New = ({
   completedAt = undefined,
   userId = "",
   createdAt = undefined,
+  position = -1,
   id = undefined
 }) => ({
   ...(id !== undefined && { id }),
@@ -35,7 +37,8 @@ const New = ({
   [Schema.fields.categories]: categories,
   [Schema.fields.completed]: completed,
   [Schema.fields.createdAt]: createdAt,
-  [Schema.fields.userId]: userId
+  [Schema.fields.userId]: userId,
+  [Schema.fields.position]: position
 });
 
 const CreateFromBodyRequest = (body, userId) => {
@@ -93,9 +96,11 @@ const GetAllAsync = async (
       ? db
           .collection(Schema.name)
           .find(filter)
+          // .sort({ [Schema.fields.position]: -1 })
           .limit(limit)
           .skip(skip)
       : db.collection(Schema.name).find(filter);
+  // .sort({ [Schema.fields.position]: -1 });
   const tasksDocs = await query.toArray();
   return CreateFromDocuments(tasksDocs);
 };
@@ -119,6 +124,14 @@ const UpdateAsync = async (db, id, fields) =>
       { $set: { ...fields } }
     );
 
+const UpdateByPositionAsync = async (db, position, fields) =>
+  db
+    .collection(Schema.name)
+    .findOneAndUpdate(
+      { [Schema.fields.position]: position },
+      { $set: { ...fields } }
+    );
+
 module.exports = {
   Schema,
   CreateFromBodyRequest,
@@ -127,5 +140,6 @@ module.exports = {
   GetAllAsync,
   InsertAsync,
   DeleteAsync,
-  UpdateAsync
+  UpdateAsync,
+  UpdateByPositionAsync
 };

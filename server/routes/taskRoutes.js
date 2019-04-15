@@ -134,4 +134,63 @@ router.patch("/", (req, res) =>
   )
 );
 
+router.patch("/position", (req, res) =>
+  connection(db =>
+    needAuth(db, req, res, async session => {
+      const { body } = req;
+      const { id, prevPosition, nextPosition } = body;
+      if (
+        id === undefined ||
+        prevPosition === undefined ||
+        nextPosition === undefined
+      ) {
+        handleError(
+          res,
+          ApiErrors.InvalidTaskParameters(),
+          400,
+          session.accessToken
+        );
+        return;
+      }
+      if (prevPosition === nextPosition) {
+        handleResponse(res, {}, session.accessToken);
+        return;
+      }
+      // TODO: Come riposizionare ?
+      const direction = prevPosition < nextPosition ? 1 : -1;
+      try {
+        const result = await Task.UpdateAsync(db, id, { ...other });
+        if (!result !== undefined && result.ok === 1) {
+          handleResponse(
+            res,
+            { ...Task.CreateFromDocument(result.value), ...other },
+            session.accessToken
+          );
+        } else {
+          handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
+        }
+      } catch (err) {
+        console.log("err", JSON.stringify(err));
+        handleError(res, ApiErrors.ErrorUpdateTask(err), session.accessToken);
+      }
+
+      try {
+        const result = await Task.UpdateAsync(db, id, { ...other });
+        if (!result !== undefined && result.ok === 1) {
+          handleResponse(
+            res,
+            { ...Task.CreateFromDocument(result.value), ...other },
+            session.accessToken
+          );
+        } else {
+          handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
+        }
+      } catch (err) {
+        console.log("err", JSON.stringify(err));
+        handleError(res, ApiErrors.ErrorUpdateTask(err), session.accessToken);
+      }
+    })
+  )
+);
+
 module.exports = router;

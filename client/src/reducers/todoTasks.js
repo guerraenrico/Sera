@@ -93,7 +93,7 @@ const todoTasks = (
     case "ADD_TASK_LOCAL":
       return {
         ...state,
-        items: [...state.items, action.task]
+        items: [action.task, ...state.items]
       };
     case "REMOVE_TASK_LOCAL":
       return {
