@@ -4,6 +4,7 @@ const connection = require("../middleware/dbConnectionMiddleware");
 const needAuth = require("../middleware/authMiddleware");
 
 const Task = require("../models/Task");
+const ItemOrder = require("../models/ItemOrder");
 const ApiErrors = require("../ApiErrors");
 const { handleError, handleResponse } = require("../Handlers");
 
@@ -30,6 +31,25 @@ router.get("/", (req, res) =>
           completed,
           categoriesId
         );
+        const itemOrder = await ItemOrder.GetAsync(
+          db,
+          session.userId,
+          Task.Schema.name
+        );
+        // Should be a 1 time run
+        if (itemOrder === undefined || itemOrder === null) {
+          const allTasks = await Task.GetAllAsync(db, session.userId);
+          await ItemOrder.InsertAsync(
+            db,
+            ItemOrder.New({
+              orderedIds: allTasks.map(t => t._id),
+              collection: Task.Schema.name,
+              userId: session.userId
+            })
+          );
+        } else {
+          // Order items
+        }
         handleResponse(res, tasks, session.accessToken);
       } catch (e) {
         console.log("err", JSON.stringify(e));
@@ -56,6 +76,7 @@ router.post("/", (req, res) =>
         return;
       }
       try {
+        task.position = 0;
         const result = await Task.InsertAsync(db, task);
         if (result.insertedId !== undefined) {
           handleResponse(

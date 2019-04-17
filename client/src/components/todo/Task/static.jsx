@@ -118,7 +118,11 @@ class StaticTaskComponent extends React.PureComponent<StaticProps, State> {
     const { index, task, onDelete, onComplete } = this.props;
     const { collapsed } = this.state;
     return (
-      <Draggable draggableId={task.id} index={index}>
+      <Draggable
+        draggableId={task.id}
+        index={index}
+        isDragDisabled={task.completed}
+      >
         {(provided, snapshot) => (
           <Item
             className={`${task.completed ? "completed" : ""}`}
