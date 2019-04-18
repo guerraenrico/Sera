@@ -6,7 +6,8 @@ const Schema = {
   fields: {
     orderedIds: "orderedIds",
     collection: "collection",
-    userId: "userId"
+    userId: "userId",
+    filter: "filter"
   }
 };
 
@@ -14,15 +15,20 @@ const New = ({
   orderedIds = [],
   collection = "",
   userId = "",
+  filter = {},
   id = undefined
 }) => ({
   ...(id !== undefined && { id }),
   [Schema.fields.orderedIds]: orderedIds,
   [Schema.fields.collection]: collection,
-  [Schema.fields.collection]: userId
+  [Schema.fields.userId]: userId,
+  [Schema.fields.filter]: filter
 });
 
 const CreateFromDocument = document => {
+  if (document === undefined || document === null) {
+    return undefined;
+  }
   let fields = {};
   Object.keys(Schema.fields).forEach(key => {
     fields = {
@@ -39,14 +45,19 @@ const CreateFromDocument = document => {
 const CreateFromDocuments = documents =>
   documents.map(doc => CreateFromDocument(doc));
 
-const GetAsync = async (db, userId, collection) => {
-  const filter = {
+const GetAsync = async (db, userId, collection, filter) => {
+  const queryFilter = {
     $and: [
       { [Schema.fields.userId]: userId },
-      { [Schema.fields.collection]: collection }
+      { [Schema.fields.collection]: collection },
+      { [Schema.fields.filter]: filter }
     ]
   };
-  return CreateFromDocument(await db.collection(Schema.name).findOne(filter));
+  const document = await db.collection(Schema.name).findOne(queryFilter);
+  if (document === undefined || document === null) {
+    return undefined;
+  }
+  return CreateFromDocument(document);
 };
 
 const InsertAsync = async (db, itemOrder) =>
@@ -65,24 +76,31 @@ const UpdateAsync = async (db, id, fields) =>
       { $set: { ...fields } }
     );
 
-const RemoveIdAsync = async (db, userId, collection, idToRemove) => {
-  const itemOrder = await GetAsync(db, userId, collection);
+const RemoveIdAsync = async (db, userId, collection, filter, idToRemove) => {
+  const itemOrder = await GetAsync(db, userId, collection, filter);
   return UpdateAsync(db, itemOrder.id, {
     ...itemOrder,
     orderedIds: itemOrder.orderedIds.fields(id => idToRemove !== id)
   });
 };
 
-const PrependIdAsync = async (db, userId, collection, idToAdd) => {
-  const itemOrder = await GetAsync(db, userId, collection);
+const PrependIdAsync = async (db, userId, collection, filter, idToAdd) => {
+  const itemOrder = await GetAsync(db, userId, collection, filter);
   return UpdateAsync(db, itemOrder.id, {
     ...itemOrder,
     orderedIds: [idToAdd, ...itemOrder.orderedIds]
   });
 };
 
-const MoveIdAsync = async (db, userId, collection, nextId, idToMove) => {
-  const itemOrder = await GetAsync(db, userId, collection);
+const MoveIdAsync = async (
+  db,
+  userId,
+  collection,
+  filter,
+  nextId,
+  idToMove
+) => {
+  const itemOrder = await GetAsync(db, userId, collection, filter);
 
   const ids = Array.from(itemOrder.orderedIds);
 

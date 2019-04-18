@@ -31,26 +31,41 @@ router.get("/", (req, res) =>
           completed,
           categoriesId
         );
+        let orederedTasks = [...tasks];
         const itemOrder = await ItemOrder.GetAsync(
           db,
           session.userId,
-          Task.Schema.name
+          Task.Schema.name,
+          { completed }
         );
         // Should be a 1 time run
         if (itemOrder === undefined || itemOrder === null) {
-          const allTasks = await Task.GetAllAsync(db, session.userId);
+          const allTasks = await Task.GetAllAsync(
+            db,
+            session.userId,
+            undefined,
+            undefined,
+            completed
+          );
           await ItemOrder.InsertAsync(
             db,
             ItemOrder.New({
-              orderedIds: allTasks.map(t => t._id),
+              orderedIds: allTasks.map(t => t.id.valueOf().toString()),
               collection: Task.Schema.name,
-              userId: session.userId
+              userId: session.userId,
+              filter: { completed }
             })
           );
         } else {
           // Order items
+          itemOrder.orderedIds.forEach(id => {
+            const tf = tasks.find(t => t.id === id);
+            if (tf !== undefined && tf !== null) {
+              orederedTasks = [tf, ...orederedTasks];
+            }
+          });
         }
-        handleResponse(res, tasks, session.accessToken);
+        handleResponse(res, orederedTasks, session.accessToken);
       } catch (e) {
         console.log("err", JSON.stringify(e));
         handleError(res, ApiErrors.ErrorReadTask(e), session.accessToken);
@@ -79,6 +94,16 @@ router.post("/", (req, res) =>
         task.position = 0;
         const result = await Task.InsertAsync(db, task);
         if (result.insertedId !== undefined) {
+          await ItemOrder.PrependIdAsync(
+            db,
+            session.userId,
+            Task.Schema.name,
+            {
+              completed: task.completed
+            },
+            result.insertedId
+          );
+
           handleResponse(
             res,
             { ...task, id: result.insertedId },
@@ -106,8 +131,20 @@ router.delete("/:id", (req, res) =>
         return;
       }
       try {
+        const task = await Task.GetAsync(db, session.userId, id);
         const result = await Task.DeleteAsync(db, session.userId, id);
         if (result.deletedCount >= 1) {
+          if (task !== undefined) {
+            await ItemOrder.RemoveIdAsync(
+              db,
+              session.userId,
+              Task.Schema.name,
+              {
+                completed: task.completed
+              },
+              id
+            );
+          }
           handleResponse(res, {}, session.accessToken);
         } else {
           handleError(res, ApiErrors.ErrorDeleteTask(), session.accessToken);
@@ -159,12 +196,8 @@ router.patch("/position", (req, res) =>
   connection(db =>
     needAuth(db, req, res, async session => {
       const { body } = req;
-      const { id, prevPosition, nextPosition } = body;
-      if (
-        id === undefined ||
-        prevPosition === undefined ||
-        nextPosition === undefined
-      ) {
+      const { task, nextId } = body;
+      if (task === undefined) {
         handleError(
           res,
           ApiErrors.InvalidTaskParameters(),
@@ -173,36 +206,18 @@ router.patch("/position", (req, res) =>
         );
         return;
       }
-      if (prevPosition === nextPosition) {
-        handleResponse(res, {}, session.accessToken);
-        return;
-      }
-      // TODO: Come riposizionare ?
-      const direction = prevPosition < nextPosition ? 1 : -1;
-      try {
-        const result = await Task.UpdateAsync(db, id, { ...other });
-        if (!result !== undefined && result.ok === 1) {
-          handleResponse(
-            res,
-            { ...Task.CreateFromDocument(result.value), ...other },
-            session.accessToken
-          );
-        } else {
-          handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
-        }
-      } catch (err) {
-        console.log("err", JSON.stringify(err));
-        handleError(res, ApiErrors.ErrorUpdateTask(err), session.accessToken);
-      }
 
       try {
-        const result = await Task.UpdateAsync(db, id, { ...other });
+        const result = await ItemOrder.MoveIdAsync(
+          db,
+          session.userId,
+          Task.Schema.name,
+          { completed: task.completed },
+          nextId,
+          task.id
+        );
         if (!result !== undefined && result.ok === 1) {
-          handleResponse(
-            res,
-            { ...Task.CreateFromDocument(result.value), ...other },
-            session.accessToken
-          );
+          handleResponse(res, {}, session.accessToken);
         } else {
           handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
         }

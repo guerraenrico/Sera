@@ -100,6 +100,11 @@ const GetAllAsync = async (
   return CreateFromDocuments(tasksDocs);
 };
 
+const GetAsync = async (db, userId, id) =>
+  db.collection(Schema.name).findOne({
+    $and: [{ _id: ObjectId(id.toString()) }, { [Schema.fields.userId]: userId }]
+  });
+
 const InsertAsync = async (db, task) =>
   db.collection(Schema.name).insertOne({
     ...task,
@@ -156,6 +161,7 @@ module.exports = {
   CreateFromDocument,
   CreateFromDocuments,
   GetAllAsync,
+  GetAsync,
   InsertAsync,
   DeleteAsync,
   UpdateAsync
