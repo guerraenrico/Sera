@@ -324,7 +324,7 @@ export const changeTaskOrder = (
     if (!response.success) {
       if (shouldRefreshToken(response)) {
         await dispatch(refreshAccessToken());
-        return dispatch(removeCategoryToTask(task, category));
+        return dispatch(changeTaskOrder(previousIndex, nextIndex, taskId));
       }
       dispatch(showMessageError(response.error.message));
     }

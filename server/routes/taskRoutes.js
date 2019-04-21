@@ -59,7 +59,7 @@ router.get("/", (req, res) =>
         } else {
           // Order items
           itemOrder.orderedIds.forEach(id => {
-            const tf = tasks.find(t => t.id === id);
+            const tf = tasks.find(t => t.id.toString() === id);
             if (tf !== undefined && tf !== null) {
               orederedTasks = [tf, ...orederedTasks];
             }
