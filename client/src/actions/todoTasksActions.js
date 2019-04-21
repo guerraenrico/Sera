@@ -12,7 +12,8 @@ import type {
   ErrorFetchTasksAction,
   AddTaskLocalAction,
   RemoveTaskAction,
-  UpdateTaskLocalAction
+  UpdateTaskLocalAction,
+  ChangeTaskOrderLocalAction
 } from "../reducers/todoTasks";
 
 import type { Task } from "../models/task";
@@ -49,6 +50,17 @@ const updateTaskLocal = (id, data): UpdateTaskLocalAction => ({
   type: "UPDATE_TASK_LOCAL",
   id,
   data
+});
+
+const changeTaskOrderLocal = (
+  id,
+  previousIndex,
+  nextIndex
+): ChangeTaskOrderLocalAction => ({
+  type: "CHANGE_TASK_ORDER_LOCAL",
+  id,
+  previousIndex,
+  nextIndex
 });
 
 export const fetchTasksByCategory = (
@@ -282,6 +294,37 @@ export const removeCategoryToTask = (
       if (shouldRefreshToken(response)) {
         await dispatch(refreshAccessToken());
         return dispatch(removeCategoryToTask(task, category));
+      }
+      dispatch(showMessageError(response.error.message));
+    }
+    return response;
+  } catch (error) {
+    dispatch(showMessageError(error.message));
+    return { success: false };
+  }
+};
+
+export const changeTaskOrder = (
+  previousIndex: number,
+  nextIndex: number,
+  taskId: string
+): ThunkAction => async (dispatch, getState) => {
+  const { items } = getState().todoTasks;
+  const task = items[previousIndex];
+  const nextTask = items[nextIndex + 1] || "";
+  dispatch(changeTaskOrderLocal(taskId, previousIndex, nextIndex));
+  try {
+    const { accessToken } = getState().auth;
+    const response = await callApi(
+      "tasks/position",
+      { task, nextId: nextTask.id },
+      Methods.PATCH,
+      accessToken
+    );
+    if (!response.success) {
+      if (shouldRefreshToken(response)) {
+        await dispatch(refreshAccessToken());
+        return dispatch(changeTaskOrder(previousIndex, nextIndex, taskId));
       }
       dispatch(showMessageError(response.error.message));
     }

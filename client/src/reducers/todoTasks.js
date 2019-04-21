@@ -29,6 +29,12 @@ export type UpdateTaskLocalAction = {
   id: string,
   data: Object
 };
+export type ChangeTaskOrderLocalAction = {
+  type: "CHANGE_TASK_ORDER_LOCAL",
+  id: string,
+  previousIndex: number,
+  nextIndex: number
+};
 
 export type TodoTasksAction =
   | RequestFetchTasksAction
@@ -36,7 +42,8 @@ export type TodoTasksAction =
   | ErrorFetchTasksAction
   | AddTaskLocalAction
   | RemoveTaskAction
-  | UpdateTaskLocalAction;
+  | UpdateTaskLocalAction
+  | ChangeTaskOrderLocalAction;
 
 export type TodoTasksState = {
   +isFetching: boolean,
@@ -86,7 +93,7 @@ const todoTasks = (
     case "ADD_TASK_LOCAL":
       return {
         ...state,
-        items: [...state.items, action.task]
+        items: [action.task, ...state.items]
       };
     case "REMOVE_TASK_LOCAL":
       return {
@@ -105,6 +112,14 @@ const todoTasks = (
             task.id === action.id ? { ...task, ...action.data } : task
           )
         ]
+      };
+    case "CHANGE_TASK_ORDER_LOCAL":
+      const items = Array.from(state.items);
+      items.splice(action.previousIndex, 1);
+      items.splice(action.nextIndex, 0, state.items[action.previousIndex]);
+      return {
+        ...state,
+        items
       };
     default:
       return state;

@@ -12,6 +12,7 @@ import type { Category } from "../../../models/category";
 
 import {
   Item,
+  Content,
   Header,
   ContentEditItem,
   ContentEditInputs,
@@ -99,44 +100,46 @@ class EditableTaskComponent extends React.PureComponent<EditableProps, State> {
     const { title, description, todoWithin } = this.state;
     return (
       <Item>
-        <ContentEditItem>
-          <ContentEditInputs>
-            <Header>
-              <Input
-                value={title.text}
-                placeholder={labels.placeHolderTitle}
-                onChange={this.handleOnTextChange("title")}
-                size="large"
-              />
-            </Header>
-            <ContentEditDate>
-              <DatePicker
-                size="small"
-                calendarClassName="dark-calendar"
-                onChange={this.handleOnDateChange}
-                value={todoWithin.date}
-                minDate={new Date()}
-                locale="en-US"
-                clearIcon={<i className="icon-delete" />}
-                calendarIcon={<i className="icon-calendar" />}
-              />
-            </ContentEditDate>
-            <ContentEditDescription>
-              <Input
-                value={description.text}
-                placeholder="Type a description"
-                onChange={this.handleOnTextChange("description")}
-                size="small"
-              />
-            </ContentEditDescription>
-          </ContentEditInputs>
-          <ContentEditActions>
-            <Button onClick={onUndo}>UNDO</Button>
-            <Button color="accent" onClick={this.handleOnButtonConfirmClick}>
-              CONFIRM
-            </Button>
-          </ContentEditActions>
-        </ContentEditItem>
+        <Content>
+          <ContentEditItem>
+            <ContentEditInputs>
+              <Header paddingTop>
+                <Input
+                  value={title.text}
+                  placeholder={labels.placeHolderTitle}
+                  onChange={this.handleOnTextChange("title")}
+                  size="large"
+                />
+              </Header>
+              <ContentEditDate>
+                <DatePicker
+                  size="small"
+                  calendarClassName="dark-calendar"
+                  onChange={this.handleOnDateChange}
+                  value={todoWithin.date}
+                  minDate={new Date()}
+                  locale="en-US"
+                  clearIcon={<i className="icon-delete" />}
+                  calendarIcon={<i className="icon-calendar" />}
+                />
+              </ContentEditDate>
+              <ContentEditDescription>
+                <Input
+                  value={description.text}
+                  placeholder="Type a description"
+                  onChange={this.handleOnTextChange("description")}
+                  size="small"
+                />
+              </ContentEditDescription>
+            </ContentEditInputs>
+            <ContentEditActions>
+              <Button onClick={onUndo}>UNDO</Button>
+              <Button color="accent" onClick={this.handleOnButtonConfirmClick}>
+                {"CONFIRM"}
+              </Button>
+            </ContentEditActions>
+          </ContentEditItem>
+        </Content>
       </Item>
     );
   }

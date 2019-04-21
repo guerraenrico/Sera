@@ -6,21 +6,50 @@ import { taskSizes, commonSizes } from "../../../styles/sizes";
 export const Item = styled.div`
   position: relative;
   display: block;
+  transition: height 500ms ease-in;
+  padding-bottom: ${taskSizes.itemMargin};
+`;
+
+export const Content = styled.div`
+  position: relative;
+  display: block;
   background-color: ${commonColors.background};
   box-sizing: border-box;
-  -webkit-border-radius: ${commonSizes.containerBorderRadius};
   border-radius: ${commonSizes.containerBorderRadius};
+  box-shadow: ${props =>
+    props.isDragging ? "0 5px 20px rgba(0,0,0, 0.2)" : "none"};
   transition: height 500ms ease-in;
 `;
 
-// padding-bottom: ${props => (props.last ? 0 : taskSizes.itemMargin)};
+export const Handle = styled.div`
+  position: relative;
+  display: flex;
+  overflow: hidden;
+  box-sizing: border-box;
+  justify-content: center;
+  align-content: center;
+  align-items: center;
+  padding: 0.5rem;
+`;
+
+export const HandleIcon = styled.i`
+  margin: auto;
+  font-size: 1.2em;
+  color: ${commonColors.iconButton};
+  transition: color 200ms ease-in;
+  padding: 0;
+
+  ${Handle}:hover & {
+    color: ${commonColors.iconButtonHover};
+  }
+`;
 
 export const Header = styled.div`
   position: relative;
   display: flex;
   overflow: hidden;
   box-sizing: border-box;
-  padding: 30px 40px 15px 40px;
+  padding: ${props => (props.paddingTop ? "30px" : "0")} 40px 15px 40px;
 `;
 
 export const Title = styled.p`

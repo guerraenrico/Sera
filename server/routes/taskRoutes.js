@@ -4,6 +4,7 @@ const connection = require("../middleware/dbConnectionMiddleware");
 const needAuth = require("../middleware/authMiddleware");
 
 const Task = require("../models/Task");
+const ItemOrder = require("../models/ItemOrder");
 const ApiErrors = require("../ApiErrors");
 const { handleError, handleResponse } = require("../Handlers");
 
@@ -30,7 +31,42 @@ router.get("/", (req, res) =>
           completed,
           categoriesId
         );
-        handleResponse(res, tasks, session.accessToken);
+        let orederedTasks = [];
+        const itemOrder = await ItemOrder.GetAsync(
+          db,
+          session.userId,
+          Task.Schema.name,
+          { completed }
+        );
+        // Should be a 1 time run
+        if (itemOrder === undefined || itemOrder === null) {
+          const allTasks = await Task.GetAllAsync(
+            db,
+            session.userId,
+            undefined,
+            undefined,
+            completed
+          );
+          await ItemOrder.InsertAsync(
+            db,
+            ItemOrder.New({
+              orderedIds: allTasks.map(t => t.id.valueOf().toString()),
+              collection: Task.Schema.name,
+              userId: session.userId,
+              filter: { completed }
+            })
+          );
+          orederedTasks = [...tasks];
+        } else {
+          // Order items
+          itemOrder.orderedIds.forEach(id => {
+            const tf = tasks.find(t => t.id.toString() === id);
+            if (tf !== undefined && tf !== null) {
+              orederedTasks = [...orederedTasks, tf];
+            }
+          });
+        }
+        handleResponse(res, orederedTasks, session.accessToken);
       } catch (e) {
         console.log("err", JSON.stringify(e));
         handleError(res, ApiErrors.ErrorReadTask(e), session.accessToken);
@@ -56,8 +92,19 @@ router.post("/", (req, res) =>
         return;
       }
       try {
+        task.position = 0;
         const result = await Task.InsertAsync(db, task);
         if (result.insertedId !== undefined) {
+          await ItemOrder.PrependIdAsync(
+            db,
+            session.userId,
+            Task.Schema.name,
+            {
+              completed: task.completed
+            },
+            result.insertedId
+          );
+
           handleResponse(
             res,
             { ...task, id: result.insertedId },
@@ -85,8 +132,20 @@ router.delete("/:id", (req, res) =>
         return;
       }
       try {
+        const task = await Task.GetAsync(db, session.userId, id);
         const result = await Task.DeleteAsync(db, session.userId, id);
         if (result.deletedCount >= 1) {
+          if (task !== undefined) {
+            await ItemOrder.RemoveIdAsync(
+              db,
+              session.userId,
+              Task.Schema.name,
+              {
+                completed: task.completed
+              },
+              id
+            );
+          }
           handleResponse(res, {}, session.accessToken);
         } else {
           handleError(res, ApiErrors.ErrorDeleteTask(), session.accessToken);
@@ -123,6 +182,43 @@ router.patch("/", (req, res) =>
             { ...Task.CreateFromDocument(result.value), ...other },
             session.accessToken
           );
+        } else {
+          handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
+        }
+      } catch (err) {
+        console.log("err", JSON.stringify(err));
+        handleError(res, ApiErrors.ErrorUpdateTask(err), session.accessToken);
+      }
+    })
+  )
+);
+
+router.patch("/position", (req, res) =>
+  connection(db =>
+    needAuth(db, req, res, async session => {
+      const { body } = req;
+      const { task, nextId } = body;
+      if (task === undefined) {
+        handleError(
+          res,
+          ApiErrors.InvalidTaskParameters(),
+          400,
+          session.accessToken
+        );
+        return;
+      }
+
+      try {
+        const result = await ItemOrder.MoveIdAsync(
+          db,
+          session.userId,
+          Task.Schema.name,
+          { completed: task.completed },
+          nextId,
+          task.id
+        );
+        if (!result !== undefined && result.ok === 1) {
+          handleResponse(res, {}, session.accessToken);
         } else {
           handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
         }

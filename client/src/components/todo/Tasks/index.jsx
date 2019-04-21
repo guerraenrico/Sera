@@ -2,6 +2,7 @@
 import React from "react";
 import { connect } from "react-redux";
 import { TransitionGroup } from "react-transition-group";
+import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import Resize from "../../anims/Resize";
 import TaskComponent from "../Task";
 import InfiniteScroll from "../../layout/InfiniteScroll";
@@ -15,7 +16,7 @@ import type { Task } from "../../../models/task";
 import type { Category } from "../../../models/category";
 import type { Response } from "../../../models/response";
 
-import { Container, itemAnimationStyle } from "./style";
+import { Container } from "./style";
 
 type Props = {
   +onDeleteTask: Task => void,
@@ -25,6 +26,7 @@ type Props = {
   +doSetCategoryToTask: (Task, Category) => void,
   +doCreateAndSetCategoryToTask: (Task, string) => void,
   +doRemoveCategoryToTask: (Task, Category) => void,
+  +doChangeTaskOrder: (number, number, string) => void,
   +taskList: Array<Task>,
   +moreToLoad: boolean,
   +fetchTasks: (string, boolean, number, ?number) => void,
@@ -62,6 +64,21 @@ class Tasks extends React.PureComponent<Props, State> {
     fetchTasks(categoryFilterId, completed, skip);
   };
 
+  onDragEnd = result => {
+    const { doChangeTaskOrder } = this.props;
+    const { destination, source, draggableId } = result;
+    if (!destination) {
+      return;
+    }
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+    doChangeTaskOrder(source.index, destination.index, draggableId);
+  };
+
   render() {
     const {
       taskList,
@@ -76,49 +93,58 @@ class Tasks extends React.PureComponent<Props, State> {
       onAbortCreatingTask
     } = this.props;
     return (
-      <Container>
-        <InfiniteScroll onScroll={this.onFetchTodoTasksNext}>
-          <TransitionGroup>
-            {creatingTask && (
-              <Resize key="creation_task" style={itemAnimationStyle(false)}>
-                <TaskComponent
-                  creating
-                  onUndo={onAbortCreatingTask}
-                  onCreate={async (task: Task) => {
-                    const response = await doAddTask(task);
-                    if (response.success) {
-                      onAbortCreatingTask();
-                    }
-                  }}
-                />
-              </Resize>
-            )}
-            {taskList.map((task, i) => (
-              <Resize
-                key={`rsz${task.id}`}
-                style={itemAnimationStyle(i === taskList.length - 1)}
-              >
-                <TaskComponent
-                  key={task.id}
-                  task={task}
-                  onDelete={() => onDeleteTask(task)}
-                  onComplete={() => onCompleteTask(task)}
-                  onCategoryClick={category => doSetSelectedCategory(category)}
-                  onSetCategory={category =>
-                    doSetCategoryToTask(task, category)
-                  }
-                  onCreateCategory={name =>
-                    doCreateAndSetCategoryToTask(task, name)
-                  }
-                  onRemoveCategory={category =>
-                    doRemoveCategoryToTask(task, category)
-                  }
-                />
-              </Resize>
-            ))}
-          </TransitionGroup>
-        </InfiniteScroll>
-      </Container>
+      <DragDropContext onDragEnd={this.onDragEnd}>
+        <Container>
+          <InfiniteScroll onScroll={this.onFetchTodoTasksNext}>
+            <Droppable droppableId="tasks">
+              {provided => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  <TransitionGroup>
+                    {creatingTask && (
+                      <Resize key="creation_task">
+                        <TaskComponent
+                          creating
+                          onUndo={onAbortCreatingTask}
+                          onCreate={async (task: Task) => {
+                            const response = await doAddTask(task);
+                            if (response.success) {
+                              onAbortCreatingTask();
+                            }
+                          }}
+                        />
+                      </Resize>
+                    )}
+                    {taskList.map((task, i) => (
+                      <Resize key={`rsz${task.id}`}>
+                        <TaskComponent
+                          key={task.id}
+                          index={i}
+                          task={task}
+                          onDelete={() => onDeleteTask(task)}
+                          onComplete={() => onCompleteTask(task)}
+                          onCategoryClick={category =>
+                            doSetSelectedCategory(category)
+                          }
+                          onSetCategory={category =>
+                            doSetCategoryToTask(task, category)
+                          }
+                          onCreateCategory={name =>
+                            doCreateAndSetCategoryToTask(task, name)
+                          }
+                          onRemoveCategory={category =>
+                            doRemoveCategoryToTask(task, category)
+                          }
+                        />
+                      </Resize>
+                    ))}
+                    {provided.placeholder}
+                  </TransitionGroup>
+                </div>
+              )}
+            </Droppable>
+          </InfiniteScroll>
+        </Container>
+      </DragDropContext>
     );
   }
 }
@@ -152,6 +178,14 @@ const mapDispatchToProps = dispatch => ({
     dispatch(todoTasksActions.createAndSetCategoryToTask(task, name)),
   doRemoveCategoryToTask: (task: Task, category: Category) =>
     dispatch(todoTasksActions.removeCategoryToTask(task, category)),
+  doChangeTaskOrder: (
+    previousIndex: number,
+    nextIndex: number,
+    taskId: string
+  ) =>
+    dispatch(
+      todoTasksActions.changeTaskOrder(previousIndex, nextIndex, taskId)
+    ),
   fetchTasks: (
     categoryFilterId: string,
     completed: boolean,

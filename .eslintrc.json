@@ -3,6 +3,7 @@
   "parser": "babel-eslint",
   "plugins": ["prettier"],
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "linebreak-style": ["error", "windows"]
   }
 }

@@ -7,7 +7,7 @@ export const commonColors = {
   background: "#25292E",
   backgroundDark: "#1F2226",
   backgroundNight: "#181A1E",
-  iconButton: "#2d3b4d",
+  iconButton: "#475b75",
   iconButtonHover: "#FFF",
   buttonBorder: "1px solid #1e252f",
   buttonBorderHover: "1px solid #1EBCAD",

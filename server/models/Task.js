@@ -76,7 +76,7 @@ const GetAllAsync = async (
   userId,
   limit,
   skip,
-  completed,
+  completed = false,
   categoriesId = []
 ) => {
   const filter = {
@@ -100,6 +100,11 @@ const GetAllAsync = async (
   return CreateFromDocuments(tasksDocs);
 };
 
+const GetAsync = async (db, userId, id) =>
+  db.collection(Schema.name).findOne({
+    $and: [{ _id: ObjectId(id.toString()) }, { [Schema.fields.userId]: userId }]
+  });
+
 const InsertAsync = async (db, task) =>
   db.collection(Schema.name).insertOne({
     ...task,
@@ -119,12 +124,44 @@ const UpdateAsync = async (db, id, fields) =>
       { $set: { ...fields } }
     );
 
+// const UpdateByPositionAsync = async (db, position, fields) =>
+//   db
+//     .collection(Schema.name)
+//     .findOneAndUpdate(
+//       { [Schema.fields.position]: position },
+//       { $set: { ...fields } }
+//     );
+
+// function SetPositionIfNeededAsync(db, tasks, offset = 0) {
+//   const collection = db.collection(Schema.name);
+//   const bulk = collection.initializeOrderedBulkOp();
+//   tasks.forEach((task, i) => {
+//     if (task.position === undefined || task.position === -1) {
+//       bulk.find({ _id: task.id }).update({ $set: { position: offset + i } });
+//     }
+//   });
+//   return bulk.execute();
+// }
+
+// function ShiftPositionsAsync(db, userId, value = 1) {
+//   return db.collection(Schema.name).update(
+//     {
+//       $and: [
+//         { [Schema.fields.userId]: userId },
+//         { [Schema.fields.completed]: true }
+//       ]
+//     },
+//     { $inc: { [Schema.fields.position]: value } }
+//   );
+// }
+
 module.exports = {
   Schema,
   CreateFromBodyRequest,
   CreateFromDocument,
   CreateFromDocuments,
   GetAllAsync,
+  GetAsync,
   InsertAsync,
   DeleteAsync,
   UpdateAsync
