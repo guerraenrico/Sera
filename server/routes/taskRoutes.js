@@ -31,7 +31,7 @@ router.get("/", (req, res) =>
           completed,
           categoriesId
         );
-        let orederedTasks = [...tasks];
+        let orederedTasks = [];
         const itemOrder = await ItemOrder.GetAsync(
           db,
           session.userId,
@@ -56,12 +56,13 @@ router.get("/", (req, res) =>
               filter: { completed }
             })
           );
+          orederedTasks = [...tasks];
         } else {
           // Order items
           itemOrder.orderedIds.forEach(id => {
             const tf = tasks.find(t => t.id.toString() === id);
             if (tf !== undefined && tf !== null) {
-              orederedTasks = [tf, ...orederedTasks];
+              orederedTasks = [...orederedTasks, tf];
             }
           });
         }

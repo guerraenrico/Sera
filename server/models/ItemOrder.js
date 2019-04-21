@@ -105,7 +105,9 @@ const MoveIdAsync = async (
   const ids = Array.from(itemOrder.orderedIds);
 
   const currentIndex = ids.findIndex(id => id === idToMove);
-  const nextIndex = ids.findIndex(id => id === nextId) - 1;
+  const nextIndex = nextId
+    ? ids.findIndex(id => id === nextId) - 1
+    : ids.length - 1;
 
   ids.splice(currentIndex, 1);
   ids.splice(nextIndex, 0, itemOrder.orderedIds[currentIndex]);
