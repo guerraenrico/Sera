@@ -102,7 +102,7 @@ router.post("/", (req, res) =>
             {
               completed: task.completed
             },
-            result.insertedId
+            result.insertedId.valueOf().toString()
           );
 
           handleResponse(

@@ -80,7 +80,7 @@ const RemoveIdAsync = async (db, userId, collection, filter, idToRemove) => {
   const itemOrder = await GetAsync(db, userId, collection, filter);
   return UpdateAsync(db, itemOrder.id, {
     ...itemOrder,
-    orderedIds: itemOrder.orderedIds.fields(id => idToRemove !== id)
+    orderedIds: itemOrder.orderedIds.filter(id => idToRemove !== id)
   });
 };
 
