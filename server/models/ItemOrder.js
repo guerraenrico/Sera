@@ -77,18 +77,30 @@ const UpdateAsync = async (db, id, fields) =>
     );
 
 const RemoveIdAsync = async (db, userId, collection, filter, idToRemove) => {
-  const itemOrder = await GetAsync(db, userId, collection, filter);
-  return UpdateAsync(db, itemOrder.id, {
-    ...itemOrder,
-    orderedIds: itemOrder.orderedIds.filter(id => idToRemove !== id)
+  const { id, ...itemOtherFields } = await GetAsync(
+    db,
+    userId,
+    collection,
+    filter
+  );
+  return UpdateAsync(db, id, {
+    ...itemOtherFields,
+    orderedIds: itemOtherFields.orderedIds.filter(
+      orderId => idToRemove !== orderId
+    )
   });
 };
 
 const PrependIdAsync = async (db, userId, collection, filter, idToAdd) => {
-  const itemOrder = await GetAsync(db, userId, collection, filter);
-  return UpdateAsync(db, itemOrder.id, {
-    ...itemOrder,
-    orderedIds: [idToAdd, ...itemOrder.orderedIds]
+  const { id, ...itemOtherFields } = await GetAsync(
+    db,
+    userId,
+    collection,
+    filter
+  );
+  return UpdateAsync(db, id, {
+    ...itemOtherFields,
+    orderedIds: [idToAdd, ...itemOtherFields.orderedIds]
   });
 };
 
@@ -100,20 +112,25 @@ const MoveIdAsync = async (
   nextId,
   idToMove
 ) => {
-  const itemOrder = await GetAsync(db, userId, collection, filter);
+  const { id, ...itemOtherFields } = await GetAsync(
+    db,
+    userId,
+    collection,
+    filter
+  );
 
-  const ids = Array.from(itemOrder.orderedIds);
+  const ids = Array.from(itemOtherFields.orderedIds);
 
-  const currentIndex = ids.findIndex(id => id === idToMove);
+  const currentIndex = ids.findIndex(cid => cid === idToMove);
   const nextIndex = nextId
-    ? ids.findIndex(id => id === nextId) - 1
+    ? ids.findIndex(cid => cid === nextId) - 1
     : ids.length - 1;
 
   ids.splice(currentIndex, 1);
-  ids.splice(nextIndex, 0, itemOrder.orderedIds[currentIndex]);
+  ids.splice(nextIndex, 0, itemOtherFields.orderedIds[currentIndex]);
 
-  return UpdateAsync(db, itemOrder.id, {
-    ...itemOrder,
+  return UpdateAsync(db, id, {
+    ...itemOtherFields,
     orderedIds: ids
   });
 };
