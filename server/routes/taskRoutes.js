@@ -15,29 +15,40 @@ const router = express.Router();
 router.get("/", (req, res) =>
   connection(db =>
     needAuth(db, req, res, async session => {
-      const limit =
-        req.query.limit !== undefined && parseInt(req.query.limit, 10);
-      const skip = req.query.skip !== undefined && parseInt(req.query.skip, 10);
+      // Limit results only if no filter selected
+      const limit = req.query.limit && parseInt(req.query.limit, 10);
+      const skip = req.query.skip && parseInt(req.query.skip, 10);
       const completed = req.query.completed === "true";
       const categoriesId =
-        req.query.categoriesId !== undefined &&
-        req.query.categoriesId.split(",");
+        req.query.categoriesId && req.query.categoriesId.split(",");
       try {
-        const tasks = await Task.GetAllAsync(
-          db,
-          session.userId,
-          limit,
-          skip,
-          completed,
-          categoriesId
-        );
-        let orederedTasks = [];
         const itemOrder = await ItemOrder.GetAsync(
           db,
           session.userId,
           Task.Schema.name,
           { completed }
         );
+
+        let tasks = [];
+        if (categoriesId && categoriesId.length > 0) {
+          tasks = await Task.GetAllAsync(
+            db,
+            session.userId,
+            limit,
+            skip,
+            completed,
+            categoriesId
+          );
+        } else {
+          tasks = await Task.GetAllByIdsAsync(
+            db,
+            session.userId,
+            itemOrder.orderedIds.slice(skip, limit)
+          );
+        }
+
+        let orederedTasks = [];
+
         // Should be a 1 time run
         if (itemOrder === undefined || itemOrder === null) {
           const allTasks = await Task.GetAllAsync(

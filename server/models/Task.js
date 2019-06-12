@@ -105,6 +105,19 @@ const GetAsync = async (db, userId, id) =>
     $and: [{ _id: ObjectId(id.toString()) }, { [Schema.fields.userId]: userId }]
   });
 
+const GetAllByIdsAsync = async (db, userId, ids) => {
+  const tasksDocs = await db
+    .collection(Schema.name)
+    .find({
+      $and: [
+        { _id: { $in: ids.map(id => ObjectId(id.toString())) } },
+        { [Schema.fields.userId]: userId }
+      ]
+    })
+    .toArray();
+  return CreateFromDocuments(tasksDocs);
+};
+
 const InsertAsync = async (db, task) =>
   db.collection(Schema.name).insertOne({
     ...task,
@@ -161,6 +174,7 @@ module.exports = {
   CreateFromDocument,
   CreateFromDocuments,
   GetAllAsync,
+  GetAllByIdsAsync,
   GetAsync,
   InsertAsync,
   DeleteAsync,
