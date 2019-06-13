@@ -43,7 +43,7 @@ router.get("/", (req, res) =>
           tasks = await Task.GetAllByIdsAsync(
             db,
             session.userId,
-            itemOrder.orderedIds.slice(skip, limit)
+            itemOrder.orderedIds.slice(skip, skip + limit)
           );
         }
 

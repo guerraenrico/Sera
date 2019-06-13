@@ -2,7 +2,7 @@ import styled from "styled-components";
 import DatePicker from "react-date-picker";
 
 import { commonColors, datePickerColors } from "../../../styles/colors";
-import { commonSizes, inputSizes } from "../../../styles/sizes";
+import { inputSizes } from "../../../styles/sizes";
 import { fontFamily } from "../../../styles/common";
 
 export const StyledDatePicker = styled(DatePicker)`

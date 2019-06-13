@@ -82,6 +82,7 @@ const todoTasks = (
         isFetching: false,
         items:
           state.skip === 0 ? action.tasks : [...state.items, ...action.tasks],
+        skip: state.limit,
         moreToLoad: action.tasks.length === state.limit
       };
     case "ERROR_FETCH_TASKS":
