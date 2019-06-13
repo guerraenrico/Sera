@@ -7,13 +7,11 @@ const delay = 1000;
 
 type Props = {
   // eslint-disable-next-line
-  show?: boolean
+  +show?: boolean
 };
 
 type State = {
-  shouldShow: boolean,
-  startTimer: boolean,
-  clearTimer: boolean
+  +shouldShow: boolean
 };
 
 class LoaderLinearComponent extends Component<Props, State> {
@@ -22,40 +20,33 @@ class LoaderLinearComponent extends Component<Props, State> {
   };
 
   state = {
-    shouldShow: false,
-    startTimer: false,
-    clearTimer: false
+    shouldShow: false
   };
 
   timeout = null;
 
-  static getDerivedStateFromProps(nextProps: Props, prevState: State) {
-    if (prevState) {
-      if (nextProps.show) {
-        return {
-          shouldShow: false,
-          startTimer: true,
-          clearTimer: true
-        };
+  componentDidUpdate(prevProps: Props) {
+    const { show } = this.props;
+    if (prevProps.show !== show) {
+      // Show loader
+      if (show && !prevProps.show) {
+        // Only if timer not set
+        if (!this.timeout) {
+          this.timeout = setTimeout(() => {
+            this.setState({ shouldShow: true });
+            clearTimeout(this.timeout);
+            this.timeout = null;
+          }, delay);
+        }
       }
-      return {
-        shouldShow: false,
-        startTimer: false,
-        clearTimer: true
-      };
-    }
-    return null;
-  }
-
-  componentDidUpdate() {
-    const { startTimer, clearTimer } = this.state;
-    if (clearTimer) {
-      clearTimeout(this.timeout);
-    }
-    if (startTimer) {
-      this.timeout = setTimeout(() => {
-        this.setState({ shouldShow: true });
-      }, delay);
+      // Hide loader
+      if (!show && prevProps.show) {
+        if (this.timeout) {
+          clearTimeout(this.timeout);
+          this.timeout = null;
+        }
+        this.setState({ shouldShow: false });
+      }
     }
   }
 
