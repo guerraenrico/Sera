@@ -51,6 +51,7 @@ class Tasks extends React.PureComponent<Props, State> {
   }
 
   onFetchTodoTasksNext = () => {
+    // TODO: Fix load more issues - task may be mixed on load
     const {
       categoryFilterId,
       completed,
