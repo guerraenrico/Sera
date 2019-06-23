@@ -124,10 +124,10 @@ const MoveIdAsync = async (
   const currentIndex = ids.findIndex(cid => cid === idToMove);
   const nextIndex = nextId
     ? ids.findIndex(cid => cid === nextId) - 1
-    : ids.length - 1;
+    : ids.length;
 
   ids.splice(currentIndex, 1);
-  ids.splice(nextIndex, 0, itemOtherFields.orderedIds[currentIndex]);
+  ids.splice(nextIndex, 0, idToMove);
 
   return UpdateAsync(db, id, {
     ...itemOtherFields,

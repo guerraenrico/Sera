@@ -21,9 +21,10 @@ router.get("/", (req, res) =>
       const limit = isSet(req.query.limit) ? parseInt(req.query.limit, 10) : 0;
       const skip = isSet(req.query.skip) ? parseInt(req.query.skip, 10) : 0;
       const completed = req.query.completed === "true";
-      const categoriesId = isSet(req.query.categoriesId)
-        ? req.query.categoriesId.split(",")
-        : [];
+      const categoriesId =
+        isSet(req.query.categoriesId) && req.query.categoriesId !== ""
+          ? req.query.categoriesId.split(",")
+          : [];
       try {
         const itemOrder = await ItemOrder.GetAsync(
           db,
@@ -33,7 +34,10 @@ router.get("/", (req, res) =>
         );
 
         let tasks = [];
-        if (isSet(categoriesId) && categoriesId.length > 0) {
+        if (
+          (isSet(categoriesId) && categoriesId.length > 0) ||
+          !isSet(itemOrder)
+        ) {
           tasks = await Task.GetAllAsync(
             db,
             session.userId,

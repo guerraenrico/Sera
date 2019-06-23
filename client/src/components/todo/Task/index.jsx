@@ -19,7 +19,7 @@ type Props = {
   +onCreateCategory?: string => void,
   +onRemoveCategory?: Category => void,
   // Common
-  +task: Task,
+  +task?: Task,
   +creating?: boolean
 };
 
@@ -36,8 +36,10 @@ class TaskComponent extends React.PureComponent<Props, State> {
     onCreateCategory: () => {},
     onRemoveCategory: () => {},
 
-    onDelete: undefined,
-    onComplete: undefined,
+    onDelete: () => {},
+    onComplete: () => {},
+
+    task: {},
     creating: false
   };
 

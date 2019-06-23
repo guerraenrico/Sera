@@ -69,9 +69,13 @@ export const fetchTasksByCategory = (
   skip: number = 0,
   limit: number = queryItemsLimit
 ): ThunkAction => async (dispatch, getState) => {
+  const { todoTasks, auth } = getState();
+  const { accessToken } = auth;
+  if (todoTasks.isFetching) {
+    return;
+  }
   dispatch(requestFetchTasks(limit, skip));
   try {
-    const { accessToken } = getState().auth;
     const response = await callApi(
       "tasks",
       {
@@ -236,12 +240,6 @@ export const createAndSetCategoryToTask = (
   name: string
 ): ThunkAction => async (dispatch, getState) => {
   try {
-    // const dummyId = `${task.id}${name}`;
-    // const updatedData = {
-    //   // $FlowFixMe
-    //   categories: [...task.categories, { id: dummyId, name }]
-    // };
-    // dispatch(updateTaskLocal(task.id, updatedData));
     const { accessToken } = getState().auth;
     const response = await callApi(
       "categories",
@@ -251,14 +249,6 @@ export const createAndSetCategoryToTask = (
     );
     if (response.success) {
       const category = response.data;
-      // const createdCategoryData = {
-      //   categories: [
-      //     // $FlowFixMe
-      //     ...task.categories.filter(cat => cat.id !== dummyId),
-      //     category
-      //   ]
-      // };
-      // dispatch(updateTaskLocal(task.id, createdCategoryData));
       return dispatch(setCategoryToTask(task, category));
     }
     if (shouldRefreshToken(response)) {
@@ -317,7 +307,7 @@ export const changeTaskOrder = (
     const { accessToken } = getState().auth;
     const response = await callApi(
       "tasks/position",
-      { task, nextId: nextTask.id },
+      { task, nextId: nextTask ? nextTask.id : "" },
       Methods.PATCH,
       accessToken
     );
