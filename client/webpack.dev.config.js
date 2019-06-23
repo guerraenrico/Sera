@@ -1,5 +1,4 @@
 /* eslint import/no-extraneous-dependencies: 0 */
-const autoprefixer = require("autoprefixer");
 const path = require("path");
 const webpack = require("webpack");
 
@@ -25,17 +24,7 @@ module.exports = {
       },
       {
         test: /\.(sass|css)$/,
-        use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" },
-          {
-            loader: "postcss-loader",
-            options: {
-              plugins: () => [autoprefixer({ browsers: ["> 1%", "IE >= 10"] })]
-            }
-          },
-          { loader: "sass-loader" }
-        ]
+        use: [{ loader: "style-loader" }, { loader: "css-loader" }]
       }
     ]
   },
