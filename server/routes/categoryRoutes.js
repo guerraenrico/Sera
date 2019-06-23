@@ -7,6 +7,8 @@ const Category = require("../models/Category");
 const ApiErrors = require("../ApiErrors");
 const { handleError, handleResponse } = require("../Handlers");
 
+const { isSet } = require("../utils/common");
+
 const router = express.Router();
 
 // Get Categories
@@ -14,9 +16,8 @@ const router = express.Router();
 router.get("/", (req, res) =>
   connection(db =>
     needAuth(db, req, res, async session => {
-      const limit =
-        req.query.limit !== undefined && parseInt(req.query.limit, 10);
-      const skip = req.query.skip !== undefined && parseInt(req.query.skip, 10);
+      const limit = isSet(req.query.limit) ? parseInt(req.query.limit, 10) : 0;
+      const skip = isSet(req.query.skip) ? parseInt(req.query.skip, 10) : 0;
       try {
         const categories = await Category.GetAllAsync(
           db,
@@ -25,9 +26,9 @@ router.get("/", (req, res) =>
           skip
         );
         handleResponse(res, categories, session.accessToken);
-      } catch (err) {
-        console.log("err", JSON.stringify(err));
-        handleError(res, ApiErrors.ErrorReadCategory(err), session.accessToken);
+      } catch (e) {
+        console.log("err", e.message);
+        handleError(res, ApiErrors.ErrorReadCategory(e), session.accessToken);
       }
     })
   )
@@ -42,9 +43,9 @@ router.get("/search", (req, res) =>
       try {
         const categories = await Category.SearchAsync(db, session.userId, text);
         handleResponse(res, categories, session.accessToken);
-      } catch (err) {
-        console.log("err", JSON.stringify(err));
-        handleError(res, ApiErrors.ErrorReadCategory(err), session.accessToken);
+      } catch (e) {
+        console.log("err", e.message);
+        handleError(res, ApiErrors.ErrorReadCategory(e), session.accessToken);
       }
     })
   )
@@ -57,7 +58,7 @@ router.post("/", (req, res) =>
     needAuth(db, req, res, async session => {
       const { body } = req;
       const category = Category.CreateFromBodyRequest(body, session.userId);
-      if (category === undefined) {
+      if (!isSet(category)) {
         handleError(
           res,
           ApiErrors.InvalidCategoryParameters(),
@@ -68,7 +69,7 @@ router.post("/", (req, res) =>
       }
       try {
         const result = await Category.InsertAsync(db, category);
-        if (result.insertedId !== undefined) {
+        if (isSet(result.insertedId)) {
           handleResponse(
             res,
             { ...category, id: result.insertedId },
@@ -81,13 +82,9 @@ router.post("/", (req, res) =>
             session.accessToken
           );
         }
-      } catch (err) {
-        console.log("err", JSON.stringify(err));
-        handleError(
-          res,
-          ApiErrors.ErrorInsertCategory(err),
-          session.accessToken
-        );
+      } catch (e) {
+        console.log("err", e.message);
+        handleError(res, ApiErrors.ErrorInsertCategory(e), session.accessToken);
       }
     })
   )
@@ -99,7 +96,7 @@ router.delete("/:id", (req, res) =>
   connection(db =>
     needAuth(db, req, res, async session => {
       const { id } = req.params;
-      if (id === undefined || id.toString() === "") {
+      if (!isSet(id) || id.toString() === "") {
         handleError(
           res,
           ApiErrors.InvalidCategoryId(),
@@ -119,13 +116,9 @@ router.delete("/:id", (req, res) =>
             session.accessToken
           );
         }
-      } catch (err) {
-        console.log("err", JSON.stringify(err));
-        handleError(
-          res,
-          ApiErrors.ErrorDeleteCategory(err),
-          session.accessToken
-        );
+      } catch (e) {
+        console.log("err", e.message);
+        handleError(res, ApiErrors.ErrorDeleteCategory(e), session.accessToken);
       }
     })
   )

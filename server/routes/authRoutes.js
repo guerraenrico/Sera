@@ -23,6 +23,8 @@ const {
   getSessionByTokenAndRefreshIfNeeded
 } = require("../utils/authUtils");
 
+const { isSet } = require("../utils/common");
+
 const router = express.Router();
 
 router.post("/google/signin/callback", async (req, res) => {
@@ -34,15 +36,15 @@ router.post("/google/signin/callback", async (req, res) => {
   let tokens;
   let payload;
 
-  if (code === undefined || code === "") {
+  if (!isSet(code) || code === "") {
     handleError(res, InvalidAuthCode(), 401);
     return;
   }
 
   try {
     ({ tokens } = await getTokens(code));
-  } catch (err) {
-    handleError(res, ErrorAuthInvalidCode(err), 401);
+  } catch (e) {
+    handleError(res, ErrorAuthInvalidCode(e), 401);
     return;
   }
 
@@ -57,8 +59,8 @@ router.post("/google/signin/callback", async (req, res) => {
       handleError(res, ErrorAuthInvalidPayload(), 401);
       return;
     }
-  } catch (ex) {
-    handleError(res, ErrorAuthInvalidPayload(ex), 401);
+  } catch (e) {
+    handleError(res, ErrorAuthInvalidPayload(e), 401);
     return;
   }
 
@@ -76,7 +78,7 @@ router.post("/google/signin/callback", async (req, res) => {
     if (savedUser === undefined) {
       // Save user if not exists in the db
       const result = await User.InsertAsync(db, user);
-      if (result.insertedId === undefined) {
+      if (!isSet(result.insertedId)) {
         handleError(res, ErrorCreateUser(), 500);
         return;
       }
@@ -84,8 +86,8 @@ router.post("/google/signin/callback", async (req, res) => {
     } else {
       user.id = savedUser.id;
     }
-  } catch (ex) {
-    handleError(res, ErrorCreateUser(ex), 500);
+  } catch (e) {
+    handleError(res, ErrorCreateUser(e), 500);
     return;
   }
   // Clear refresh token
@@ -93,7 +95,7 @@ router.post("/google/signin/callback", async (req, res) => {
 
   try {
     const savedSession = await Session.GetByAccessTokenAsync(db, accessToken);
-    if (savedSession === undefined) {
+    if (!isSet(savedSession)) {
       const session = Session.New(
         user.id.valueOf().toString(),
         accessToken,
@@ -102,8 +104,8 @@ router.post("/google/signin/callback", async (req, res) => {
       );
       await Session.InsertAsync(db, session);
     }
-  } catch (ex) {
-    handleError(res, ErrorCreateSession(ex), 500);
+  } catch (e) {
+    handleError(res, ErrorCreateSession(e), 500);
     return;
   }
 
@@ -120,7 +122,7 @@ router.post("/google/validate/token", async (req, res) => {
   try {
     const result = await getUserByToken(db, accessToken);
     // Check if return error
-    if (result.code !== undefined) {
+    if (isSet(result.code)) {
       console.log("(Validate) ERROR: ", `result: ${JSON.stringify(result)}`);
       handleError(res, result, 401);
       return;
@@ -129,12 +131,7 @@ router.post("/google/validate/token", async (req, res) => {
     // Clear refresh token
     user.refreshToken = undefined;
 
-    if (
-      user === undefined ||
-      user === null ||
-      session === undefined ||
-      session === null
-    ) {
+    if (!isSet(user) || !isSet(session)) {
       handleError(res, Unauthorized(), 401);
       console.log(
         "(Validate) ERROR: ",
@@ -143,8 +140,8 @@ router.post("/google/validate/token", async (req, res) => {
       return;
     }
     handleResponse(res, user, session.accessToken);
-  } catch (ex) {
-    handleError(res, Unauthorized(ex), 401);
+  } catch (e) {
+    handleError(res, Unauthorized(e), 401);
   } finally {
     conn.close();
   }
@@ -159,8 +156,8 @@ router.post("/google/logout", async (req, res) => {
   try {
     await revokeSessionAndToken(db, accessToken);
     handleResponse(res);
-  } catch (ex) {
-    handleError(res, Unauthorized(ex), 401);
+  } catch (e) {
+    handleError(res, Unauthorized(e), 401);
   } finally {
     conn.close();
   }
@@ -177,7 +174,7 @@ router.post("/google/refresh/token", async (req, res) => {
       db,
       accessToken
     );
-    if (newSession === undefined) {
+    if (!isSet(newSession)) {
       console.log(
         "(Refresh) ERROR: ",
         `newSession: ${JSON.stringify(newSession)}`
@@ -186,8 +183,8 @@ router.post("/google/refresh/token", async (req, res) => {
       return;
     }
     handleResponse(res, newSession, newSession.accessToken);
-  } catch (ex) {
-    handleError(res, Unauthorized(ex), 401);
+  } catch (e) {
+    handleError(res, Unauthorized(e), 401);
   } finally {
     conn.close();
   }

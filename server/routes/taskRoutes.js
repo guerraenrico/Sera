@@ -8,6 +8,8 @@ const ItemOrder = require("../models/ItemOrder");
 const ApiErrors = require("../ApiErrors");
 const { handleError, handleResponse } = require("../Handlers");
 
+const { isSet } = require("../utils/common");
+
 const router = express.Router();
 
 // Get Tasks
@@ -16,11 +18,12 @@ router.get("/", (req, res) =>
   connection(db =>
     needAuth(db, req, res, async session => {
       // Limit results only if no filter selected
-      const limit = req.query.limit && parseInt(req.query.limit, 10);
-      const skip = req.query.skip && parseInt(req.query.skip, 10);
+      const limit = isSet(req.query.limit) ? parseInt(req.query.limit, 10) : 0;
+      const skip = isSet(req.query.skip) ? parseInt(req.query.skip, 10) : 0;
       const completed = req.query.completed === "true";
-      const categoriesId =
-        req.query.categoriesId && req.query.categoriesId.split(",");
+      const categoriesId = isSet(req.query.categoriesId)
+        ? req.query.categoriesId.split(",")
+        : [];
       try {
         const itemOrder = await ItemOrder.GetAsync(
           db,
@@ -30,7 +33,7 @@ router.get("/", (req, res) =>
         );
 
         let tasks = [];
-        if (categoriesId && categoriesId.length > 0) {
+        if (isSet(categoriesId) && categoriesId.length > 0) {
           tasks = await Task.GetAllAsync(
             db,
             session.userId,
@@ -50,7 +53,7 @@ router.get("/", (req, res) =>
         let orederedTasks = [];
 
         // Should be a 1 time run
-        if (itemOrder === undefined || itemOrder === null) {
+        if (!isSet(itemOrder) || !isSet(itemOrder.orderedIds)) {
           const allTasks = await Task.GetAllAsync(
             db,
             session.userId,
@@ -79,7 +82,7 @@ router.get("/", (req, res) =>
         }
         handleResponse(res, orederedTasks, session.accessToken);
       } catch (e) {
-        console.log("err", JSON.stringify(e));
+        console.log("err", e.message);
         handleError(res, ApiErrors.ErrorReadTask(e), session.accessToken);
       }
     })
@@ -93,7 +96,7 @@ router.post("/", (req, res) =>
     needAuth(db, req, res, async session => {
       const { body } = req;
       const task = Task.CreateFromBodyRequest(body, session.userId);
-      if (task === undefined) {
+      if (!isSet(task)) {
         handleError(
           res,
           ApiErrors.InvalidTaskParameters(),
@@ -105,7 +108,7 @@ router.post("/", (req, res) =>
       try {
         task.position = 0;
         const result = await Task.InsertAsync(db, task);
-        if (result.insertedId !== undefined) {
+        if (isSet(result.insertedId)) {
           await ItemOrder.PrependIdAsync(
             db,
             session.userId,
@@ -124,9 +127,9 @@ router.post("/", (req, res) =>
         } else {
           handleError(res, ApiErrors.ErrorInsertTask(), session.accessToken);
         }
-      } catch (err) {
-        console.log("err", JSON.stringify(err));
-        handleError(res, ApiErrors.ErrorInsertTask(err), session.accessToken);
+      } catch (e) {
+        console.log("err", e.message);
+        handleError(res, ApiErrors.ErrorInsertTask(e), session.accessToken);
       }
     })
   )
@@ -138,7 +141,7 @@ router.delete("/:id", (req, res) =>
   connection(db =>
     needAuth(db, req, res, async session => {
       const { id } = req.params;
-      if (id === undefined || id.toString() === "") {
+      if (!isSet(id) || id.toString() === "") {
         handleError(res, ApiErrors.InvalidTaskId(), 400, session.accessToken);
         return;
       }
@@ -146,7 +149,7 @@ router.delete("/:id", (req, res) =>
         const task = await Task.GetAsync(db, session.userId, id);
         const result = await Task.DeleteAsync(db, session.userId, id);
         if (result.deletedCount >= 1) {
-          if (task !== undefined) {
+          if (isSet(task)) {
             await ItemOrder.RemoveIdAsync(
               db,
               session.userId,
@@ -161,9 +164,9 @@ router.delete("/:id", (req, res) =>
         } else {
           handleError(res, ApiErrors.ErrorDeleteTask(), session.accessToken);
         }
-      } catch (err) {
-        console.log("err", JSON.stringify(err));
-        handleError(res, ApiErrors.ErrorDeleteTask(err), session.accessToken);
+      } catch (e) {
+        console.log("err", e.message);
+        handleError(res, ApiErrors.ErrorDeleteTask(e), session.accessToken);
       }
     })
   )
@@ -176,7 +179,7 @@ router.patch("/", (req, res) =>
     needAuth(db, req, res, async session => {
       const { body } = req;
       const { id, ...other } = body;
-      if (id === undefined) {
+      if (!isSet(id)) {
         handleError(
           res,
           ApiErrors.InvalidTaskParameters(),
@@ -187,7 +190,7 @@ router.patch("/", (req, res) =>
       }
       try {
         const result = await Task.UpdateAsync(db, id, { ...other });
-        if (!result !== undefined && result.ok === 1) {
+        if (isSet(result) && result.ok === 1) {
           handleResponse(
             res,
             { ...Task.CreateFromDocument(result.value), ...other },
@@ -196,9 +199,9 @@ router.patch("/", (req, res) =>
         } else {
           handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
         }
-      } catch (err) {
-        console.log("err", JSON.stringify(err));
-        handleError(res, ApiErrors.ErrorUpdateTask(err), session.accessToken);
+      } catch (e) {
+        console.log("err", e.message);
+        handleError(res, ApiErrors.ErrorUpdateTask(e), session.accessToken);
       }
     })
   )
@@ -209,7 +212,7 @@ router.patch("/position", (req, res) =>
     needAuth(db, req, res, async session => {
       const { body } = req;
       const { task, nextId } = body;
-      if (task === undefined) {
+      if (!isSet(task)) {
         handleError(
           res,
           ApiErrors.InvalidTaskParameters(),
@@ -228,14 +231,14 @@ router.patch("/position", (req, res) =>
           nextId,
           task.id
         );
-        if (!result !== undefined && result.ok === 1) {
+        if (isSet(result) && result.ok === 1) {
           handleResponse(res, {}, session.accessToken);
         } else {
           handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
         }
-      } catch (err) {
-        console.log("err", JSON.stringify(err));
-        handleError(res, ApiErrors.ErrorUpdateTask(err), session.accessToken);
+      } catch (e) {
+        console.log("err", e.message);
+        handleError(res, ApiErrors.ErrorUpdateTask(e), session.accessToken);
       }
     })
   )
