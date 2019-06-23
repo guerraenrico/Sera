@@ -2,9 +2,18 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Transition } from "react-transition-group";
 
+import { commonSizes } from "../../styles/sizes";
+
 const duration = 250;
 
 const defaultStyle = {
+  position: "fixed",
+  backgroundColor: "",
+  width: "100vw",
+  top: 0,
+  left: 0,
+  padding: `0 ${commonSizes.containerMargin} 0 ${commonSizes.containerMargin}`,
+  boxSizing: "border-box",
   transition: `all ${duration}ms ease-in-out`,
   height: "0px",
   opacity: "0",
@@ -29,7 +38,6 @@ const DialogAnim = ({ in: inProp, children }) => (
   <Transition in={inProp} timeout={duration}>
     {state => (
       <div
-        id="backdrop-dialog"
         style={{
           ...defaultStyle,
           ...transitionStyles[state]
