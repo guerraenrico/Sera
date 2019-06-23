@@ -263,7 +263,8 @@ router.patch("/toggle-complete", (req, res) =>
         return;
       }
       try {
-        // Remove from item order task to complete
+        // If completed remove task id from item order tasks to complete
+        // else remove from completed tasks
         await ItemOrder.RemoveIdAsync(
           db,
           session.userId,
@@ -271,7 +272,8 @@ router.patch("/toggle-complete", (req, res) =>
           { completed: !completed },
           id
         );
-        // Add to item order task completed
+        // If completed add task id to item order task completed
+        // else add to task to complete
         await ItemOrder.PrependIdAsync(
           db,
           session.userId,
