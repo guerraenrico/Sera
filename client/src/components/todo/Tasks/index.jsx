@@ -161,7 +161,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   onDeleteTask: (task: Task) => dispatch(todoTasksActions.deleteTask(task.id)),
   onCompleteTask: (task: Task) =>
-    dispatch(todoTasksActions.toogleTaskCompleted(task.id, task.completed)),
+    dispatch(todoTasksActions.toggleTaskCompleted(task.id, task.completed)),
   doAddTask: (task: Task) =>
     dispatch(
       todoTasksActions.addTask(

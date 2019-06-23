@@ -248,4 +248,61 @@ router.patch("/position", (req, res) =>
   )
 );
 
+router.patch("/toggle-complete", (req, res) =>
+  connection(db =>
+    needAuth(db, req, res, async session => {
+      const { body } = req;
+      const { id, completed, completedAt } = body;
+      if (!isSet(id) || !isSet(completed)) {
+        handleError(
+          res,
+          ApiErrors.InvalidTaskParameters(),
+          400,
+          session.accessToken
+        );
+        return;
+      }
+      try {
+        // Remove from item order task to complete
+        await ItemOrder.RemoveIdAsync(
+          db,
+          session.userId,
+          Task.Schema.name,
+          { completed: !completed },
+          id
+        );
+        // Add to item order task completed
+        await ItemOrder.PrependIdAsync(
+          db,
+          session.userId,
+          Task.Schema.name,
+          { completed },
+          id
+        );
+
+        const result = await Task.UpdateAsync(db, id, {
+          completed,
+          completedAt
+        });
+        if (isSet(result) && result.ok === 1) {
+          handleResponse(
+            res,
+            {
+              ...Task.CreateFromDocument(result.value),
+              completed,
+              completedAt
+            },
+            session.accessToken
+          );
+        } else {
+          handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
+        }
+      } catch (e) {
+        console.log("err", e.message);
+        handleError(res, ApiErrors.ErrorUpdateTask(e), session.accessToken);
+      }
+    })
+  )
+);
+
 module.exports = router;

@@ -178,7 +178,7 @@ export const deleteTask = (id: string = ""): ThunkAction => async (
   }
 };
 
-export const toogleTaskCompleted = (
+export const toggleTaskCompleted = (
   id: string = "",
   isCompleted: boolean = false
 ): ThunkAction => async (dispatch, getState) => {
@@ -188,7 +188,7 @@ export const toogleTaskCompleted = (
   try {
     const { accessToken } = getState().auth;
     const response = await callApi(
-      "tasks",
+      "tasks/toggle-complete",
       { id, completed, completedAt },
       Methods.PATCH,
       accessToken
@@ -196,7 +196,7 @@ export const toogleTaskCompleted = (
     if (!response.success) {
       if (shouldRefreshToken(response)) {
         await dispatch(refreshAccessToken());
-        dispatch(toogleTaskCompleted(id, isCompleted));
+        dispatch(toggleTaskCompleted(id, isCompleted));
         return;
       }
       dispatch(showMessageError(response.error.message));
