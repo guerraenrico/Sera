@@ -74,6 +74,18 @@ export const fetchTasksByCategory = (
   if (todoTasks.isFetching) {
     return;
   }
+  if (auth.guest) {
+    const filterdTasks = todoTasks.items.filter(
+      task =>
+        task.completed === completed &&
+        task.categories.find(
+          category => categoriesId.find(category.id) !== undefined
+        ) !== undefined
+    );
+    filterdTasks.splice(skip, limit);
+    dispatch(receiveFetchTasks(filterdTasks));
+    return;
+  }
   dispatch(requestFetchTasks(limit, skip));
   try {
     const response = await callApi(
@@ -115,7 +127,22 @@ export const addTask = (
   todoWithin: Date
 ): ThunkAction => async (dispatch, getState) => {
   try {
-    const { accessToken } = getState().auth;
+    const { accessToken, guest } = getState().auth;
+    if (guest) {
+      return dispatch(
+        addTaskLocal({
+          id: new Date().getTime().toString(),
+          title,
+          description,
+          completed: false,
+          todoWithin,
+          completedAt: undefined,
+          createdAt: new Date(),
+          userId: "guest",
+          categories: category ? [category] : []
+        })
+      );
+    }
     const response = await callApi(
       "tasks",
       {
@@ -158,11 +185,15 @@ export const deleteTask = (id: string = ""): ThunkAction => async (
   getState
 ) => {
   try {
-    const { items } = getState().todoTasks;
+    const { todoTasks, auth } = getState();
+    const { items } = todoTasks;
     const todoArgumentIndex = items.findIndex(
       todoArgument => todoArgument.id === id
     );
     dispatch(removeTaskLocal(todoArgumentIndex));
+    if (auth.guest) {
+      return;
+    }
     const { accessToken } = getState().auth;
     const response = await callApi("tasks", id, Methods.DELETE, accessToken);
     if (!response.success) {
@@ -182,11 +213,14 @@ export const toggleTaskCompleted = (
   id: string = "",
   isCompleted: boolean = false
 ): ThunkAction => async (dispatch, getState) => {
+  const { accessToken, guest } = getState().auth;
   const completed = !isCompleted;
   const completedAt = completed ? new Date() : undefined;
   dispatch(updateTaskLocal(id, { completed, completedAt }));
+  if (guest) {
+    return;
+  }
   try {
-    const { accessToken } = getState().auth;
     const response = await callApi(
       "tasks/toggle-complete",
       { id, completed, completedAt },
@@ -210,11 +244,14 @@ export const setCategoryToTask = (
   task: Task,
   category: Category
 ): ThunkAction => async (dispatch, getState) => {
+  const { accessToken, guest } = getState().auth;
   // $FlowFixMe
   const updatedData = { categories: [...task.categories, category] };
   dispatch(updateTaskLocal(task.id, updatedData));
+  if (guest) {
+    return { success: true };
+  }
   try {
-    const { accessToken } = getState().auth;
     const response = await callApi(
       "tasks",
       { ...task, ...updatedData },
@@ -240,7 +277,11 @@ export const createAndSetCategoryToTask = (
   name: string
 ): ThunkAction => async (dispatch, getState) => {
   try {
-    const { accessToken } = getState().auth;
+    const { accessToken, guest } = getState().auth;
+    if (guest) {
+      // TODO: Add category to store the assign to task
+      return { success: true };
+    }
     const response = await callApi(
       "categories",
       { name },
@@ -267,13 +308,16 @@ export const removeCategoryToTask = (
   task: Task,
   category: Category
 ): ThunkAction => async (dispatch, getState) => {
+  const { accessToken, guest } = getState().auth;
   const updatedData = {
     // $FlowFixMe
     categories: task.categories.filter(cat => cat.id !== category.id)
   };
   dispatch(updateTaskLocal(task.id, updatedData));
+  if (guest) {
+    return { success: true };
+  }
   try {
-    const { accessToken } = getState().auth;
     const response = await callApi(
       "tasks",
       { ...task, ...updatedData },
@@ -299,12 +343,16 @@ export const changeTaskOrder = (
   nextIndex: number,
   taskId: string
 ): ThunkAction => async (dispatch, getState) => {
-  const { items } = getState().todoTasks;
+  const { auth, todoTasks } = getState();
+  const { accessToken, guest } = auth;
+  const { items } = todoTasks;
   const task = items[previousIndex];
   const nextTask = items[nextIndex + 1] || "";
   dispatch(changeTaskOrderLocal(taskId, previousIndex, nextIndex));
+  if (guest) {
+    return { success: true };
+  }
   try {
-    const { accessToken } = getState().auth;
     const response = await callApi(
       "tasks/position",
       { task, nextId: nextTask ? nextTask.id : "" },

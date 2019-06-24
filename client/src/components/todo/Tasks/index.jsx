@@ -7,7 +7,7 @@ import Resize from "../../anims/Resize";
 import TaskComponent from "../Task";
 import InfiniteScroll from "../../layout/InfiniteScroll";
 
-import { setSelectedCategory } from "../../../actions/todoFiltersActions";
+import * as todoFiltersActions from "../../../actions/todoFiltersActions";
 import * as todoTasksActions from "../../../actions/todoTasksActions";
 import * as todoTasksSelectors from "../../../selectors/todoTasksSelectors";
 import * as todoFiltersSelectors from "../../../selectors/todoFiltersSelectors";
@@ -19,14 +19,14 @@ import type { Response } from "../../../models/response";
 import { Container } from "./style";
 
 type Props = {
-  +onDeleteTask: Task => void,
-  +onCompleteTask: Task => void,
-  +doAddTask: Task => Promise<Response>,
-  +doSetSelectedCategory: Category => void,
-  +doSetCategoryToTask: (Task, Category) => void,
-  +doCreateAndSetCategoryToTask: (Task, string) => void,
-  +doRemoveCategoryToTask: (Task, Category) => void,
-  +doChangeTaskOrder: (number, number, string) => void,
+  +deleteTask: Task => void,
+  +completeTask: Task => void,
+  +addTask: Task => Promise<Response>,
+  +setSelectedCategory: Category => void,
+  +setCategoryToTask: (Task, Category) => void,
+  +createAndSetCategoryToTask: (Task, string) => void,
+  +removeCategoryToTask: (Task, Category) => void,
+  +changeTaskOrder: (number, number, string) => void,
   +taskList: Array<Task>,
   +moreToLoad: boolean,
   +fetchTasks: (string, boolean, number, ?number) => void,
@@ -66,7 +66,7 @@ class Tasks extends React.PureComponent<Props, State> {
   };
 
   onDragEnd = result => {
-    const { doChangeTaskOrder } = this.props;
+    const { changeTaskOrder } = this.props;
     const { destination, source, draggableId } = result;
     if (!destination) {
       return;
@@ -77,19 +77,19 @@ class Tasks extends React.PureComponent<Props, State> {
     ) {
       return;
     }
-    doChangeTaskOrder(source.index, destination.index, draggableId);
+    changeTaskOrder(source.index, destination.index, draggableId);
   };
 
   render() {
     const {
       taskList,
-      onDeleteTask,
-      onCompleteTask,
-      doAddTask,
-      doSetSelectedCategory,
-      doSetCategoryToTask,
-      doCreateAndSetCategoryToTask,
-      doRemoveCategoryToTask,
+      deleteTask,
+      completeTask,
+      addTask,
+      setSelectedCategory,
+      setCategoryToTask,
+      createAndSetCategoryToTask,
+      removeCategoryToTask,
       creatingTask,
       onAbortCreatingTask
     } = this.props;
@@ -107,7 +107,7 @@ class Tasks extends React.PureComponent<Props, State> {
                           creating
                           onUndo={onAbortCreatingTask}
                           onCreate={async (task: Task) => {
-                            const response = await doAddTask(task);
+                            const response = await addTask(task);
                             if (response.success) {
                               onAbortCreatingTask();
                             }
@@ -121,19 +121,19 @@ class Tasks extends React.PureComponent<Props, State> {
                           key={task.id}
                           index={i}
                           task={task}
-                          onDelete={() => onDeleteTask(task)}
-                          onComplete={() => onCompleteTask(task)}
+                          onDelete={() => deleteTask(task)}
+                          onComplete={() => completeTask(task)}
                           onCategoryClick={category =>
-                            doSetSelectedCategory(category)
+                            setSelectedCategory(category)
                           }
                           onSetCategory={category =>
-                            doSetCategoryToTask(task, category)
+                            setCategoryToTask(task, category)
                           }
                           onCreateCategory={name =>
-                            doCreateAndSetCategoryToTask(task, name)
+                            createAndSetCategoryToTask(task, name)
                           }
                           onRemoveCategory={category =>
-                            doRemoveCategoryToTask(task, category)
+                            removeCategoryToTask(task, category)
                           }
                         />
                       </Resize>
@@ -159,10 +159,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  onDeleteTask: (task: Task) => dispatch(todoTasksActions.deleteTask(task.id)),
-  onCompleteTask: (task: Task) =>
+  deleteTask: (task: Task) => dispatch(todoTasksActions.deleteTask(task.id)),
+  completeTask: (task: Task) =>
     dispatch(todoTasksActions.toggleTaskCompleted(task.id, task.completed)),
-  doAddTask: (task: Task) =>
+  addTask: (task: Task) =>
     dispatch(
       todoTasksActions.addTask(
         task.title,
@@ -171,19 +171,15 @@ const mapDispatchToProps = dispatch => ({
         task.todoWithin
       )
     ),
-  doSetSelectedCategory: (category: Category) =>
-    dispatch(setSelectedCategory(category)),
-  doSetCategoryToTask: (task: Task, category: Category) =>
+  setSelectedCategory: (category: Category) =>
+    dispatch(todoFiltersActions.setSelectedCategory(category)),
+  setCategoryToTask: (task: Task, category: Category) =>
     dispatch(todoTasksActions.setCategoryToTask(task, category)),
-  doCreateAndSetCategoryToTask: (task: Task, name: string) =>
+  createAndSetCategoryToTask: (task: Task, name: string) =>
     dispatch(todoTasksActions.createAndSetCategoryToTask(task, name)),
-  doRemoveCategoryToTask: (task: Task, category: Category) =>
+  removeCategoryToTask: (task: Task, category: Category) =>
     dispatch(todoTasksActions.removeCategoryToTask(task, category)),
-  doChangeTaskOrder: (
-    previousIndex: number,
-    nextIndex: number,
-    taskId: string
-  ) =>
+  changeTaskOrder: (previousIndex: number, nextIndex: number, taskId: string) =>
     dispatch(
       todoTasksActions.changeTaskOrder(previousIndex, nextIndex, taskId)
     ),

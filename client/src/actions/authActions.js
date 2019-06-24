@@ -6,6 +6,7 @@ import { showMessageError } from "./messageActions";
 import { shouldRefreshToken } from "../utils/RequestUtils";
 
 import type {
+  EnterAsGuestAction,
   FetchingAuthenticationAction,
   ReceiveAuthenticationAction
 } from "../reducers/auth";
@@ -13,6 +14,10 @@ import type {
 import type { ThunkAction } from "../reducers";
 
 const platform = "web";
+
+export const enterAsGuest = (): EnterAsGuestAction => ({
+  type: "ENTER_AS_GUEST"
+});
 
 const fetchingAuthentication = (): FetchingAuthenticationAction => ({
   type: "FETCHING_AUTHENTICATION"

@@ -109,12 +109,13 @@ const todoTasks = (
         ...state,
         items: [
           ...state.items.map(task =>
-            // $FlowFixMe remove flow error on action.data
+            // $FlowFixMe
             task.id === action.id ? { ...task, ...action.data } : task
           )
         ]
       };
     case "CHANGE_TASK_ORDER_LOCAL":
+      // $FlowFixMe
       const items = Array.from(state.items);
       items.splice(action.previousIndex, 1);
       items.splice(action.nextIndex, 0, state.items[action.previousIndex]);

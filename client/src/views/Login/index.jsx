@@ -5,6 +5,7 @@ import GoogleLogin from "react-google-login";
 import { connect } from "react-redux";
 
 import Snackbar from "../../components/layout/Snackbar";
+import Button from "../../components/layout/Button";
 import { getCurrentBaseUrl } from "../../utils/Common";
 import { SeraLogo } from "../../assets/Svgs";
 
@@ -27,11 +28,17 @@ import {
 
 type Props = {
   message: MessageState,
+  enterAsGuest: () => void,
   authenticateGoogleToken: string => void,
   hideMessage: () => void
 };
 
-const Login = ({ message, authenticateGoogleToken, hideMessage }: Props) => {
+const Login = ({
+  message,
+  enterAsGuest,
+  authenticateGoogleToken,
+  hideMessage
+}: Props) => {
   const responseGoogle = response => {
     if (response.code !== undefined) {
       authenticateGoogleToken(response.code);
@@ -67,6 +74,7 @@ const Login = ({ message, authenticateGoogleToken, hideMessage }: Props) => {
             </ButtonGoogleLogin>
           )}
         />
+        <Button onClick={() => enterAsGuest()}>Guest</Button>
         <ContentTip>
           <Tip>“Don’t wish it was easier wish you were better”</Tip>
         </ContentTip>
@@ -86,6 +94,9 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+  enterAsGuest: () => {
+    dispatch(authActions.enterAsGuest());
+  },
   authenticateGoogleToken: (idToken: string) => {
     dispatch(authActions.authenticateGoogleToken(idToken));
   },

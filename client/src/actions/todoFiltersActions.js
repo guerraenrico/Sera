@@ -113,7 +113,18 @@ export const addCategory = (
   callback: Category => void
 ): ThunkAction => async (dispatch, getState) => {
   try {
-    const { accessToken } = getState().auth;
+    const { accessToken, guest } = getState().auth;
+    if (guest) {
+      if (callback !== undefined) {
+        callback({
+          id: new Date().getTime().toString(),
+          name,
+          userId: "guest",
+          selected: false
+        });
+      }
+      return;
+    }
     const response = await callApi(
       "categories",
       { name },
@@ -143,7 +154,11 @@ export const searchCategory = (
   callback: (Array<Category>) => void
 ): ThunkAction => async (dispatch, getState) => {
   try {
-    const { accessToken } = getState().auth;
+    const { accessToken, guest } = getState().auth;
+    if (guest) {
+      dispatch(showMessageError("Not available in guest mode"));
+      return;
+    }
     const response = await callApi(
       "categories/search",
       { text },

@@ -1,6 +1,10 @@
 // @flow
 import type { User } from "../models/user";
 
+export type EnterAsGuestAction = {
+  type: "ENTER_AS_GUEST"
+};
+
 export type FetchingAuthenticationAction = {
   type: "FETCHING_AUTHENTICATION"
 };
@@ -19,6 +23,7 @@ export type RefreshAccessTokenAction = {
 };
 
 export type AuthAction =
+  | EnterAsGuestAction
   | FetchingAuthenticationAction
   | ReceiveAuthenticationAction
   | ClearAuthenticationAction
@@ -26,18 +31,29 @@ export type AuthAction =
 
 export type AuthState = {
   +isFetching: boolean,
+  +guest: boolean,
   +user: ?User,
   +accessToken: ?string
 };
 
 const initialState: AuthState = {
   isFetching: true,
+  guest: false,
   user: undefined,
   accessToken: undefined
 };
 
 const auth = (state: AuthState = initialState, action: AuthAction) => {
   switch (action.type) {
+    case "ENTER_AS_GUEST": {
+      return {
+        ...state,
+        isFetching: false,
+        guest: true,
+        user: undefined,
+        accessToken: undefined
+      };
+    }
     case "FETCHING_AUTHENTICATION":
       return {
         ...state,
@@ -52,6 +68,7 @@ const auth = (state: AuthState = initialState, action: AuthAction) => {
       };
     case "CLEAR_AUTHENTICATION":
       return {
+        ...state,
         isFetching: false,
         user: undefined,
         accessToken: undefined
