@@ -115,12 +115,14 @@ export const validateToken = (accessToken: string): ThunkAction => async (
 
 export const logout = (): ThunkAction => async (dispatch, getState) => {
   try {
-    const { accessToken } = getState().auth;
-    await callApi(
-      "auth/google/logout",
-      { accessToken, platform },
-      Methods.POST
-    );
+    const { accessToken, guest } = getState().auth;
+    if (!guest) {
+      await callApi(
+        "auth/google/logout",
+        { accessToken, platform },
+        Methods.POST
+      );
+    }
   } finally {
     dispatch(clearAuthentication());
   }

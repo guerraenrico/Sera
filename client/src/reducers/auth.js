@@ -70,6 +70,7 @@ const auth = (state: AuthState = initialState, action: AuthAction) => {
       return {
         ...state,
         isFetching: false,
+        guest: false,
         user: undefined,
         accessToken: undefined
       };
