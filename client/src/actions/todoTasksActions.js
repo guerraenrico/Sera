@@ -75,15 +75,7 @@ export const fetchTasksByCategory = (
     return;
   }
   if (auth.guest) {
-    const filterdTasks = todoTasks.items.filter(
-      task =>
-        task.completed === completed &&
-        task.categories.find(
-          category => categoriesId.find(category.id) !== undefined
-        ) !== undefined
-    );
-    filterdTasks.splice(skip, limit);
-    dispatch(receiveFetchTasks(filterdTasks));
+    dispatch(receiveFetchTasks(todoTasks.items));
     return;
   }
   dispatch(requestFetchTasks(limit, skip));
@@ -129,7 +121,7 @@ export const addTask = (
   try {
     const { accessToken, guest } = getState().auth;
     if (guest) {
-      return dispatch(
+      dispatch(
         addTaskLocal({
           id: new Date().getTime().toString(),
           title,
@@ -142,6 +134,7 @@ export const addTask = (
           categories: category ? [category] : []
         })
       );
+      return { success: true };
     }
     const response = await callApi(
       "tasks",

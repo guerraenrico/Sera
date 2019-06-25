@@ -156,7 +156,7 @@ export const searchCategory = (
   try {
     const { accessToken, guest } = getState().auth;
     if (guest) {
-      dispatch(showMessageError("Not available in guest mode"));
+      dispatch(showMessageError("Operation not available in guest mode"));
       return;
     }
     const response = await callApi(

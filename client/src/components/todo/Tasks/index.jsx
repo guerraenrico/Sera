@@ -85,6 +85,7 @@ class Tasks extends React.PureComponent<Props, State> {
       taskList,
       deleteTask,
       completeTask,
+      completed,
       addTask,
       setSelectedCategory,
       setCategoryToTask,
@@ -115,29 +116,32 @@ class Tasks extends React.PureComponent<Props, State> {
                         />
                       </Resize>
                     )}
-                    {taskList.map((task, i) => (
-                      <Resize key={`rsz${task.id}`}>
-                        <TaskComponent
-                          key={task.id}
-                          index={i}
-                          task={task}
-                          onDelete={() => deleteTask(task)}
-                          onComplete={() => completeTask(task)}
-                          onCategoryClick={category =>
-                            setSelectedCategory(category)
-                          }
-                          onSetCategory={category =>
-                            setCategoryToTask(task, category)
-                          }
-                          onCreateCategory={name =>
-                            createAndSetCategoryToTask(task, name)
-                          }
-                          onRemoveCategory={category =>
-                            removeCategoryToTask(task, category)
-                          }
-                        />
-                      </Resize>
-                    ))}
+                    {taskList &&
+                      taskList
+                        .filter(task => task.completed === completed)
+                        .map((task, i) => (
+                          <Resize key={`rsz${task.id}`}>
+                            <TaskComponent
+                              key={task.id}
+                              index={i}
+                              task={task}
+                              onDelete={() => deleteTask(task)}
+                              onComplete={() => completeTask(task)}
+                              onCategoryClick={category =>
+                                setSelectedCategory(category)
+                              }
+                              onSetCategory={category =>
+                                setCategoryToTask(task, category)
+                              }
+                              onCreateCategory={name =>
+                                createAndSetCategoryToTask(task, name)
+                              }
+                              onRemoveCategory={category =>
+                                removeCategoryToTask(task, category)
+                              }
+                            />
+                          </Resize>
+                        ))}
                     {provided.placeholder}
                   </TransitionGroup>
                 </div>
