@@ -1,8 +1,12 @@
 // @flow
 import React from "react";
+import { connect } from "react-redux";
 
 import ButtonClose from "./components/ButtonClose";
 import Visibility from "./components/Visibility";
+
+import * as todoFiltersActions from "../../../actions/todoFiltersActions";
+import * as todoFiltersSelectors from "../../../selectors/todoFiltersSelectors";
 
 import DialogAnim from "../../anims/DialogAnim";
 
@@ -10,10 +14,16 @@ import { Dialog, Header, Container } from "./style";
 
 type Props = {
   open: boolean,
-  onClose: () => void
+  onClose: () => void,
+  selectedFilter: string,
+  onSwitch: string => void
 };
 
-const Filters = ({ onClose, open }: Props) => {
+const Filters = ({ onClose, open, selectedFilter, onSwitch }: Props) => {
+  const handleOnSwitch = visibility => {
+    onSwitch(visibility);
+    onClose();
+  };
   return (
     <DialogAnim in={open}>
       <Dialog>
@@ -21,11 +31,27 @@ const Filters = ({ onClose, open }: Props) => {
           <ButtonClose onClick={() => onClose()} />
         </Header>
         <Container>
-          <Visibility />
+          <Visibility
+            selectedFilter={selectedFilter}
+            onSwitch={handleOnSwitch}
+          />
         </Container>
       </Dialog>
     </DialogAnim>
   );
 };
 
-export default Filters;
+const mapStateToProps = state => ({
+  selectedFilter: todoFiltersSelectors.getVisibilityFilter(state)
+});
+
+const mapDispatchToProps = dispatch => ({
+  onSwitch: visibility => {
+    dispatch(todoFiltersActions.changeVisibility(visibility));
+  }
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Filters);

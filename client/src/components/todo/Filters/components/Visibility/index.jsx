@@ -1,11 +1,7 @@
 // @flow
 import React from "react";
-import { connect } from "react-redux";
 
 import Switch from "../../../../layout/Switch";
-
-import * as todoFiltersActions from "../../../../../actions/todoFiltersActions";
-import * as todoFiltersSelectors from "../../../../../selectors/todoFiltersSelectors";
 
 import { Container } from "./style";
 
@@ -36,17 +32,4 @@ const VisibilityComponent = ({ selectedFilter, onSwitch }: Props) => (
   </Container>
 );
 
-const mapStateToProps = state => ({
-  selectedFilter: todoFiltersSelectors.getVisibilityFilter(state)
-});
-
-const mapDispatchToProps = dispatch => ({
-  onSwitch: visibility => {
-    dispatch(todoFiltersActions.changeVisibility(visibility));
-  }
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(VisibilityComponent);
+export default VisibilityComponent;
