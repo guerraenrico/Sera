@@ -22,6 +22,8 @@ import {
   ContentLogo,
   ButtonGoogleLogin,
   GoogleIcon,
+  Label,
+  ContentButtonGuest,
   ContentTip,
   Tip
 } from "./style";
@@ -46,14 +48,17 @@ const Login = ({
   };
   return (
     <Container>
+      <ContentDeclaration>
+        <Title>This is an Experimental App</Title>
+        <Description>
+          Dont use to store your confidential data. This app is Highly
+          experimental and has been created only for my personal test. Entering
+          as a guest will not save any information (all data will be lost if you
+          refresh this page or close your browser) and some feature may not be
+          available
+        </Description>
+      </ContentDeclaration>
       <LoginContainer>
-        <ContentDeclaration>
-          <Title>This is an Experimental App</Title>
-          <Description>
-            Dont use to store your confidential data. This app is Highly
-            experimental and has been created only for my personal test
-          </Description>
-        </ContentDeclaration>
         <ContentLogo>{SeraLogo}</ContentLogo>
         <GoogleLogin
           clientId="489823671693-0vvlltnvkavfa37o2jl123jb57ulcphu.apps.googleusercontent.com"
@@ -74,7 +79,10 @@ const Login = ({
             </ButtonGoogleLogin>
           )}
         />
-        <Button onClick={() => enterAsGuest()}>Guest</Button>
+        <Label>or</Label>
+        <ContentButtonGuest>
+          <Button onClick={() => enterAsGuest()}>Enter as Guest</Button>
+        </ContentButtonGuest>
         <ContentTip>
           <Tip>“Don’t wish it was easier wish you were better”</Tip>
         </ContentTip>

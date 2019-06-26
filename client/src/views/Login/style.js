@@ -17,21 +17,25 @@ export const LoginContainer = styled.div`
 `;
 
 export const ContentDeclaration = styled.div`
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  padding: 1.2rem;
+  width: 40rem;
+  background-color: #b71c1c;
   margin-bottom: 8rem;
 `;
 
 export const Title = styled.h2`
   margin-bottom: 1rem;
   font-weight: 500;
-  font-size: 1.5rem;
-  color: #c74747;
-  text-align: center;
+  font-size: 1.3rem;
+  color: #fff;
 `;
 
 export const Description = styled.p`
-  font-weight: 500;
+  font-weight: 400;
   font-size: 1rem;
-  text-align: center;
   color: ${commonColors.textPrimary};
 `;
 
@@ -57,6 +61,15 @@ export const ButtonGoogleLogin = styled.button`
 export const GoogleIcon = styled.span`
   font-size: 1.5rem;
   margin-right: 0.8rem;
+`;
+
+export const Label = styled.span`
+  font-size: 1rem;
+  color: ${commonColors.textSecondary};
+`;
+
+export const ContentButtonGuest = styled.div`
+  margin: 3rem 0;
 `;
 
 export const ContentTip = styled.div`
