@@ -132,7 +132,7 @@ export const initAuth = (): ThunkAction => dispatch => {
   dispatch(fetchingAuthentication());
   const accessToken = store.getAccessToken();
 
-  if (accessToken === undefined || accessToken === "") {
+  if (!accessToken) {
     return dispatch(clearAuthentication());
   }
   return dispatch(validateToken(accessToken));
