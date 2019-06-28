@@ -1,4 +1,5 @@
 const { ObjectId } = require("mongodb");
+const database = require("../utils/database");
 
 /* eslint dot-notation: 0 */
 const Schema = {
@@ -45,7 +46,8 @@ const CreateFromDocument = document => {
 const CreateFromDocuments = documents =>
   documents.map(doc => CreateFromDocument(doc));
 
-const GetAsync = async (db, userId, collection, filter) => {
+const GetAsync = async (userId, collection, filter) => {
+  const db = database.instance();
   const queryFilter = {
     $and: [
       { [Schema.fields.userId]: userId },
@@ -60,23 +62,30 @@ const GetAsync = async (db, userId, collection, filter) => {
   return CreateFromDocument(document);
 };
 
-const InsertAsync = async (db, itemOrder) =>
-  db.collection(Schema.name).insertOne(itemOrder);
+const InsertAsync = async itemOrder => {
+  const db = database.instance();
+  return db.collection(Schema.name).insertOne(itemOrder);
+};
 
-const DeleteAsync = async (db, userId, id) =>
-  db.collection(Schema.name).deleteOne({
+const DeleteAsync = async (userId, id) => {
+  const db = database.instance();
+  return db.collection(Schema.name).deleteOne({
     $and: [{ _id: ObjectId(id.toString()) }, { [Schema.fields.userId]: userId }]
   });
+};
 
-const UpdateAsync = async (db, id, fields) =>
-  db
+const UpdateAsync = async (id, fields) => {
+  const db = database.instance();
+  return db
     .collection(Schema.name)
     .findOneAndUpdate(
       { _id: ObjectId(id.toString()) },
       { $set: { ...fields } }
     );
+};
 
-const RemoveIdAsync = async (db, userId, collection, filter, idToRemove) => {
+const RemoveIdAsync = async (userId, collection, filter, idToRemove) => {
+  const db = database.instance();
   const { id, ...itemOtherFields } = await GetAsync(
     db,
     userId,
@@ -91,7 +100,8 @@ const RemoveIdAsync = async (db, userId, collection, filter, idToRemove) => {
   });
 };
 
-const PrependIdAsync = async (db, userId, collection, filter, idToAdd) => {
+const PrependIdAsync = async (userId, collection, filter, idToAdd) => {
+  const db = database.instance();
   const { id, ...itemOtherFields } = await GetAsync(
     db,
     userId,

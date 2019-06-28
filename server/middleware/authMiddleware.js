@@ -1,8 +1,10 @@
 const { getSessionByToken, verifySession } = require("../utils/authUtils");
+const database = require("../utils/database");
 const { handleError } = require("../Handlers");
 const { Unauthorized } = require("../ApiErrors");
 
-const needAuth = async (db, req, res, next) => {
+async function needAuth(req, res, next) {
+  const db = database.instance();
   try {
     const session = await getSessionByToken(db, req.get("x-token"));
     if (session === undefined || session === null) {
@@ -17,6 +19,6 @@ const needAuth = async (db, req, res, next) => {
   } catch (ex) {
     return handleError(res, Unauthorized(ex), 401);
   }
-};
+}
 
 module.exports = needAuth;

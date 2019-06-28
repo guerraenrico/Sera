@@ -1,7 +1,4 @@
-const { DATABASE_NAME, MONGODB_URI } = process.env;
-
 const express = require("express");
-const { MongoClient } = require("mongodb");
 
 const User = require("../models/User");
 const Session = require("../models/Session");
@@ -25,13 +22,12 @@ const {
 
 const { isSet } = require("../utils/common");
 
+const database = require("../utils/database");
+
 const router = express.Router();
 
 router.post("/google/signin/callback", async (req, res) => {
-  const conn = await MongoClient.connect(MONGODB_URI, {
-    useNewUrlParser: true
-  });
-  const db = conn.db(DATABASE_NAME);
+  const db = database.instance();
   const { code, platform } = req.body;
   let tokens;
   let payload;
@@ -110,14 +106,10 @@ router.post("/google/signin/callback", async (req, res) => {
   }
 
   handleResponse(res, user, accessToken);
-  conn.close();
 });
 
 router.post("/google/validate/token", async (req, res) => {
-  const conn = await MongoClient.connect(MONGODB_URI, {
-    useNewUrlParser: true
-  });
-  const db = conn.db(DATABASE_NAME);
+  const db = database.instance();
   const { accessToken } = req.body;
   try {
     const result = await getUserByToken(db, accessToken);
@@ -142,32 +134,22 @@ router.post("/google/validate/token", async (req, res) => {
     handleResponse(res, user, session.accessToken);
   } catch (e) {
     handleError(res, Unauthorized(e), 401);
-  } finally {
-    conn.close();
   }
 });
 
 router.post("/google/logout", async (req, res) => {
-  const conn = await MongoClient.connect(MONGODB_URI, {
-    useNewUrlParser: true
-  });
-  const db = conn.db(DATABASE_NAME);
+  const db = database.instance();
   const { accessToken } = req.body;
   try {
     await revokeSessionAndToken(db, accessToken);
     handleResponse(res);
   } catch (e) {
     handleError(res, Unauthorized(e), 401);
-  } finally {
-    conn.close();
   }
 });
 
 router.post("/google/refresh/token", async (req, res) => {
-  const conn = await MongoClient.connect(MONGODB_URI, {
-    useNewUrlParser: true
-  });
-  const db = conn.db(DATABASE_NAME);
+  const db = database.instance();
   const { accessToken } = req.body;
   try {
     const newSession = await getSessionByTokenAndRefreshIfNeeded(
@@ -185,8 +167,6 @@ router.post("/google/refresh/token", async (req, res) => {
     handleResponse(res, newSession, newSession.accessToken);
   } catch (e) {
     handleError(res, Unauthorized(e), 401);
-  } finally {
-    conn.close();
   }
 });
 

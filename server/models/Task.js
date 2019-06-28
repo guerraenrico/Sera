@@ -1,6 +1,8 @@
 const { ObjectId } = require("mongodb");
 const Category = require("./Category");
 
+const database = require("../utils/database");
+
 /* eslint dot-notation: 0 */
 const Schema = {
   name: "Task",
@@ -72,13 +74,13 @@ const CreateFromDocuments = taskDocuments =>
   taskDocuments.map(doc => CreateFromDocument(doc));
 
 const GetAllAsync = async (
-  db,
   userId,
   limit,
   skip,
   completed = false,
   categoriesId = []
 ) => {
+  const db = database.instance();
   const filter = {
     $and: [
       { [Schema.fields.completed]: completed },
@@ -100,12 +102,15 @@ const GetAllAsync = async (
   return CreateFromDocuments(tasksDocs);
 };
 
-const GetAsync = async (db, userId, id) =>
-  db.collection(Schema.name).findOne({
+const GetAsync = async (userId, id) => {
+  const db = database.instance();
+  return db.collection(Schema.name).findOne({
     $and: [{ _id: ObjectId(id.toString()) }, { [Schema.fields.userId]: userId }]
   });
+};
 
-const GetAllByIdsAsync = async (db, userId, ids) => {
+const GetAllByIdsAsync = async (userId, ids) => {
+  const db = database.instance();
   const tasksDocs = await db
     .collection(Schema.name)
     .find({
@@ -118,24 +123,30 @@ const GetAllByIdsAsync = async (db, userId, ids) => {
   return CreateFromDocuments(tasksDocs);
 };
 
-const InsertAsync = async (db, task) =>
-  db.collection(Schema.name).insertOne({
+const InsertAsync = async task => {
+  const db = database.instance();
+  return db.collection(Schema.name).insertOne({
     ...task,
     createdAt: new Date()
   });
+};
 
-const DeleteAsync = async (db, userId, id) =>
-  db.collection(Schema.name).deleteOne({
+const DeleteAsync = async (userId, id) => {
+  const db = database.instance();
+  return db.collection(Schema.name).deleteOne({
     $and: [{ _id: ObjectId(id.toString()) }, { [Schema.fields.userId]: userId }]
   });
+};
 
-const UpdateAsync = async (db, id, fields) =>
-  db
+const UpdateAsync = async (id, fields) => {
+  const db = database.instance();
+  return db
     .collection(Schema.name)
     .findOneAndUpdate(
       { _id: ObjectId(id.toString()) },
       { $set: { ...fields } }
     );
+};
 
 // const UpdateByPositionAsync = async (db, position, fields) =>
 //   db

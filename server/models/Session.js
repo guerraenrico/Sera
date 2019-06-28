@@ -1,4 +1,7 @@
 /* eslint dot-notation: 0 */
+
+const database = require("../utils/database");
+
 const Schema = {
   name: "Session",
   fields: {
@@ -11,7 +14,7 @@ const Schema = {
   }
 };
 
-const New = (
+const New = ({
   userId,
   accessToken,
   platform,
@@ -19,7 +22,7 @@ const New = (
   createdAt,
   updatedAt,
   id = undefined
-) => ({
+}) => ({
   [Schema.fields.userId]: userId,
   [Schema.fields.accessToken]: accessToken,
   [Schema.fields.platform]: platform,
@@ -29,16 +32,22 @@ const New = (
   ...(id !== undefined && { id })
 });
 
-const CreateFromDocument = sessionDocument =>
-  New(
-    sessionDocument[Schema.fields.userId],
-    sessionDocument[Schema.fields.accessToken],
-    sessionDocument[Schema.fields.platform],
-    sessionDocument[Schema.fields.expireAt],
-    sessionDocument[Schema.fields.createdAt],
-    sessionDocument[Schema.fields.updatedAt],
-    sessionDocument["_id"]
-  );
+const CreateFromDocument = document => {
+  if (document === undefined || document === null) {
+    return undefined;
+  }
+  let fields = {};
+  Object.keys(Schema.fields).forEach(key => {
+    fields = {
+      ...fields,
+      [Schema.fields[key]]: document[Schema.fields[key]]
+    };
+  });
+  return New({
+    ...fields,
+    id: document["_id"]
+  });
+};
 
 const CreateFromDocuments = sessionDocuments =>
   sessionDocuments.map(doc => CreateFromDocument(doc));
@@ -53,7 +62,8 @@ const GetByAccessTokenAsync = async (db, accessToken) => {
   return CreateFromDocument(sessionDoc);
 };
 
-const UpdateAsync = async (db, session) => {
+const UpdateAsync = async session => {
+  const db = database.instance();
   const { id, ...othres } = session;
   const now = new Date();
   const newSession = {
@@ -65,7 +75,8 @@ const UpdateAsync = async (db, session) => {
     .updateOne({ _id: id }, { $set: newSession });
 };
 
-const InsertAsync = async (db, session) => {
+const InsertAsync = async session => {
+  const db = database.instance();
   const now = new Date();
   const newSession = {
     ...session,
@@ -75,10 +86,12 @@ const InsertAsync = async (db, session) => {
   return db.collection(Schema.name).insertOne(newSession);
 };
 
-const DeleteByAccessTokenAsync = async (db, accessToken) =>
-  db.collection(Schema.name).deleteOne({
+const DeleteByAccessTokenAsync = async accessToken => {
+  const db = database.instance();
+  return db.collection(Schema.name).deleteOne({
     [Schema.fields.accessToken]: accessToken
   });
+};
 
 module.exports = {
   Schema,

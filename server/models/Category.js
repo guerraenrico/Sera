@@ -1,5 +1,7 @@
 const { ObjectId } = require("mongodb");
 
+const database = require("../utils/database");
+
 /* eslint dot-notation: 0 */
 const Schema = {
   name: "Category",
@@ -39,7 +41,8 @@ const CreateFromDocument = categoryDocument => {
 const CreateFromDocuments = categoryDocuments =>
   categoryDocuments.map(doc => CreateFromDocument(doc));
 
-const GetAllAsync = async (db, userId, limit, skip) => {
+const GetAllAsync = async (userId, limit, skip) => {
+  const db = database.instance();
   const filter = { [Schema.fields.userId]: userId };
   const query =
     limit !== undefined && skip !== undefined
@@ -53,22 +56,28 @@ const GetAllAsync = async (db, userId, limit, skip) => {
   return CreateFromDocuments(categoriesDocs);
 };
 
-const GetAllFilteredAsync = async (db, categoriesId = []) => {
+const GetAllFilteredAsync = async (categoriesId = []) => {
+  const db = database.instance();
   const filter = [categoriesId.length > 0 ? { id: { $in: categoriesId } } : {}];
   const query = db.collection(Schema.name).find(filter);
   const categoriesDocs = await query.toArray();
   return CreateFromDocuments(categoriesDocs);
 };
 
-const InsertAsync = async (db, category) =>
-  db.collection(Schema.name).insertOne(category);
+const InsertAsync = async category => {
+  const db = database.instance();
+  return db.collection(Schema.name).insertOne(category);
+};
 
-const DeleteAsync = async (db, userId, id) =>
-  db.collection(Schema.name).deleteOne({
+const DeleteAsync = async (userId, id) => {
+  const db = database.instance();
+  return db.collection(Schema.name).deleteOne({
     $and: [{ _id: ObjectId(id.toString()) }, { [Schema.fields.userId]: userId }]
   });
+};
 
-const SearchAsync = async (db, userId, text) => {
+const SearchAsync = async (userId, text) => {
+  const db = database.instance();
   let regex = "";
   const words = text.split(" ");
   words.forEach(word => {

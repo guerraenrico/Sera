@@ -1,4 +1,5 @@
 const { ObjectId } = require("mongodb");
+const database = require("../utils/database");
 
 /* eslint dot-notation: 0 */
 const Schema = {
@@ -15,7 +16,7 @@ const Schema = {
   }
 };
 
-const New = (
+const New = ({
   googleId,
   email,
   name,
@@ -25,7 +26,7 @@ const New = (
   createdAt = undefined,
   updatedAt = undefined,
   id = undefined
-) => ({
+}) => ({
   [Schema.fields.googleId]: googleId,
   [Schema.fields.email]: email,
   [Schema.fields.name]: name,
@@ -39,23 +40,28 @@ const New = (
   ...(id !== undefined && { id })
 });
 
-const CreateFromDocument = userDocument =>
-  New(
-    userDocument[Schema.fields.googleId],
-    userDocument[Schema.fields.email],
-    userDocument[Schema.fields.name],
-    userDocument[Schema.fields.locale],
-    userDocument[Schema.fields.pictureUrl],
-    userDocument[Schema.fields.refreshToken],
-    userDocument[Schema.fields.createdAt],
-    userDocument[Schema.fields.updatedAt],
-    userDocument["_id"]
-  );
+const CreateFromDocument = document => {
+  if (document === undefined || document === null) {
+    return undefined;
+  }
+  let fields = {};
+  Object.keys(Schema.fields).forEach(key => {
+    fields = {
+      ...fields,
+      [Schema.fields[key]]: document[Schema.fields[key]]
+    };
+  });
+  return New({
+    ...fields,
+    id: document["_id"]
+  });
+};
 
 const CreateFromDocuments = userDocuments =>
   userDocuments.map(doc => CreateFromDocument(doc));
 
-const GetAsync = async (db, id) => {
+const GetAsync = async id => {
+  const db = database.instance();
   const userDoc = await db
     .collection(Schema.name)
     .findOne({ _id: ObjectId(id.toString()) });
@@ -65,7 +71,8 @@ const GetAsync = async (db, id) => {
   return CreateFromDocument(userDoc);
 };
 
-const GetByGoogleIdAsync = async (db, googleId) => {
+const GetByGoogleIdAsync = async googleId => {
+  const db = database.instance();
   const userDoc = await db
     .collection(Schema.name)
     .findOne({ [Schema.fields.googleId]: googleId });
@@ -75,7 +82,8 @@ const GetByGoogleIdAsync = async (db, googleId) => {
   return CreateFromDocument(userDoc);
 };
 
-const UpdateAsync = async (db, user) => {
+const UpdateAsync = async user => {
+  const db = database.instance();
   const { id, ...othres } = user;
   const now = new Date();
   const newUser = {
@@ -85,7 +93,8 @@ const UpdateAsync = async (db, user) => {
   return db.collection(Schema.name).updateOne({ _id: id }, { $set: newUser });
 };
 
-const InsertAsync = async (db, user) => {
+const InsertAsync = async user => {
+  const db = database.instance();
   const now = new Date();
   const newUser = {
     ...user,

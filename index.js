@@ -7,6 +7,8 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 
+const database = require("./server/utils/database");
+
 const authRoutes = require("./server/routes/authRoutes");
 const categoryRoutes = require("./server/routes/categoryRoutes");
 const taskRouters = require("./server/routes/taskRoutes");
@@ -15,9 +17,6 @@ const { PORT } = process.env;
 const app = express();
 
 const httpServer = http.createServer(app);
-httpServer.listen(PORT, () => {
-  console.log(`sera server running on port ${PORT}`);
-});
 
 app.use(express.json());
 
@@ -37,3 +36,10 @@ app.get("/privacy", (req, res) => {
 app.get("/*", (req, res) => {
   res.sendFile(path.join(__dirname, "/client/public/index.html"));
 });
+
+(async function start() {
+  await database.openConnection();
+  httpServer.listen(PORT, () => {
+    console.log(`sera server running on port ${PORT}`);
+  });
+})();
