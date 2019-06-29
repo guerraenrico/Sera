@@ -7,14 +7,14 @@ import Resize from "../../anims/Resize";
 import TaskComponent from "../Task";
 import InfiniteScroll from "../../layout/InfiniteScroll";
 
-import * as todoFiltersActions from "../../../actions/todoFiltersActions";
-import * as todoTasksActions from "../../../actions/todoTasksActions";
-import * as todoTasksSelectors from "../../../selectors/todoTasksSelectors";
-import * as todoFiltersSelectors from "../../../selectors/todoFiltersSelectors";
+import * as todoFiltersActions from "~/actions/todoFiltersActions";
+import * as todoTasksActions from "~/actions/todoTasksActions";
+import * as todoTasksSelectors from "~/selectors/todoTasksSelectors";
+import * as todoFiltersSelectors from "~/selectors/todoFiltersSelectors";
 
-import type { Task } from "../../../models/task";
-import type { Category } from "../../../models/category";
-import type { Response } from "../../../models/response";
+import type { Task } from "~/models/task";
+import type { Category } from "~/models/category";
+import type { Response } from "~/models/response";
 
 import { Container } from "./style";
 

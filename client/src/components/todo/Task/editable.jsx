@@ -5,10 +5,10 @@ import Input from "../../layout/Input";
 import Button from "../../layout/Button";
 import DatePicker from "../../layout/DatePicker";
 
-import labels from "../../../constants/labels";
+import labels from "~/constants/labels";
 
-import type { Task } from "../../../models/task";
-import type { Category } from "../../../models/category";
+import type { Task } from "~/models/task";
+import type { Category } from "~/models/category";
 
 import {
   Item,

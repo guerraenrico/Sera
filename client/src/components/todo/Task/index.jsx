@@ -3,8 +3,8 @@ import React from "react";
 import EditableTaskComponent from "./editable";
 import StaticTaskComponent from "./static";
 
-import type { Task } from "../../../models/task";
-import type { Category } from "../../../models/category";
+import type { Task } from "~/models/task";
+import type { Category } from "~/models/category";
 
 type Props = {
   // ...StaticProps,

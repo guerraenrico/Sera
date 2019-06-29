@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import DatePicker from "react-date-picker";
 
-import labels from "../../../constants/labels";
-import { DONE } from "../../../constants/steps";
-import { addTask } from "../../../actions/todoTasksActions";
-import { showMessageInfo } from "../../../actions/messageActions";
+import labels from "~/constants/labels";
+import { DONE } from "~/constants/steps";
+import { addTask } from "~/actions/todoTasksActions";
+import { showMessageInfo } from "~/actions/messageActions";
 
 class SelectCompleteDate extends React.Component {
   state = {

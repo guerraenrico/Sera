@@ -2,20 +2,21 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import LoaderLinear from "../../components/layout/LoaderLinear";
-import ButtonIcon from "../../components/layout/ButtonIcon";
+import LoaderLinear from "~/components/layout/LoaderLinear";
+import ButtonIcon from "~/components/layout/ButtonIcon";
 // import CategoriesFilter from "../../components/todo/Category/CategoriesFilter";
 // import VisibilityFilter from "../../components/todo/visibility/VisibilityFilters";
-import Search from "../../components/todo/Search";
-import Tasks from "../../components/todo/Tasks";
+import Search from "~/components/todo/Search";
+import Tasks from "~/components/todo/Tasks";
+
 // import DialogAdd from "../../components/todo/dialogAdd/DialogAdd";
-import Filters from "../../components/todo/Filters";
-import Snackbar from "../../components/layout/Snackbar";
+import Filters from "~/components/todo/Filters";
+import Snackbar from "~/components/layout/Snackbar";
 
-import * as messageActions from "../../actions/messageActions";
-import * as commonSelectors from "../../selectors/commonSelectors";
+import * as messageActions from "~/actions/messageActions";
+import * as commonSelectors from "~/selectors/commonSelectors";
 
-import type { MessageState } from "../../reducers/message";
+import type { MessageState } from "~/reducers/message";
 
 import { ContentApp, MainTopBar, ContentTopBarActions } from "./style";
 

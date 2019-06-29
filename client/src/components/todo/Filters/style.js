@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-import {} from "../../../styles/common";
-import { commonColors } from "../../../styles/colors";
-import { commonSizes } from "../../../styles/sizes";
+import {} from "~/styles/common";
+import { commonColors } from "~/styles/colors";
+import { commonSizes } from "~/styles/sizes";
 
 export const Dialog = styled.div`
   height: calc(100vh - 2.5em * 2);

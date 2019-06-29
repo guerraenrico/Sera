@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-import { commonColors } from "../../../../../styles/colors";
-import { categoryAutocompleteSizes } from "../../../../../styles/sizes";
-import { fontFamily } from "../../../../../styles/common";
+import { commonColors } from "~/styles/colors";
+import { categoryAutocompleteSizes } from "~/styles/sizes";
+import { fontFamily } from "~/styles/common";
 
 export const itemAnimationStyle = last => ({
   paddingBottom: last ? 0 : categoryAutocompleteSizes.suggestionMargin

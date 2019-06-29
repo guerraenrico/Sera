@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
-import { categoryChipColors } from "../../../styles/colors";
-import { categoryChipSizes } from "../../../styles/sizes";
-import { alignItemCenter } from "../../../styles/common";
+import { categoryChipColors } from "~/styles/colors";
+import { categoryChipSizes } from "~/styles/sizes";
+import { alignItemCenter } from "~/styles/common";
 
 export const Chip = styled.div`
   padding: ${categoryChipSizes.padding};

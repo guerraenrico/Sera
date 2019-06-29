@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-import { buttonAddCategoryTaskColors } from "../../../../../styles/colors";
-import { buttonAddCategoryTaskSizes } from "../../../../../styles/sizes";
+import { buttonAddCategoryTaskColors } from "~/styles/colors";
+import { buttonAddCategoryTaskSizes } from "~/styles/sizes";
 
 export const Button = styled.button`
   display: inherit;

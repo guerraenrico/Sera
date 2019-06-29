@@ -5,8 +5,8 @@ import { connect } from "react-redux";
 import ButtonClose from "./components/ButtonClose";
 import Visibility from "./components/Visibility";
 
-import * as todoFiltersActions from "../../../actions/todoFiltersActions";
-import * as todoFiltersSelectors from "../../../selectors/todoFiltersSelectors";
+import * as todoFiltersActions from "~/actions/todoFiltersActions";
+import * as todoFiltersSelectors from "~/selectors/todoFiltersSelectors";
 
 import DialogAnim from "../../anims/DialogAnim";
 

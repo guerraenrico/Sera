@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { buttonCompleteTaskColors } from "../../../../../styles/colors";
+import { buttonCompleteTaskColors } from "~/styles/colors";
 
 export const Button = styled.button`
   display: inherit;

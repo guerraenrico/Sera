@@ -2,10 +2,10 @@
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import labels from "../../../constants/labels";
-import { ADD_TASK } from "../../../constants/steps";
-import { addCategory } from "../../../actions/todoFiltersActions";
-import { showMessageInfo } from "../../../actions/messageActions";
+import labels from "~/constants/labels";
+import { ADD_TASK } from "~/constants/steps";
+import { addCategory } from "~/actions/todoFiltersActions";
+import { showMessageInfo } from "~/actions/messageActions";
 
 class AddCategory extends React.Component {
   state = {

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-import { contentApp } from "../../styles/common";
-import { commonSizes } from "../../styles/sizes";
+import { contentApp } from "~/styles/common";
+import { commonSizes } from "~/styles/sizes";
 
 export const ContentApp = styled.div`
   ${contentApp}

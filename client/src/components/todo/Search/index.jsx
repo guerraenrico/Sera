@@ -9,11 +9,11 @@ import {
   searchCategory,
   setSelectedCategory,
   cleanSelectedCategory
-} from "../../../actions/todoFiltersActions";
-import { getCategoryFilter } from "../../../selectors/todoFiltersSelectors";
+} from "~/actions/todoFiltersActions";
+import { getCategoryFilter } from "~/selectors/todoFiltersSelectors";
 
 import CategoryComponent from "../Category";
-import type { Category } from "../../../models/category";
+import type { Category } from "~/models/category";
 
 import {
   Container,

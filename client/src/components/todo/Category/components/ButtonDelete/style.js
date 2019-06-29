@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { buttonDeleteCategoryChipColors } from "../../../../../styles/colors";
+import { buttonDeleteCategoryChipColors } from "~/styles/colors";
 
 export const Button = styled.button`
   background: none;

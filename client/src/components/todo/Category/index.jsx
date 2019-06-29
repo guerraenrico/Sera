@@ -4,7 +4,7 @@ import ButtonDelete from "./components/ButtonDelete";
 
 import { Chip, Text } from "./style";
 
-import type { Category } from "../../../models/category";
+import type { Category } from "~/models/category";
 
 type Normal = "normal";
 type Small = "small";

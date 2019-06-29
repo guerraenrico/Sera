@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-import { commonColors } from "../../../styles/colors";
-import { taskSizes, commonSizes } from "../../../styles/sizes";
+import { commonColors } from "~/styles/colors";
+import { taskSizes, commonSizes } from "~/styles/sizes";
 
 export const Item = styled.div`
   position: relative;

@@ -7,11 +7,11 @@ import CategoryComponent from "../Category";
 import ButtonComplete from "./components/ButtonComplete";
 import ButtonDelete from "./components/ButtonDelete";
 import CategoryAutocomplete from "./components/CategoryAutocomplete";
-import { toSimpleDateFormat } from "../../../utils/Common";
-import labels from "../../../constants/labels";
+import { toSimpleDateFormat } from "~/utils/Common";
+import labels from "~/constants/labels";
 
-import type { Task } from "../../../models/task";
-import type { Category } from "../../../models/category";
+import type { Task } from "~/models/task";
+import type { Category } from "~/models/category";
 
 import {
   Item,
