@@ -148,37 +148,6 @@ const UpdateAsync = async (id, fields) => {
     );
 };
 
-// const UpdateByPositionAsync = async (db, position, fields) =>
-//   db
-//     .collection(Schema.name)
-//     .findOneAndUpdate(
-//       { [Schema.fields.position]: position },
-//       { $set: { ...fields } }
-//     );
-
-// function SetPositionIfNeededAsync(db, tasks, offset = 0) {
-//   const collection = db.collection(Schema.name);
-//   const bulk = collection.initializeOrderedBulkOp();
-//   tasks.forEach((task, i) => {
-//     if (task.position === undefined || task.position === -1) {
-//       bulk.find({ _id: task.id }).update({ $set: { position: offset + i } });
-//     }
-//   });
-//   return bulk.execute();
-// }
-
-// function ShiftPositionsAsync(db, userId, value = 1) {
-//   return db.collection(Schema.name).update(
-//     {
-//       $and: [
-//         { [Schema.fields.userId]: userId },
-//         { [Schema.fields.completed]: true }
-//       ]
-//     },
-//     { $inc: { [Schema.fields.position]: value } }
-//   );
-// }
-
 module.exports = {
   Schema,
   CreateFromBodyRequest,

@@ -6,7 +6,7 @@ const Category = require("../models/Category");
 const ApiErrors = require("../ApiErrors");
 const { handleError, handleResponse } = require("../Handlers");
 
-const { isSet } = require("../utils/common");
+const { isNullOrUndefined } = require("../utils/common");
 
 const router = express.Router();
 
@@ -14,8 +14,12 @@ const router = express.Router();
 
 router.get("/", (req, res) =>
   needAuth(req, res, async session => {
-    const limit = isSet(req.query.limit) ? parseInt(req.query.limit, 10) : 0;
-    const skip = isSet(req.query.skip) ? parseInt(req.query.skip, 10) : 0;
+    const limit = isNullOrUndefined(req.query.limit)
+      ? parseInt(req.query.limit, 10)
+      : 0;
+    const skip = isNullOrUndefined(req.query.skip)
+      ? parseInt(req.query.skip, 10)
+      : 0;
     try {
       const categories = await Category.GetAllAsync(
         session.userId,
@@ -51,7 +55,7 @@ router.post("/", (req, res) =>
   needAuth(req, res, async session => {
     const { body } = req;
     const category = Category.CreateFromBodyRequest(body, session.userId);
-    if (!isSet(category)) {
+    if (!isNullOrUndefined(category)) {
       handleError(
         res,
         ApiErrors.InvalidCategoryParameters(),
@@ -62,7 +66,7 @@ router.post("/", (req, res) =>
     }
     try {
       const result = await Category.InsertAsync(category);
-      if (isSet(result.insertedId)) {
+      if (isNullOrUndefined(result.insertedId)) {
         handleResponse(
           res,
           { ...category, id: result.insertedId },
@@ -83,7 +87,7 @@ router.post("/", (req, res) =>
 router.delete("/:id", (req, res) =>
   needAuth(req, res, async session => {
     const { id } = req.params;
-    if (!isSet(id) || id.toString() === "") {
+    if (!isNullOrUndefined(id) || id.toString() === "") {
       handleError(res, ApiErrors.InvalidCategoryId(), 400, session.accessToken);
       return;
     }

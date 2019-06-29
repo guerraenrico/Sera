@@ -20,19 +20,16 @@ const {
   getSessionByTokenAndRefreshIfNeeded
 } = require("../utils/authUtils");
 
-const { isSet } = require("../utils/common");
-
-const database = require("../utils/database");
+const { isNullOrUndefined } = require("../utils/common");
 
 const router = express.Router();
 
 router.post("/google/signin/callback", async (req, res) => {
-  const db = database.instance();
   const { code, platform } = req.body;
   let tokens;
   let payload;
 
-  if (!isSet(code) || code === "") {
+  if (!isNullOrUndefined(code) || code === "") {
     handleError(res, InvalidAuthCode(), 401);
     return;
   }
@@ -60,21 +57,21 @@ router.post("/google/signin/callback", async (req, res) => {
     return;
   }
 
-  const user = User.New(
-    payload.sub,
-    payload.email,
-    payload.name,
-    payload.locale,
-    payload.picture,
+  const user = User.New({
+    googleId: payload.sub,
+    email: payload.email,
+    name: payload.name,
+    locale: payload.locale,
+    pictureUrl: payload.picture,
     refreshToken
-  );
+  });
 
   try {
-    const savedUser = await User.GetByGoogleIdAsync(db, user.googleId);
+    const savedUser = await User.GetByGoogleIdAsync(user.googleId);
     if (savedUser === undefined) {
       // Save user if not exists in the db
-      const result = await User.InsertAsync(db, user);
-      if (!isSet(result.insertedId)) {
+      const result = await User.InsertAsync(user);
+      if (!isNullOrUndefined(result.insertedId)) {
         handleError(res, ErrorCreateUser(), 500);
         return;
       }
@@ -90,15 +87,15 @@ router.post("/google/signin/callback", async (req, res) => {
   user.refreshToken = undefined;
 
   try {
-    const savedSession = await Session.GetByAccessTokenAsync(db, accessToken);
-    if (!isSet(savedSession)) {
-      const session = Session.New(
-        user.id.valueOf().toString(),
+    const savedSession = await Session.GetByAccessTokenAsync(accessToken);
+    if (!isNullOrUndefined(savedSession)) {
+      const session = Session.New({
+        userId: user.id.valueOf().toString(),
         accessToken,
         platform,
         expireAt
-      );
-      await Session.InsertAsync(db, session);
+      });
+      await Session.InsertAsync(session);
     }
   } catch (e) {
     handleError(res, ErrorCreateSession(e), 500);
@@ -109,12 +106,11 @@ router.post("/google/signin/callback", async (req, res) => {
 });
 
 router.post("/google/validate/token", async (req, res) => {
-  const db = database.instance();
   const { accessToken } = req.body;
   try {
-    const result = await getUserByToken(db, accessToken);
+    const result = await getUserByToken(accessToken);
     // Check if return error
-    if (isSet(result.code)) {
+    if (isNullOrUndefined(result.code)) {
       console.log("(Validate) ERROR: ", `result: ${JSON.stringify(result)}`);
       handleError(res, result, 401);
       return;
@@ -123,7 +119,7 @@ router.post("/google/validate/token", async (req, res) => {
     // Clear refresh token
     user.refreshToken = undefined;
 
-    if (!isSet(user) || !isSet(session)) {
+    if (!isNullOrUndefined(user) || !isNullOrUndefined(session)) {
       handleError(res, Unauthorized(), 401);
       console.log(
         "(Validate) ERROR: ",
@@ -138,10 +134,9 @@ router.post("/google/validate/token", async (req, res) => {
 });
 
 router.post("/google/logout", async (req, res) => {
-  const db = database.instance();
   const { accessToken } = req.body;
   try {
-    await revokeSessionAndToken(db, accessToken);
+    await revokeSessionAndToken(accessToken);
     handleResponse(res);
   } catch (e) {
     handleError(res, Unauthorized(e), 401);
@@ -149,14 +144,10 @@ router.post("/google/logout", async (req, res) => {
 });
 
 router.post("/google/refresh/token", async (req, res) => {
-  const db = database.instance();
   const { accessToken } = req.body;
   try {
-    const newSession = await getSessionByTokenAndRefreshIfNeeded(
-      db,
-      accessToken
-    );
-    if (!isSet(newSession)) {
+    const newSession = await getSessionByTokenAndRefreshIfNeeded(accessToken);
+    if (!isNullOrUndefined(newSession)) {
       console.log(
         "(Refresh) ERROR: ",
         `newSession: ${JSON.stringify(newSession)}`

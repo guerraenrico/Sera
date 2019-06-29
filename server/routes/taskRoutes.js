@@ -7,7 +7,7 @@ const ItemOrder = require("../models/ItemOrder");
 const ApiErrors = require("../ApiErrors");
 const { handleError, handleResponse } = require("../Handlers");
 
-const { isSet } = require("../utils/common");
+const { isNullOrUndefined } = require("../utils/common");
 
 const router = express.Router();
 
@@ -16,11 +16,15 @@ const router = express.Router();
 router.get("/", (req, res) =>
   needAuth(req, res, async session => {
     // Limit results only if no filter selected
-    const limit = isSet(req.query.limit) ? parseInt(req.query.limit, 10) : 0;
-    const skip = isSet(req.query.skip) ? parseInt(req.query.skip, 10) : 0;
+    const limit = isNullOrUndefined(req.query.limit)
+      ? parseInt(req.query.limit, 10)
+      : 0;
+    const skip = isNullOrUndefined(req.query.skip)
+      ? parseInt(req.query.skip, 10)
+      : 0;
     const completed = req.query.completed === "true";
     const categoriesId =
-      isSet(req.query.categoriesId) && req.query.categoriesId !== ""
+      isNullOrUndefined(req.query.categoriesId) && req.query.categoriesId !== ""
         ? req.query.categoriesId.split(",")
         : [];
     try {
@@ -32,8 +36,8 @@ router.get("/", (req, res) =>
 
       let tasks = [];
       if (
-        (isSet(categoriesId) && categoriesId.length > 0) ||
-        !isSet(itemOrder)
+        (isNullOrUndefined(categoriesId) && categoriesId.length > 0) ||
+        !isNullOrUndefined(itemOrder)
       ) {
         tasks = await Task.GetAllAsync(
           session.userId,
@@ -51,8 +55,11 @@ router.get("/", (req, res) =>
 
       let orederedTasks = [];
 
-      // Should be a 1 time run
-      if (!isSet(itemOrder) || !isSet(itemOrder.orderedIds)) {
+      // Should run only the first time
+      if (
+        !isNullOrUndefined(itemOrder) ||
+        !isNullOrUndefined(itemOrder.orderedIds)
+      ) {
         const allTasks = await Task.GetAllAsync(
           session.userId,
           undefined,
@@ -91,7 +98,7 @@ router.post("/", (req, res) =>
   needAuth(req, res, async session => {
     const { body } = req;
     const task = Task.CreateFromBodyRequest(body, session.userId);
-    if (!isSet(task)) {
+    if (!isNullOrUndefined(task)) {
       handleError(
         res,
         ApiErrors.InvalidTaskParameters(),
@@ -103,7 +110,7 @@ router.post("/", (req, res) =>
     try {
       task.position = 0;
       const result = await Task.InsertAsync(task);
-      if (isSet(result.insertedId)) {
+      if (isNullOrUndefined(result.insertedId)) {
         await ItemOrder.PrependIdAsync(
           session.userId,
           Task.Schema.name,
@@ -133,7 +140,7 @@ router.post("/", (req, res) =>
 router.delete("/:id", (req, res) =>
   needAuth(req, res, async session => {
     const { id } = req.params;
-    if (!isSet(id) || id.toString() === "") {
+    if (!isNullOrUndefined(id) || id.toString() === "") {
       handleError(res, ApiErrors.InvalidTaskId(), 400, session.accessToken);
       return;
     }
@@ -141,7 +148,7 @@ router.delete("/:id", (req, res) =>
       const task = await Task.GetAsync(session.userId, id);
       const result = await Task.DeleteAsync(session.userId, id);
       if (result.deletedCount >= 1) {
-        if (isSet(task)) {
+        if (isNullOrUndefined(task)) {
           await ItemOrder.RemoveIdAsync(
             session.userId,
             Task.Schema.name,
@@ -168,7 +175,7 @@ router.patch("/", (req, res) =>
   needAuth(req, res, async session => {
     const { body } = req;
     const { id, ...other } = body;
-    if (!isSet(id)) {
+    if (!isNullOrUndefined(id)) {
       handleError(
         res,
         ApiErrors.InvalidTaskParameters(),
@@ -179,7 +186,7 @@ router.patch("/", (req, res) =>
     }
     try {
       const result = await Task.UpdateAsync(id, { ...other });
-      if (isSet(result) && result.ok === 1) {
+      if (isNullOrUndefined(result) && result.ok === 1) {
         handleResponse(
           res,
           { ...Task.CreateFromDocument(result.value), ...other },
@@ -199,7 +206,7 @@ router.patch("/position", (req, res) =>
   needAuth(req, res, async session => {
     const { body } = req;
     const { task, nextId } = body;
-    if (!isSet(task)) {
+    if (!isNullOrUndefined(task)) {
       handleError(
         res,
         ApiErrors.InvalidTaskParameters(),
@@ -217,7 +224,7 @@ router.patch("/position", (req, res) =>
         nextId,
         task.id
       );
-      if (isSet(result) && result.ok === 1) {
+      if (isNullOrUndefined(result) && result.ok === 1) {
         handleResponse(res, {}, session.accessToken);
       } else {
         handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
@@ -233,7 +240,7 @@ router.patch("/toggle-complete", (req, res) =>
   needAuth(req, res, async session => {
     const { body } = req;
     const { id, completed, completedAt } = body;
-    if (!isSet(id) || !isSet(completed)) {
+    if (!isNullOrUndefined(id) || !isNullOrUndefined(completed)) {
       handleError(
         res,
         ApiErrors.InvalidTaskParameters(),
@@ -264,7 +271,7 @@ router.patch("/toggle-complete", (req, res) =>
         completed,
         completedAt
       });
-      if (isSet(result) && result.ok === 1) {
+      if (isNullOrUndefined(result) && result.ok === 1) {
         handleResponse(
           res,
           {

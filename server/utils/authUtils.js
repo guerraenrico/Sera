@@ -77,11 +77,10 @@ const verifySession = async session => {
 
 /**
  * Read user's session from datatabase
- * @param {Object} db database
  * @param {String} accessToken user' access token
  */
-const getSessionByToken = async (db, accessToken) => {
-  const session = await Session.GetByAccessTokenAsync(db, accessToken);
+const getSessionByToken = async accessToken => {
+  const session = await Session.GetByAccessTokenAsync(accessToken);
   return session;
 };
 
@@ -89,11 +88,10 @@ const getSessionByToken = async (db, accessToken) => {
  * Read user's session from database and if expired a new
  * access token is created.
  * If no session is found or is invalid return undefined
- * @param {Object} db database
  * @param {String} accessToken user's access token
  */
-const getSessionByTokenAndRefreshIfNeeded = async (db, accessToken) => {
-  let session = await getSessionByToken(db, accessToken);
+const getSessionByTokenAndRefreshIfNeeded = async accessToken => {
+  let session = await getSessionByToken(accessToken);
   if (session === undefined) {
     return undefined;
   }
@@ -107,7 +105,7 @@ const getSessionByTokenAndRefreshIfNeeded = async (db, accessToken) => {
     return undefined;
   }
 
-  const user = await User.GetAsync(db, session.userId);
+  const user = await User.GetAsync(session.userId);
   if (user === undefined) {
     return undefined;
   }
@@ -126,7 +124,7 @@ const getSessionByTokenAndRefreshIfNeeded = async (db, accessToken) => {
     accessToken: token
   };
 
-  const { result } = await Session.UpdateAsync(db, session);
+  const { result } = await Session.UpdateAsync(session);
   if (result === undefined || result.ok !== 1) {
     return undefined;
   }
@@ -136,12 +134,11 @@ const getSessionByTokenAndRefreshIfNeeded = async (db, accessToken) => {
 
 /**
  * Read the user from the database
- * @param {Object} db database
  * @param {String} accessToken user's access token
  */
-const getUserByToken = async (db, accessToken) => {
+const getUserByToken = async accessToken => {
   // Verify token
-  const session = await getSessionByToken(db, accessToken);
+  const session = await getSessionByToken(accessToken);
 
   const sessionError = await verifySession(session);
   if (sessionError !== undefined) {
@@ -149,12 +146,12 @@ const getUserByToken = async (db, accessToken) => {
   }
 
   // Verify user saved in the db
-  const user = await User.GetAsync(db, session.userId);
+  const user = await User.GetAsync(session.userId);
   return { user, session };
 };
 
-const revokeSessionAndToken = async (db, accessToken) => {
-  await Session.DeleteByAccessTokenAsync(db, accessToken);
+const revokeSessionAndToken = async accessToken => {
+  await Session.DeleteByAccessTokenAsync(accessToken);
 };
 
 module.exports = {

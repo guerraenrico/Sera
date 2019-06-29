@@ -52,7 +52,8 @@ const CreateFromDocument = document => {
 const CreateFromDocuments = sessionDocuments =>
   sessionDocuments.map(doc => CreateFromDocument(doc));
 
-const GetByAccessTokenAsync = async (db, accessToken) => {
+const GetByAccessTokenAsync = async accessToken => {
+  const db = database.instance();
   const sessionDoc = await db
     .collection(Schema.name)
     .findOne({ [Schema.fields.accessToken]: accessToken });
