@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import Snackbar from "~/components/layout/Snackbar";
+import Snackbar from "~/components/Snackbar";
 import * as messageActions from "~/actions/messageActions";
 
 class Goals extends Component {

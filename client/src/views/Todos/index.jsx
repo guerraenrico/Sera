@@ -2,16 +2,16 @@
 import React from "react";
 import { connect } from "react-redux";
 
-import LoaderLinear from "~/components/layout/LoaderLinear";
-import ButtonIcon from "~/components/layout/ButtonIcon";
+import LoaderLinear from "~/components/LoaderLinear";
+import ButtonIcon from "~/components/ButtonIcon";
 // import CategoriesFilter from "../../components/todo/Category/CategoriesFilter";
 // import VisibilityFilter from "../../components/todo/visibility/VisibilityFilters";
-import Search from "~/components/todo/Search";
-import Tasks from "~/components/todo/Tasks";
+import Search from "./components/Search";
+import Tasks from "./components/Tasks";
 
 // import DialogAdd from "../../components/todo/dialogAdd/DialogAdd";
-import Filters from "~/components/todo/Filters";
-import Snackbar from "~/components/layout/Snackbar";
+import Filters from "./components/Filters";
+import Snackbar from "~/components/Snackbar";
 
 import * as messageActions from "~/actions/messageActions";
 import * as commonSelectors from "~/selectors/commonSelectors";

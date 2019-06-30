@@ -85,14 +85,8 @@ const UpdateAsync = async (id, fields) => {
 };
 
 const RemoveIdAsync = async (userId, collection, filter, idToRemove) => {
-  const db = database.instance();
-  const { id, ...itemOtherFields } = await GetAsync(
-    db,
-    userId,
-    collection,
-    filter
-  );
-  return UpdateAsync(db, id, {
+  const { id, ...itemOtherFields } = await GetAsync(userId, collection, filter);
+  return UpdateAsync(id, {
     ...itemOtherFields,
     orderedIds: itemOtherFields.orderedIds.filter(
       orderId => idToRemove !== orderId
@@ -101,36 +95,16 @@ const RemoveIdAsync = async (userId, collection, filter, idToRemove) => {
 };
 
 const PrependIdAsync = async (userId, collection, filter, idToAdd) => {
-  const db = database.instance();
-  const { id, ...itemOtherFields } = await GetAsync(
-    db,
-    userId,
-    collection,
-    filter
-  );
-  return UpdateAsync(db, id, {
+  const { id, ...itemOtherFields } = await GetAsync(userId, collection, filter);
+  return UpdateAsync(id, {
     ...itemOtherFields,
     orderedIds: [idToAdd, ...itemOtherFields.orderedIds]
   });
 };
 
-const MoveIdAsync = async (
-  db,
-  userId,
-  collection,
-  filter,
-  nextId,
-  idToMove
-) => {
-  const { id, ...itemOtherFields } = await GetAsync(
-    db,
-    userId,
-    collection,
-    filter
-  );
-
+const MoveIdAsync = async (userId, collection, filter, nextId, idToMove) => {
+  const { id, ...itemOtherFields } = await GetAsync(userId, collection, filter);
   const ids = Array.from(itemOtherFields.orderedIds);
-
   const currentIndex = ids.findIndex(cid => cid === idToMove);
   const nextIndex = nextId
     ? ids.findIndex(cid => cid === nextId) - 1
@@ -139,7 +113,7 @@ const MoveIdAsync = async (
   ids.splice(currentIndex, 1);
   ids.splice(nextIndex, 0, idToMove);
 
-  return UpdateAsync(db, id, {
+  return UpdateAsync(id, {
     ...itemOtherFields,
     orderedIds: ids
   });

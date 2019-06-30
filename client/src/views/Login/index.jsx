@@ -4,14 +4,14 @@ import React from "react";
 import GoogleLogin from "react-google-login";
 import { connect } from "react-redux";
 
-import Snackbar from "../../components/layout/Snackbar";
-import Button from "../../components/layout/Button";
-import { getCurrentBaseUrl } from "../../utils/Common";
-import { SeraLogo } from "../../assets/Svgs";
+import Snackbar from "~/components/Snackbar";
+import Button from "~/components/Button";
+import { getCurrentBaseUrl } from "~/utils/Common";
+import { SeraLogo } from "~/assets/Svgs";
 
-import * as authActions from "../../actions/authActions";
-import * as messageActions from "../../actions/messageActions";
-import type { MessageState } from "../../reducers/message";
+import * as authActions from "~/actions/authActions";
+import * as messageActions from "~/actions/messageActions";
+import type { MessageState } from "~/reducers/message";
 
 import {
   Container,
