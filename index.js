@@ -1,6 +1,6 @@
 if (process.env.NODE_ENV !== "production") {
   /* eslint global-require: 0 */
-  require("dotenv").load();
+  require("dotenv").config();
 }
 
 const express = require("express");
