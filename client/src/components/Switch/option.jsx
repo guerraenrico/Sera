@@ -15,6 +15,7 @@ const OptionComponent = ({ selected, children, onClick }: Props) => (
     className={`${selected ? "selected" : ""} `}
     onClick={onClick}
     role="presentation"
+    selected={selected}
   >
     {children}
   </Option>

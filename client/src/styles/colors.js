@@ -35,9 +35,9 @@ export const buttonIconColors = {
 export const switchColors = {
   background: "#181A1E",
   optionSelectedBackground: "#020810",
-  optionIcon: "#97a0ab",
-  optionIconSelected: "#1EBCAD",
-  optionIconHover: "#1EBCAD"
+  optionItem: "#97a0ab",
+  optionItemSelected: "#1EBCAD",
+  optionItemHover: "#1EBCAD"
 };
 
 export const datePickerColors = {

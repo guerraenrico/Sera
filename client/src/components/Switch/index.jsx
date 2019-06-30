@@ -3,12 +3,13 @@ import React from "react";
 
 import OptionComponent from "./option";
 
-import { Switch, Icon } from "./style";
+import { Switch, Icon, Text } from "./style";
 
 type Option = {
   +name: string,
   +selected: boolean,
-  +iconClassName: string
+  +iconClassName: string,
+  +text: String
 };
 
 type Props = {
@@ -27,6 +28,7 @@ const SwitchComponent = ({ option1, option2, onOptionClick }: Props) => (
       role="presentation"
     >
       <Icon className={option1.iconClassName} />
+      <Text>{option1.text}</Text>
     </OptionComponent>
     <OptionComponent
       selected={option2.selected}
@@ -36,6 +38,7 @@ const SwitchComponent = ({ option1, option2, onOptionClick }: Props) => (
       role="presentation"
     >
       <Icon className={option2.iconClassName} />
+      <Text>{option2.text}</Text>
     </OptionComponent>
   </Switch>
 );

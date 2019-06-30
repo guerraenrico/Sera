@@ -4,32 +4,57 @@ import { switchColors } from "~/styles/colors";
 import { commonSizes } from "~/styles/sizes";
 
 export const Switch = styled.div`
-  width: 100px;
-  background-color: ${switchColors.optionSelectedBackground};
+  width: 100%;
   display: inline-flex;
   justify-content: space-between;
   flex-direction: row;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
-  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const Option = styled.div`
   display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   transition: all 150ms ease-in-out;
   border-radius: ${commonSizes.containerBorderRadius};
+  background-color: ${props =>
+    props.selected
+      ? switchColors.optionSelectedBackground
+      : switchColors.background};
+  padding: 1.5rem;
+  margin: 2rem;
 `;
 
 export const Icon = styled.i`
-  color: ${switchColors.optionIcon};
+  color: ${switchColors.optionItem};
   font-size: 2rem;
   transition: all 150ms ease-in-out;
 
   ${Option}:hover & {
-    color: ${switchColors.optionIconHover};
+    color: ${switchColors.optionItemHover};
   }
 
   ${Option}.selected & {
-    color: ${switchColors.optionIconSelected};
+    color: ${switchColors.optionItemSelected};
+  }
+`;
+
+export const Text = styled.span`
+  color: ${switchColors.optionItem};
+  font-size: 1rem;
+  transition: all 150ms ease-in-out;
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 700;
+
+  ${Option}:hover & {
+    color: ${switchColors.optionItemHover};
+  }
+
+  ${Option}.selected & {
+    color: ${switchColors.optionItemSelected};
   }
 `;
