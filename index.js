@@ -34,7 +34,14 @@ app.get("/privacy", (req, res) => {
 });
 
 app.get("/*", (req, res) => {
-  res.sendFile(path.join(__dirname, "/client/public/index.html"));
+  res.sendFile(
+    path.join(
+      __dirname,
+      process.env.NODE_ENV !== "production"
+        ? "/client/public/index-dev.html"
+        : "/client/public/index.html"
+    )
+  );
 });
 
 (async function start() {

@@ -5,14 +5,15 @@ import { commonColors } from "~/styles/colors";
 import { inputSizes } from "~/styles/sizes";
 
 export const Input = styled.input`
+  width: 100%;
   font-family: ${fontFamily};
+  font-size: ${props => inputSizes[props.size].fontSize};
+  font-weight: 300;
   color: ${commonColors.textPrimary};
   background-color: rgba(0, 0, 0, 0);
   border: none;
   outline: none;
-  font-size: ${props => inputSizes[props.size].fontSize};
   padding: ${props => inputSizes[props.size].padding};
-  font-weight: 300;
 
   &::placeholder {
     color: ${commonColors.inputPlaceholder};
