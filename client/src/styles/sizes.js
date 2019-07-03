@@ -4,8 +4,14 @@ export const commonSizes = {
 };
 
 export const buttonIconSizes = {
-  iconFontSize: "2.5rem",
-  margin: "0 1.5rem"
+  small: {
+    fontSize: "0.9rem",
+    margin: "0 1.5rem"
+  },
+  normal: {
+    fontSize: "2.5rem",
+    margin: "0 1.5rem"
+  }
 };
 
 export const inputSizes = {

@@ -8,11 +8,11 @@ export const Button = styled.button`
   outline: none;
   border: none;
   cursor: pointer;
-  margin: ${buttonIconSizes.margin};
+  margin: ${props => buttonIconSizes[props.size].margin};
 `;
 
 export const Icon = styled.i`
-  font-size: ${buttonIconSizes.iconFontSize};
+  font-size: ${props => buttonIconSizes[props.size].fontSize};
   color: ${buttonIconColors.icon};
 
   ${Button}:hover & {

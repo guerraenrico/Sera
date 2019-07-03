@@ -35,18 +35,19 @@ export const ContentInput = styled.div`
   position: relative;
   display: flex;
   flex: 1;
-  flex-direction: column;
+  flex-direction: row;
   margin: 0;
 `;
 
 export const Input = styled.input`
   font-family: ${fontFamily};
-  color: ${commonColors.textPrimary};
+  flex: 1;
   background-color: rgba(0, 0, 0, 0);
   border: none;
   outline: none;
   font-size: 2.8em;
   font-weight: 700;
+  color: ${commonColors.textPrimary};
 
   &::placeholder {
     color: ${commonColors.inputPlaceholder};

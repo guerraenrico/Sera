@@ -5,6 +5,8 @@ import { debounce } from "lodash";
 import { TransitionGroup } from "react-transition-group";
 
 import Resize from "~/components/anims/Resize";
+import ButtonIcon from "~/components/ButtonIcon";
+
 import {
   searchCategory,
   setSelectedCategory,
@@ -105,6 +107,17 @@ class SearchComponent extends Component<Props, State> {
     this.setState({ suggestionsVisible: false, categories: [] });
   };
 
+  handleOnInputKeyDown = event => {
+    if (event.key === "Enter") {
+      this.handleOnSearchPerTaskTitle();
+      this.handleOnInputBlur();
+    }
+    if (event.key === "Escape") {
+      this.handleOnSearchTextClear();
+      this.handleOnInputBlur();
+    }
+  };
+
   handleOnCategoryClick = category => {
     const { doSetSelectedCategory } = this.props;
     this.setState({ text: "" });
@@ -119,6 +132,9 @@ class SearchComponent extends Component<Props, State> {
   handleOnSearchPerTaskTitle = () => {
     const { text } = this.state;
     const { doSetTaskSearchText } = this.props;
+    if (text === "") {
+      return;
+    }
     doSetTaskSearchText(text);
   };
 
@@ -154,7 +170,15 @@ class SearchComponent extends Component<Props, State> {
           placeholder="Type to search"
           onChange={e => this.handleOnTextChange(e)}
           onBlur={this.handleOnInputBlur}
+          onKeyDown={this.handleOnInputKeyDown}
         />
+        {text !== "" && (
+          <ButtonIcon
+            onClick={this.handleOnSearchTextClear}
+            iconClassName="icon-delete"
+            size="small"
+          />
+        )}
       </ContentInput>
     );
     if (selectedCategory !== undefined && selectedCategory !== null) {
