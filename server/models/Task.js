@@ -148,6 +148,30 @@ const UpdateAsync = async (id, fields) => {
     );
 };
 
+const SearchAsync = async (userId, text) => {
+  const db = database.instance();
+  let regex = "";
+  const words = text.split(" ");
+  words.forEach(word => {
+    regex = `${regex}(.*${word})`;
+  });
+  const filter = {
+    $and: [
+      { [Schema.fields.userId]: userId },
+      {
+        $or: [
+          { [Schema.fields.title]: { $regex: regex, $options: "i" } },
+          { [Schema.fields.description]: { $regex: regex, $options: "i" } }
+          // { [Schema.fields.description]: { $regex: `${regex}`, $options: "i" } }
+        ]
+      }
+    ]
+  };
+  const query = db.collection(Schema.name).find(filter);
+  const categoriesDocs = await query.toArray();
+  return CreateFromDocuments(categoriesDocs);
+};
+
 module.exports = {
   Schema,
   CreateFromBodyRequest,
@@ -158,5 +182,6 @@ module.exports = {
   GetAsync,
   InsertAsync,
   DeleteAsync,
-  UpdateAsync
+  UpdateAsync,
+  SearchAsync
 };

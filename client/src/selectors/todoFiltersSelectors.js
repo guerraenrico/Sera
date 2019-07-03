@@ -4,6 +4,7 @@ export const isFetchingCategoriesFilter = state => state.todoFilters.isFetching;
 export const getTodoFilters = state => state.todoFilters;
 export const getCategoryFilter = state => state.todoFilters.category;
 export const getVisibilityFilter = state => state.todoFilters.visibility;
+export const getSearchText = state => state.searchText;
 
 export const visibilityOnlyCompleted = createSelector(
   getVisibilityFilter,

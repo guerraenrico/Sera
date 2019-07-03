@@ -79,3 +79,10 @@ export const Suggestions = styled.div`
     visibility: hidden;
   }
 `;
+
+export const LabelSuggestion = styled.p`
+  font-size: 1em;
+  font-weight: 400;
+  color: ${commonColors.textSecondary};
+  cursor: pointer;
+`;

@@ -4,7 +4,7 @@ import { shouldRefreshToken } from "../utils/RequestUtils";
 import { refreshAccessToken } from "./authActions";
 
 // import { queryItemsLimit } from "../constants/config";
-import { fetchTasksByCategory } from "./todoTasksActions";
+import { fetchTasksByCategory, searchTask } from "./todoTasksActions";
 import { showMessageError } from "./messageActions";
 import {
   getSelectedCategoryId,
@@ -21,11 +21,14 @@ import type {
 import type { Category } from "../models/category";
 import type { ThunkAction } from "../reducers";
 
-const fetchTasks = (state): ThunkAction =>
-  fetchTasksByCategory(
-    getSelectedCategoryId(state),
-    visibilityOnlyCompleted(state)
+const fetchTasks = (): ThunkAction => (dispatch, getState) => {
+  dispatch(
+    fetchTasksByCategory(
+      getSelectedCategoryId(getState()),
+      visibilityOnlyCompleted(getState())
+    )
   );
+};
 
 const selectCategory = (category: Category): SelectCategoryAction => ({
   type: "SELECT_CATEGORY",
@@ -41,6 +44,11 @@ const switchVisibilityFilter = (
 ): SwitchVisibilityFilterAction => ({
   type: "SWITCH_VISIBILITY_FILTER",
   visibility
+});
+
+const setSearchText = (searchText: String) => ({
+  type: "SET_SEACH_TEXT",
+  searchText
 });
 
 // export const fetchAllCategories = (
@@ -183,26 +191,31 @@ export const searchCategory = (
   }
 };
 
-export const changeVisibility = (visibility: Visibility): ThunkAction => (
-  dispatch,
-  getState
-) => {
+export const changeVisibility = (
+  visibility: Visibility
+): ThunkAction => dispatch => {
   dispatch(switchVisibilityFilter(visibility));
-  return dispatch(fetchTasks(getState()));
+  return dispatch(fetchTasks());
 };
 
-export const setSelectedCategory = (category: Category): ThunkAction => (
-  dispatch,
-  getState
-) => {
+export const setSelectedCategory = (
+  category: Category
+): ThunkAction => dispatch => {
   dispatch(selectCategory(category));
-  dispatch(fetchTasks(getState()));
+  dispatch(fetchTasks());
 };
 
-export const cleanSelectedCategory = (): ThunkAction => (
-  dispatch,
-  getState
-) => {
+export const cleanSelectedCategory = (): ThunkAction => dispatch => {
   dispatch(clearSelectedCategory());
-  dispatch(fetchTasks(getState()));
+  dispatch(fetchTasks());
+};
+
+export const setTaskSearchText = (text: string): ThunkAction => dispatch => {
+  dispatch(setSearchText(text));
+  dispatch(searchTask(text));
+};
+
+export const cleanTaskSearchText = (): ThunkAction => dispatch => {
+  dispatch(setSearchText("text"));
+  dispatch(fetchTasks());
 };

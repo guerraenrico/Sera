@@ -291,4 +291,33 @@ router.patch("/toggle-complete", (req, res) =>
   })
 );
 
+router.get("/search", (req, res) =>
+  needAuth(req, res, async session => {
+    const text = req.query.text || "";
+    const completed = req.query.completed === "true";
+    try {
+      const itemOrder = await ItemOrder.GetAsync(
+        session.userId,
+        Task.Schema.name,
+        { completed }
+      );
+
+      const tasks = await Task.SearchAsync(session.userId, text);
+
+      let orederedTasks = [];
+      itemOrder.orderedIds.forEach(id => {
+        const tf = tasks.find(t => t.id.toString() === id);
+        if (tf !== undefined && tf !== null) {
+          orederedTasks = [...orederedTasks, tf];
+        }
+      });
+
+      handleResponse(res, orederedTasks, session.accessToken);
+    } catch (e) {
+      console.log("err", e.message);
+      handleError(res, ApiErrors.ErrorReadTask(e), session.accessToken);
+    }
+  })
+);
+
 module.exports = router;

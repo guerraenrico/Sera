@@ -8,9 +8,14 @@ import Resize from "~/components/anims/Resize";
 import {
   searchCategory,
   setSelectedCategory,
-  cleanSelectedCategory
+  cleanSelectedCategory,
+  setTaskSearchText,
+  cleanTaskSearchText
 } from "~/actions/todoFiltersActions";
-import { getCategoryFilter } from "~/selectors/todoFiltersSelectors";
+import {
+  getCategoryFilter,
+  getSearchText
+} from "~/selectors/todoFiltersSelectors";
 
 import CategoryComponent from "../Category";
 import type { Category } from "~/models/category";
@@ -23,16 +28,20 @@ import {
   Input,
   Suggestions,
   Suggestion,
-  itemAnimationStyle
+  itemAnimationStyle,
+  LabelSuggestion
 } from "./style";
 
 const waitTime = 300;
 
 type Props = {
   +selectedCategory?: Category,
+  +searchText?: String,
   +doSearchCategory: (string, (Array<Category>) => void) => void,
   +doSetSelectedCategory: Category => void,
-  +doCleanSelectedCategory: () => void
+  +doCleanSelectedCategory: () => void,
+  +doSetTaskSearchText: String => void,
+  +doCleanTaskSearchText: () => void
 };
 
 type State = {
@@ -44,11 +53,12 @@ type State = {
 
 class SearchComponent extends Component<Props, State> {
   static defaultProps = {
-    selectedCategory: undefined
+    selectedCategory: undefined,
+    searchText: undefined
   };
 
   state = {
-    text: "",
+    text: this.props.searchText || "", // eslint-disable-line
     categories: [],
     suggestionsVisible: false,
     inputHeight: 0
@@ -106,15 +116,31 @@ class SearchComponent extends Component<Props, State> {
     doCleanSelectedCategory();
   };
 
+  handleOnSearchPerTaskTitle = () => {
+    const { text } = this.state;
+    const { doSetTaskSearchText } = this.props;
+    doSetTaskSearchText(text);
+  };
+
+  handleOnSearchTextClear = () => {
+    const { doCleanTaskSearchText } = this.props;
+    this.setState({ text: "" });
+    doCleanTaskSearchText();
+  };
+
   searchCategories = () => {
     const { text } = this.state;
-    const { doSearchCategory } = this.props;
+    const { doSearchCategory, doCleanTaskSearchText } = this.props;
     if (text === "") {
       this.setState({ suggestionsVisible: false, categories: [] });
+      doCleanTaskSearchText();
       return;
     }
     doSearchCategory(text, categories => {
-      this.setState({ suggestionsVisible: true, categories });
+      this.setState({
+        suggestionsVisible: true,
+        categories
+      });
     });
   };
 
@@ -150,6 +176,11 @@ class SearchComponent extends Component<Props, State> {
           className={`${suggestionsVisible ? "" : "empty"}`}
         >
           <TransitionGroup>
+            <Resize key="task-description" style={itemAnimationStyle(false)}>
+              <LabelSuggestion onClick={this.handleOnSearchPerTaskTitle}>
+                {`Search "${text}" in task's description`}
+              </LabelSuggestion>
+            </Resize>
             {categories.map((category, i) => (
               <Resize
                 key={category.id}
@@ -172,14 +203,17 @@ class SearchComponent extends Component<Props, State> {
 }
 
 const mapStateToProps = state => ({
-  selectedCategory: getCategoryFilter(state)
+  selectedCategory: getCategoryFilter(state),
+  searchText: getSearchText(state)
 });
 
 const mapDispatchToProps = dispatch => ({
   doSearchCategory: (text, callback) =>
     dispatch(searchCategory(text, callback)),
   doSetSelectedCategory: category => dispatch(setSelectedCategory(category)),
-  doCleanSelectedCategory: () => dispatch(cleanSelectedCategory())
+  doCleanSelectedCategory: () => dispatch(cleanSelectedCategory()),
+  doSetTaskSearchText: text => dispatch(setTaskSearchText(text)),
+  doCleanTaskSearchText: () => dispatch(cleanTaskSearchText())
 });
 
 export default connect(

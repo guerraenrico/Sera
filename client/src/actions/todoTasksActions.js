@@ -15,6 +15,7 @@ import type {
   UpdateTaskLocalAction,
   ChangeTaskOrderLocalAction
 } from "../reducers/todoTasks";
+import { visibilityOnlyCompleted } from "../selectors/todoFiltersSelectors";
 
 import type { Task } from "../models/task";
 import type { Category } from "../models/category";
@@ -363,5 +364,44 @@ export const changeTaskOrder = (
   } catch (error) {
     dispatch(showMessageError(error.message));
     return { success: false };
+  }
+};
+
+export const searchTask = (text: string): ThunkAction => async (
+  dispatch,
+  getState
+) => {
+  const { accessToken, guest } = getState().auth;
+  const completed = visibilityOnlyCompleted(getState());
+  if (guest) {
+    dispatch(showMessageError("Operation not available in guest mode"));
+    return;
+  }
+  try {
+    // All matching task are return when searching
+    dispatch(requestFetchTasks(-1, 0));
+    const response = await callApi(
+      "tasks/search",
+      { text, completed },
+      Methods.GET,
+      accessToken
+    );
+    if (response.success) {
+      const tasks = response.data.map(task => ({
+        ...task,
+        completedAt: task.completedAt ? new Date(task.completedAt) : undefined,
+        todoWithin: task.todoWithin ? new Date(task.todoWithin) : undefined
+      }));
+      dispatch(receiveFetchTasks(tasks));
+      return;
+    }
+    if (shouldRefreshToken(response)) {
+      await dispatch(refreshAccessToken());
+      dispatch(searchTask(text));
+      return;
+    }
+    dispatch(showMessageError(response.error.message));
+  } catch (error) {
+    dispatch(showMessageError(error.message));
   }
 };

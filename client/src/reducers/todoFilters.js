@@ -18,6 +18,10 @@ export type SwitchVisibilityFilterAction = {
   type: "SWITCH_VISIBILITY_FILTER",
   visibility: Visibility
 };
+export type SetSearchText = {
+  type: "SET_SEARCH_TEXT",
+  searchText: String
+};
 
 export type TodoFiltersAction =
   | SelectCategoryAction
@@ -26,7 +30,7 @@ export type TodoFiltersAction =
 
 export type TodoFiltersState = {
   +category?: Category,
-  +text?: string,
+  +searchText?: string,
   +visibility: Visibility
 };
 
@@ -39,7 +43,7 @@ const setVisibility = (current: Visibility, next: Visibility): Visibility => {
 
 const initialState: TodoFiltersState = {
   category: undefined,
-  text: undefined,
+  searchText: undefined,
   visibility: "ONLY_TO_COMPLETE"
 };
 
@@ -62,6 +66,11 @@ const todoFilters = (
       return {
         ...state,
         visibility: setVisibility(state.visibility, action.visibility)
+      };
+    case "SET_SEARCH_TEXT":
+      return {
+        ...state,
+        searchText: action.searchText
       };
     default:
       return state;

@@ -4,7 +4,12 @@
     "browser": true
   },
   "parser": "babel-eslint",
-  "plugins": ["prettier", "react-hooks"],
+  "plugins": ["react", "prettier", "react-hooks"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
   "rules": {
     "no-case-declarations": "off",
     "prettier/prettier": "error",
@@ -13,6 +18,9 @@
     "react-hooks/exhaustive-deps": "warn"
   },
   "settings": {
+    "react": {
+      "version": "detect"
+    },
     "import/resolver": {
       "babel-module": {
         "alias": {
