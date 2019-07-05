@@ -2,7 +2,7 @@ export const commonColors = {
   accentLight: "#31D8C8",
   accent: "#1EBCAD",
   textPrimary: "#fff",
-  textSecondary: "#a0acba",
+  textSecondary: "#CAD2DC",
   textThird: "#475b75",
   background: "#25292E",
   backgroundDark: "#1F2226",

@@ -56,7 +56,7 @@ export const Title = styled.p`
   flex-grow: 2;
   font-size: ${taskSizes.titleFontSize};
   color: ${commonColors.textSecondary};
-  font-weight: 300;
+  font-weight: 400;
   padding: 0;
   cursor: pointer;
   align-self: center;
