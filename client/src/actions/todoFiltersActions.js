@@ -15,7 +15,8 @@ import type {
   SelectCategoryAction,
   ClearSelectedCategoryAction,
   SwitchVisibilityFilterAction,
-  Visibility
+  Visibility,
+  SetSearchText
 } from "../reducers/todoFilters";
 
 import type { Category } from "../models/category";
@@ -46,7 +47,7 @@ const switchVisibilityFilter = (
   visibility
 });
 
-const setSearchText = (searchText: String) => ({
+const setSearchText = (searchText: string): SetSearchText => ({
   type: "SET_SEACH_TEXT",
   searchText
 });

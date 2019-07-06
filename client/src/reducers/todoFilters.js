@@ -20,13 +20,14 @@ export type SwitchVisibilityFilterAction = {
 };
 export type SetSearchText = {
   type: "SET_SEARCH_TEXT",
-  searchText: String
+  searchText: string
 };
 
 export type TodoFiltersAction =
   | SelectCategoryAction
   | ClearSelectedCategoryAction
-  | SwitchVisibilityFilterAction;
+  | SwitchVisibilityFilterAction
+  | SetSearchText;
 
 export type TodoFiltersState = {
   +category?: Category,

@@ -7,70 +7,18 @@ import {
   Route,
   Redirect
 } from "react-router-dom";
-import Loadable from "react-loadable";
 import { connect } from "react-redux";
 
 import ReplaceAnim from "~/components/anims/ReplaceAnim";
-import LoaderLinear from "~/components/LoaderLinear";
 import LoaderTip from "~/components/LoaderTip";
-import Drawer from "~/components/Drawer";
-import Page404 from "../Page404";
+
 import * as paths from "~/constants/paths";
+import { routes } from "~/navigation";
 
 import * as authActions from "~/actions/authActions";
 import * as authSelector from "~/selectors/authSelector";
 
 import { Container, FlexContainer } from "./style";
-
-const LoginContainer = Loadable({
-  loader: () => import(/* webpackChunkName: 'login' */ "../Login"),
-  loading: LoaderLinear
-});
-
-const TodosContainer = Loadable({
-  loader: () => import(/* webpackChunkName: 'todos' */ "../Todos"),
-  loading: LoaderLinear
-});
-
-const GoalsContainer = Loadable({
-  loader: () => import(/* webpackChunkName: 'goals' */ "../Goals"),
-  loading: LoaderLinear
-});
-
-const routes = [
-  {
-    key: 0,
-    path: paths.LOGIN,
-    Drawer: undefined,
-    Main: LoginContainer,
-    needAuth: false,
-    redirectTo: paths.TODOS
-  },
-  {
-    key: 1,
-    path: paths.TODOS,
-    Drawer,
-    Main: TodosContainer,
-    needAuth: true,
-    redirectTo: paths.LOGIN
-  },
-  {
-    key: 2,
-    path: paths.GOALS,
-    Drawer,
-    Main: GoalsContainer,
-    needAuth: true,
-    redirectTo: paths.LOGIN
-  },
-  {
-    key: 404,
-    path: "/*",
-    Drawer: undefined,
-    Main: Page404,
-    needAuth: false,
-    redirectTo: paths.LOGIN
-  }
-];
 
 type Props = {
   initAuth: () => void,

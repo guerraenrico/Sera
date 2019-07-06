@@ -38,11 +38,11 @@ const waitTime = 300;
 
 type Props = {
   +selectedCategory?: Category,
-  +searchText?: String,
+  +searchText?: string,
   +doSearchCategory: (string, (Array<Category>) => void) => void,
   +doSetSelectedCategory: Category => void,
   +doCleanSelectedCategory: () => void,
-  +doSetTaskSearchText: String => void,
+  +doSetTaskSearchText: string => void,
   +doCleanTaskSearchText: () => void
 };
 
@@ -232,11 +232,11 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  doSearchCategory: (text, callback) =>
+  doSearchCategory: (text: string, callback) =>
     dispatch(searchCategory(text, callback)),
   doSetSelectedCategory: category => dispatch(setSelectedCategory(category)),
   doCleanSelectedCategory: () => dispatch(cleanSelectedCategory()),
-  doSetTaskSearchText: text => dispatch(setTaskSearchText(text)),
+  doSetTaskSearchText: (text: String) => dispatch(setTaskSearchText(text)),
   doCleanTaskSearchText: () => dispatch(cleanTaskSearchText())
 });
 
