@@ -3,22 +3,23 @@ import React from "react";
 import { connect } from "react-redux";
 
 import LoaderLinear from "~/components/LoaderLinear";
-import ButtonIcon from "~/components/ButtonIcon";
 import Snackbar from "~/components/Snackbar";
+
+import Result from "./components/Result";
 
 import * as messageActions from "~/actions/messageActions";
 import * as commonSelectors from "~/selectors/commonSelectors";
 
 import type { MessageState } from "~/reducers/message";
 
-import * as paths from "~/constants/paths";
+import Strings from "~/styles/strings";
 
-import { ContentApp, MainTopBar, ContentTopBarActions } from "./style";
+import { ContentApp, MainTopBar, Container, ContentSwitches } from "./style";
 
 type Props = {
-  message: MessageState,
-  hideMessage: () => void,
-  showLoading: boolean
+  +message: MessageState,
+  +hideMessage: () => void,
+  +showLoading: boolean
 };
 
 type State = {};
@@ -32,8 +33,14 @@ class Results extends React.PureComponent<Props, State> {
       <ContentApp>
         <LoaderLinear show={showLoading} />
         <MainTopBar>
-          <p>In development</p>
+          <ContentSwitches>
+            <p>In development</p>
+          </ContentSwitches>
         </MainTopBar>
+        <Container>
+          <Result title={Strings().labelTasks} first />
+          <Result title={Strings().labelGoals} />
+        </Container>
 
         <Snackbar
           show={message.show}

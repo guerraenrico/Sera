@@ -4,12 +4,9 @@ import { connect } from "react-redux";
 
 import LoaderLinear from "~/components/LoaderLinear";
 import ButtonIcon from "~/components/ButtonIcon";
-// import CategoriesFilter from "../../components/todo/Category/CategoriesFilter";
-// import VisibilityFilter from "../../components/todo/visibility/VisibilityFilters";
 import Search from "./components/Search";
 import Tasks from "./components/Tasks";
 
-// import DialogAdd from "../../components/todo/dialogAdd/DialogAdd";
 import Filters from "./components/Filters";
 import Snackbar from "~/components/Snackbar";
 

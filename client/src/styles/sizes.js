@@ -85,3 +85,8 @@ export const categoryAutocompleteSizes = {
   suggestionMargin: "1rem",
   suggestionsPadding: "1rem"
 };
+
+export const resultItemSize = {
+  padding: "2.5rem",
+  innerMargin: "2.5rem"
+};

@@ -14,7 +14,15 @@ export const MainTopBar = styled.div`
   padding: ${commonSizes.containerMargin} 0;
 `;
 
-export const ContentTopBarActions = styled.div`
+export const ContentSwitches = styled.div`
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const Container = styled.div`
   position: relative;
   display: flex;
   flex-direction: row;
