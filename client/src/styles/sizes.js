@@ -87,6 +87,8 @@ export const categoryAutocompleteSizes = {
 };
 
 export const resultItemSize = {
+  title: "3rem",
   padding: "2.5rem",
-  innerMargin: "2.5rem"
+  innerMargin: "2.5rem",
+  captionPadding: "1rem 3rem 1rem 3rem"
 };

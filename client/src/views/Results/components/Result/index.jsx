@@ -3,7 +3,16 @@ import React from "react";
 
 import ChartProgress from "~/components/ChartProgress";
 
-import { Content, Title, ContentChart } from "./style";
+import {
+  Content,
+  Title,
+  ContentChart,
+  ContentCaption,
+  Caption,
+  CaptionText,
+  SmallText,
+  ContainerStats
+} from "./style";
 
 type Props = {
   +title: string,
@@ -13,9 +22,20 @@ type Props = {
 const Result = ({ title, first }: Props) => (
   <Content first={first}>
     <Title>{title}</Title>
-    <ContentChart>
-      <ChartProgress progress={70} />
-    </ContentChart>
+    <ContainerStats>
+      <ContentChart>
+        <ChartProgress progress={70} />
+      </ContentChart>
+      <ContentCaption>
+        <Caption>
+          <CaptionText>
+            <span>50</span>
+            <SmallText> of </SmallText>
+            <span>100</span>
+          </CaptionText>
+        </Caption>
+      </ContentCaption>
+    </ContainerStats>
   </Content>
 );
 
