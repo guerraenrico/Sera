@@ -16,6 +16,7 @@ export const MainTopBar = styled.div`
 
 export const ContentSwitches = styled.div`
   position: relative;
+  width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;

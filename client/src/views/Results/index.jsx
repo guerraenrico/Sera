@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import LoaderLinear from "~/components/LoaderLinear";
 import Snackbar from "~/components/Snackbar";
+import Switch from "~/components/Switch";
 
 import Result from "./components/Result";
 
@@ -27,6 +28,8 @@ type State = {};
 class Results extends React.PureComponent<Props, State> {
   state = {};
 
+  onSwitch = () => {};
+
   render() {
     const { message, hideMessage, showLoading } = this.props;
     return (
@@ -34,7 +37,27 @@ class Results extends React.PureComponent<Props, State> {
         <LoaderLinear show={showLoading} />
         <MainTopBar>
           <ContentSwitches>
-            <p>In development</p>
+            <Switch
+              options={[
+                {
+                  name: "WEEK",
+                  selected: false,
+                  text: Strings().filterResultsWeek
+                },
+                {
+                  name: "MONTH",
+                  selected: true,
+                  text: Strings().filterResultsMonth
+                },
+                {
+                  name: "YEAR",
+                  selected: false,
+                  text: Strings().filterResultsYear
+                }
+              ]}
+              onOptionClick={this.onSwitch}
+              role="presentation"
+            />
           </ContentSwitches>
         </MainTopBar>
         <Container>

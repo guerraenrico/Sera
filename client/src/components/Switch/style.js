@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { switchColors } from "~/styles/colors";
-import { commonSizes } from "~/styles/sizes";
+import { commonSizes, optionSizes } from "~/styles/sizes";
 
 export const Switch = styled.div`
   width: 100%;
@@ -24,14 +24,15 @@ export const Option = styled.div`
     props.selected
       ? switchColors.optionSelectedBackground
       : switchColors.background};
-  padding: 1.5rem;
-  margin: 2rem;
+  padding: ${optionSizes.padding};
+  margin: ${optionSizes.margin};
 `;
 
 export const Icon = styled.i`
   color: ${switchColors.optionItem};
-  font-size: 2rem;
+  font-size: ${optionSizes.iconFontSize};
   transition: all 150ms ease-in-out;
+  margin-bottom: 1rem;
 
   ${Option}:hover & {
     color: ${switchColors.optionItemHover};
@@ -44,10 +45,9 @@ export const Icon = styled.i`
 
 export const Text = styled.span`
   color: ${switchColors.optionItem};
-  font-size: 1rem;
+  font-size: ${optionSizes.textFontSize};
   transition: all 150ms ease-in-out;
   text-align: center;
-  margin-top: 1rem;
   font-weight: 700;
 
   ${Option}:hover & {

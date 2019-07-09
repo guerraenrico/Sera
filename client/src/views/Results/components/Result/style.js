@@ -61,12 +61,12 @@ export const Caption = styled.div`
 
 export const CaptionText = styled.p`
   color: #fff;
-  font-size: 3rem;
+  font-size: ${resultItemSize.captionTextSize};
   font-weight: 700;
 `;
 
 export const SmallText = styled.span`
   color: #fff;
-  font-size: 2rem;
+  font-size: ${resultItemSize.smallTextSize};
   font-weight: 700;
 `;

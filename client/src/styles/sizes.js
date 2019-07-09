@@ -51,6 +51,13 @@ export const loaderTipSizes = {
   h3FontSize: "1.1em"
 };
 
+export const optionSizes = {
+  padding: "2.5rem",
+  margin: "2rem",
+  iconFontSize: "2rem",
+  textFontSize: "1.4rem"
+};
+
 export const page404Sizes = {
   titleFontSize: "12em",
   descriptionFontSize: "1.2em"
@@ -87,8 +94,10 @@ export const categoryAutocompleteSizes = {
 };
 
 export const resultItemSize = {
-  title: "3rem",
+  title: "2.5rem",
   padding: "2.5rem",
   innerMargin: "2.5rem",
-  captionPadding: "1rem 3rem 1rem 3rem"
+  captionPadding: "1rem 3.5rem 1rem 3.5rem",
+  captionTextSize: "2.5rem",
+  smallTextSize: "1.5rem"
 };

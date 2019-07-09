@@ -2,7 +2,7 @@
 import React from "react";
 import Switch from "~/components/Switch";
 import { Container } from "./style";
-import strings from "~/styles/strings";
+import Strings from "~/styles/strings";
 
 type Props = {
   selectedFilter: string,
@@ -12,21 +12,24 @@ type Props = {
 const VisibilityComponent = ({ selectedFilter, onSwitch }: Props) => (
   <Container>
     <Switch
-      option1={{
-        name: "ONLY_TO_COMPLETE",
-        selected:
-          selectedFilter === "ONLY_TO_COMPLETE" ||
-          selectedFilter === "ALL_TODOS",
-        iconClassName: "icon-circle-border",
-        text: strings().filterVisibilityToComplete
-      }}
-      option2={{
-        name: "ONLY_COMPLETED",
-        selected:
-          selectedFilter === "ONLY_COMPLETED" || selectedFilter === "ALL_TODOS",
-        iconClassName: "icon-circle",
-        text: strings().filterVisibilityCompleted
-      }}
+      options={[
+        {
+          name: "ONLY_TO_COMPLETE",
+          selected:
+            selectedFilter === "ONLY_TO_COMPLETE" ||
+            selectedFilter === "ALL_TODOS",
+          iconClassName: "icon-circle-border",
+          text: Strings().filterVisibilityToComplete
+        },
+        {
+          name: "ONLY_COMPLETED",
+          selected:
+            selectedFilter === "ONLY_COMPLETED" ||
+            selectedFilter === "ALL_TODOS",
+          iconClassName: "icon-circle",
+          text: Strings().filterVisibilityCompleted
+        }
+      ]}
       onOptionClick={onSwitch}
       role="presentation"
     />
