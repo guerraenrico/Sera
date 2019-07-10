@@ -48,7 +48,7 @@ const switchVisibilityFilter = (
 });
 
 const setSearchText = (searchText: string): SetSearchText => ({
-  type: "SET_SEACH_TEXT",
+  type: "SET_SEARCH_TEXT",
   searchText
 });
 

@@ -1,11 +1,10 @@
 ﻿// @flow
 import type { Category } from "../models/category";
 
-export type AllTodo = "ALL_TODOS";
 export type OnlyCompleted = "ONLY_COMPLETED";
 export type OnlyToComplete = "ONLY_TO_COMPLETE";
 
-export type Visibility = AllTodo | OnlyCompleted | OnlyToComplete;
+export type Visibility = OnlyCompleted | OnlyToComplete;
 
 export type SelectCategoryAction = {
   type: "SELECT_CATEGORY",
