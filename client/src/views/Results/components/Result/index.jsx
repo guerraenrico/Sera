@@ -16,7 +16,7 @@ import {
 
 type Props = {
   +title: string,
-  +first: boolean
+  +first?: boolean
 };
 
 const Result = ({ title, first }: Props) => (
@@ -38,5 +38,9 @@ const Result = ({ title, first }: Props) => (
     </ContainerStats>
   </Content>
 );
+
+Result.defaultProps = {
+  first: false
+};
 
 export default Result;

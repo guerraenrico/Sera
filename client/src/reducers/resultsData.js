@@ -2,9 +2,7 @@
 import type { ResultsData } from "../models/resultsData";
 
 export type RequestFetchResultsAction = {
-  type: "REQUEST_FETCH_RESULTS",
-  limit: number,
-  skip: number
+  type: "REQUEST_FETCH_RESULTS"
 };
 export type ReceiveFetchResultsAction = {
   type: "RECEIVE_FETCH_RESULTS",

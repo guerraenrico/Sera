@@ -4,19 +4,34 @@ import auth from "./auth";
 import todoFilters from "./todoFilters";
 import todoTasks from "./todoTasks";
 import message from "./message";
+import resultsFilters from "./resultsFilters";
+import resultsData from "./resultsData";
 
 import type { AuthAction, AuthState } from "./auth";
 import type { TodoFiltersAction, TodoFiltersState } from "./todoFilters";
 import type { TodoTasksAction, TodoTasksState } from "./todoTasks";
 import type { MessageAction, MessageState } from "./message";
+import type {
+  ResultsFiltersAction,
+  ResultsFiltersState
+} from "./resultsFilters";
+import type { ResultsAction, ResultsState } from "./resultsData";
 
 type State = {
   auth: AuthState,
   todoFilters: TodoFiltersState,
   todoTasks: TodoTasksState,
-  message: MessageState
+  message: MessageState,
+  resultsFilters: ResultsFiltersState,
+  resultsData: ResultsState
 };
-type Action = AuthAction | TodoFiltersAction | TodoTasksAction | MessageAction;
+type Action =
+  | AuthAction
+  | TodoFiltersAction
+  | TodoTasksAction
+  | MessageAction
+  | ResultsFiltersAction
+  | ResultsAction;
 
 export type GetState = () => State;
 export type PromiseAction = Promise<Action>;
@@ -30,7 +45,9 @@ const reducersTodoApp = combineReducers({
   auth,
   todoFilters,
   todoTasks,
-  message
+  message,
+  resultsFilters,
+  resultsData
 });
 
 export default reducersTodoApp;

@@ -9,9 +9,12 @@ import Switch from "~/components/Switch";
 import Result from "./components/Result";
 
 import * as messageActions from "~/actions/messageActions";
+import * as resultsFiltersActions from "~/actions/resultsFiltersActions";
 import * as commonSelectors from "~/selectors/commonSelectors";
+import * as resultsFiltersSelectors from "~/selectors/resultsFiltersSelectors";
 
 import type { MessageState } from "~/reducers/message";
+import type { TimeInterval } from "~/reducers/resultsFilters";
 
 import Strings from "~/styles/strings";
 
@@ -20,7 +23,9 @@ import { ContentApp, MainTopBar, Container, ContentSwitches } from "./style";
 type Props = {
   +message: MessageState,
   +hideMessage: () => void,
-  +showLoading: boolean
+  +showLoading: boolean,
+  +timeInterval: TimeInterval,
+  +dispatchChangeTimeInterval: TimeInterval => {}
 };
 
 type State = {};
@@ -28,10 +33,13 @@ type State = {};
 class Results extends React.PureComponent<Props, State> {
   state = {};
 
-  onSwitch = () => {};
+  onSwitch = timeInterval => {
+    const { dispatchChangeTimeInterval } = this.props;
+    dispatchChangeTimeInterval(timeInterval);
+  };
 
   render() {
-    const { message, hideMessage, showLoading } = this.props;
+    const { message, hideMessage, showLoading, timeInterval } = this.props;
     return (
       <ContentApp>
         <LoaderLinear show={showLoading} />
@@ -41,17 +49,17 @@ class Results extends React.PureComponent<Props, State> {
               options={[
                 {
                   name: "WEEK",
-                  selected: false,
+                  selected: timeInterval === "WEEK",
                   text: Strings().filterResultsWeek
                 },
                 {
                   name: "MONTH",
-                  selected: true,
+                  selected: timeInterval === "MONTH",
                   text: Strings().filterResultsMonth
                 },
                 {
                   name: "YEAR",
-                  selected: false,
+                  selected: timeInterval === "YEAR",
                   text: Strings().filterResultsYear
                 }
               ]}
@@ -78,12 +86,16 @@ class Results extends React.PureComponent<Props, State> {
 
 const mapStateToProps = state => ({
   message: state.message,
+  timeInterval: resultsFiltersSelectors.getTimeIntervalFilter(state),
   showLoading: commonSelectors.showLoading(state)
 });
 
 const mapDispatchToProps = dispatch => ({
   hideMessage: () => {
     dispatch(messageActions.hideMessage());
+  },
+  dispatchChangeTimeInterval: (timeInterval: TimeInterval) => {
+    dispatch(resultsFiltersActions.changeTimeInterval(timeInterval));
   }
 });
 
