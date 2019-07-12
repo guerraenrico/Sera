@@ -3,7 +3,7 @@ import { loaderLinearColors } from "~/styles/colors";
 
 const loading = keyframes`
   from {
-    left: -200px;
+    left: -30%;
     width: 30%;
   }
   50% {
