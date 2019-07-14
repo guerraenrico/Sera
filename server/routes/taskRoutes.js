@@ -17,16 +17,15 @@ router.get("/", (req, res) =>
   needAuth(req, res, async session => {
     // Limit results only if no filter selected
     const limit = isNullOrUndefined(req.query.limit)
-      ? parseInt(req.query.limit, 10)
-      : 0;
+      ? 0
+      : parseInt(req.query.limit, 10);
     const skip = isNullOrUndefined(req.query.skip)
-      ? parseInt(req.query.skip, 10)
-      : 0;
+      ? 0
+      : parseInt(req.query.skip, 10);
     const completed = req.query.completed === "true";
-    const categoriesId =
-      isNullOrUndefined(req.query.categoriesId) && req.query.categoriesId !== ""
-        ? req.query.categoriesId.split(",")
-        : [];
+    const categoriesId = isNullOrUndefined(req.query.categoriesId)
+      ? []
+      : req.query.categoriesId.split(",");
     try {
       const itemOrder = await ItemOrder.GetAsync(
         session.userId,
@@ -36,8 +35,8 @@ router.get("/", (req, res) =>
 
       let tasks = [];
       if (
-        (isNullOrUndefined(categoriesId) && categoriesId.length > 0) ||
-        !isNullOrUndefined(itemOrder)
+        (!isNullOrUndefined(categoriesId) && categoriesId.length > 0) ||
+        isNullOrUndefined(itemOrder)
       ) {
         tasks = await Task.GetAllAsync({
           userId: session.userId,
@@ -57,8 +56,8 @@ router.get("/", (req, res) =>
 
       // Should run only the first time
       if (
-        !isNullOrUndefined(itemOrder) ||
-        !isNullOrUndefined(itemOrder.orderedIds)
+        isNullOrUndefined(itemOrder) ||
+        isNullOrUndefined(itemOrder.orderedIds)
       ) {
         const allTasks = await Task.GetAllAsync({
           userId: session.userId,

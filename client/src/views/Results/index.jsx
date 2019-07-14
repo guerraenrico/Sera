@@ -10,6 +10,7 @@ import Result from "./components/Result";
 
 import * as messageActions from "~/actions/messageActions";
 import * as resultsFiltersActions from "~/actions/resultsFiltersActions";
+import * as resultsDataActions from "~/actions/resultsDataActions";
 
 import * as commonSelectors from "~/selectors/commonSelectors";
 import * as resultsFiltersSelectors from "~/selectors/resultsFiltersSelectors";
@@ -17,7 +18,7 @@ import * as resultsDataSelectors from "~/selectors/resultsDataSelectors";
 
 import type { MessageState } from "~/reducers/message";
 import type { TimeInterval } from "~/reducers/resultsFilters";
-import type {ResultsData} from "~/models/resultsData";
+import type { ResultsData } from "~/models/resultsData";
 
 import Strings from "~/styles/strings";
 
@@ -26,6 +27,7 @@ import { ContentApp, MainTopBar, Container, ContentSwitches } from "./style";
 type Props = {
   +message: MessageState,
   +hideMessage: () => void,
+  +fetchResults: () => void,
   +showLoading: boolean,
   +timeInterval: TimeInterval,
   +changeTimeInterval: TimeInterval => {},
@@ -37,6 +39,11 @@ type State = {};
 class Results extends React.PureComponent<Props, State> {
   state = {};
 
+  componentDidMount() {
+    const { fetchResults } = this.props;
+    fetchResults();
+  }
+
   onSwitch = timeInterval => {
     const { changeTimeInterval } = this.props;
     changeTimeInterval(timeInterval);
@@ -44,7 +51,6 @@ class Results extends React.PureComponent<Props, State> {
 
   render() {
     const { message, hideMessage, showLoading, timeInterval, resultsData } = this.props;
-    console.log('ressss', resultsData)
     return (
       <ContentApp>
         <LoaderLinear show={showLoading} />
@@ -102,6 +108,9 @@ const mapDispatchToProps = dispatch => ({
   },
   changeTimeInterval: (timeInterval: TimeInterval) => {
     dispatch(resultsFiltersActions.changeTimeInterval(timeInterval));
+  },
+  fetchResults: () => {
+    dispatch(resultsDataActions.fetchResults());
   }
 });
 

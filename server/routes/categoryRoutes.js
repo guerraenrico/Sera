@@ -65,7 +65,7 @@ router.post("/", (req, res) =>
   needAuth(req, res, async session => {
     const { body } = req;
     const category = Category.CreateFromBodyRequest(body, session.userId);
-    if (!isNullOrUndefined(category)) {
+    if (isNullOrUndefined(category)) {
       handleError(
         res,
         ApiErrors.InvalidCategoryParameters(),
@@ -107,7 +107,7 @@ router.post("/", (req, res) =>
 router.delete("/:id", (req, res) =>
   needAuth(req, res, async session => {
     const { id } = req.params;
-    if (!isNullOrUndefined(id) || id.toString() === "") {
+    if (isNullOrUndefined(id) || id.toString() === "") {
       handleError(res, ApiErrors.InvalidCategoryId(), 400, session.accessToken);
       return;
     }

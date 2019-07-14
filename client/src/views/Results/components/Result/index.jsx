@@ -21,12 +21,19 @@ type Props = {
   +stats?: Stats
 };
 
+const getPercentage = stats => {
+  if (stats.total === 0) {
+    return 0;
+  }
+  return (stats.completed / stats.total) * 100;
+};
+
 const Result = ({ title, first, stats }: Props) => (
   <Content first={first}>
     <Title>{title}</Title>
     <ContainerStats>
       <ContentChart>
-        <ChartProgress progress={(stats.completed / stats.total) * 100} />
+        <ChartProgress progress={getPercentage(stats)} />
       </ContentChart>
       <ContentCaption>
         <Caption>

@@ -1,14 +1,14 @@
 const moment = require("moment");
 
 const currentMonthDates = () => {
-  const start = moment().startOf("isoMonth");
-  const end = moment().endOf("isoMonth");
+  const start = moment().startOf("month");
+  const end = moment().endOf("month");
   return [start.toDate(), end.toDate()];
 };
 
 const currentYearDates = () => {
-  const start = moment().startOf("isoYear");
-  const end = moment().endOf("isoYear");
+  const start = moment().startOf("year");
+  const end = moment().endOf("year");
   return [start.toDate(), end.toDate()];
 };
 
@@ -18,8 +18,11 @@ const currentWeekDates = () => {
   return [start.toDate(), end.toDate()];
 };
 
+const toISOString = date => moment(date).toISOString();
+
 module.exports = {
   currentMonthDates,
   currentYearDates,
-  currentWeekDates
+  currentWeekDates,
+  toISOString
 };

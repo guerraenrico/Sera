@@ -29,7 +29,7 @@ router.post("/google/signin/callback", async (req, res) => {
   let tokens;
   let payload;
 
-  if (!isNullOrUndefined(code) || code === "") {
+  if (isNullOrUndefined(code) || code === "") {
     handleError(res, InvalidAuthCode(), 401);
     return;
   }
@@ -71,7 +71,7 @@ router.post("/google/signin/callback", async (req, res) => {
     if (savedUser === undefined) {
       // Save user if not exists in the db
       const result = await User.InsertAsync(user);
-      if (!isNullOrUndefined(result.insertedId)) {
+      if (isNullOrUndefined(result.insertedId)) {
         handleError(res, ErrorCreateUser(), 500);
         return;
       }
@@ -88,7 +88,7 @@ router.post("/google/signin/callback", async (req, res) => {
 
   try {
     const savedSession = await Session.GetByAccessTokenAsync(accessToken);
-    if (!isNullOrUndefined(savedSession)) {
+    if (isNullOrUndefined(savedSession)) {
       const session = Session.New({
         userId: user.id.valueOf().toString(),
         accessToken,
@@ -110,7 +110,7 @@ router.post("/google/validate/token", async (req, res) => {
   try {
     const result = await getUserByToken(accessToken);
     // Check if return error
-    if (isNullOrUndefined(result.code)) {
+    if (!isNullOrUndefined(result.code)) {
       console.log("(Validate) ERROR: ", `result: ${JSON.stringify(result)}`);
       handleError(res, result, 401);
       return;
@@ -119,7 +119,7 @@ router.post("/google/validate/token", async (req, res) => {
     // Clear refresh token
     user.refreshToken = undefined;
 
-    if (!isNullOrUndefined(user) || !isNullOrUndefined(session)) {
+    if (isNullOrUndefined(user) || isNullOrUndefined(session)) {
       handleError(res, Unauthorized(), 401);
       console.log(
         "(Validate) ERROR: ",
@@ -147,7 +147,7 @@ router.post("/google/refresh/token", async (req, res) => {
   const { accessToken } = req.body;
   try {
     const newSession = await getSessionByTokenAndRefreshIfNeeded(accessToken);
-    if (!isNullOrUndefined(newSession)) {
+    if (isNullOrUndefined(newSession)) {
       console.log(
         "(Refresh) ERROR: ",
         `newSession: ${JSON.stringify(newSession)}`

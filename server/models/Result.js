@@ -4,15 +4,16 @@ const { isNullOrUndefined } = require("../utils/common");
 const {
   currentMonthDates,
   currentWeekDates,
-  currentYearDates
+  currentYearDates,
+  toISOString
 } = require("../utils/date");
 const database = require("../utils/database");
 
 const TimeInterval = {
-  MONTH: "month",
-  WEEK: "week",
-  YEAR: "year",
-  ALL: "all"
+  MONTH: "MONTH",
+  WEEK: "WEEK",
+  YEAR: "YEAR",
+  ALL: "ALL"
 };
 
 const datesRangeFromInterval = timeInterval => {
@@ -34,11 +35,11 @@ const GetTaskResults = async ({ userId, timeInterval = TimeInterval.all }) => {
   const filter = {
     $and: [
       { [Task.Schema.fields.userId]: userId },
-      isNullOrUndefined(from) && isNullOrUndefined(to)
+      !isNullOrUndefined(from) && !isNullOrUndefined(to)
         ? {
             [Task.Schema.fields.todoWithin]: {
-              ...(!isNullOrUndefined(from) && { $gte: from }),
-              ...(!isNullOrUndefined(to) && { $lt: to })
+              $gte: toISOString(from),
+              $lte: toISOString(to)
             }
           }
         : {}

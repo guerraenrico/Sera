@@ -1,5 +1,5 @@
 /* eslint dot-notation: 0 */
-
+const { isNullOrUndefined } = require("../utils/common");
 const database = require("../utils/database");
 
 const Schema = {
@@ -57,7 +57,7 @@ const GetByAccessTokenAsync = async accessToken => {
   const sessionDoc = await db
     .collection(Schema.name)
     .findOne({ [Schema.fields.accessToken]: accessToken });
-  if (sessionDoc === undefined || sessionDoc === null) {
+  if (isNullOrUndefined(sessionDoc)) {
     return undefined;
   }
   return CreateFromDocument(sessionDoc);
