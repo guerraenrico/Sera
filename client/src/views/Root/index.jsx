@@ -1,6 +1,5 @@
-// @flow
-
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import {
   BrowserRouter as Router,
   Switch,
@@ -20,22 +19,7 @@ import * as authSelector from "~/selectors/authSelector";
 
 import { Container, FlexContainer } from "./style";
 
-type Props = {
-  initAuth: () => void,
-  isAuthenticated: boolean,
-  // eslint-disable-next-line
-  isFetchingAuthentication: boolean,
-  logout: () => void
-};
-
-type State = {
-  shouldShowLoading: boolean,
-  showLoading: boolean,
-  shouldShowRoute: boolean,
-  showRoute: boolean
-};
-
-class Root extends Component<Props, State> {
+class Root extends Component {
   state = {
     shouldShowLoading: true,
     showLoading: true,
@@ -48,7 +32,7 @@ class Root extends Component<Props, State> {
     initAuth();
   }
 
-  static getDerivedStateFromProps(props: Props, state: State) {
+  static getDerivedStateFromProps(props, state) {
     if (props.isFetchingAuthentication && !state.showLoading) {
       return {
         ...state,
@@ -78,7 +62,7 @@ class Root extends Component<Props, State> {
     return null;
   }
 
-  onAnimationEnd = (node: Object, done: () => void) => {
+  onAnimationEnd = (node, done = () => {}) => {
     const handleAnimationEnd = () => {
       done();
       const { shouldShowLoading, shouldShowRoute } = this.state;
@@ -171,6 +155,13 @@ class Root extends Component<Props, State> {
     );
   }
 }
+
+Root.propTypes = {
+  initAuth: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool.isRequired,
+  isFetchingAuthentication: PropTypes.bool.isRequired,
+  logout: PropTypes.func.isRequired
+};
 
 const mapStateToProps = state => ({
   isAuthenticated: authSelector.isAuthenticated(state),

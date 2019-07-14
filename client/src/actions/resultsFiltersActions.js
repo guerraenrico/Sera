@@ -1,17 +1,6 @@
-// @flow
-
 import { fetchResults } from "./resultsDataActions";
 
-import type {
-  TimeInterval,
-  SwitchTimeIntervalAction
-} from "../reducers/resultsFilters";
-
-import type { ThunkAction } from "../reducers";
-
-const switchTimeInterval = (
-  timeInterval: TimeInterval
-): SwitchTimeIntervalAction => ({
+const switchTimeInterval = timeInterval => ({
   type: "SWITCH_TIME_INTERVAL",
   timeInterval
 });
@@ -21,9 +10,7 @@ const switchTimeInterval = (
  * match the selected interval
  * @param {TimeInterval} timeInterval new time interval
  */
-export const changeTimeInterval = (
-  timeInterval: TimeInterval
-): ThunkAction => dispatch => {
+export const changeTimeInterval = timeInterval => dispatch => {
   dispatch(switchTimeInterval(timeInterval));
   return dispatch(fetchResults());
 };

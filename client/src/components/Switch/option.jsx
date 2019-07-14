@@ -1,16 +1,9 @@
-// @flow
 import React from "react";
-import type { Node } from "react";
+import PropTypes from "prop-types";
 
 import { Option } from "./style";
 
-type Props = {
-  +selected: boolean,
-  +children: Node,
-  +onClick: () => void
-};
-
-const OptionComponent = ({ selected, children, onClick }: Props) => (
+const OptionComponent = ({ selected, children, onClick }) => (
   <Option
     className={`${selected ? "selected" : ""} `}
     onClick={onClick}
@@ -20,5 +13,11 @@ const OptionComponent = ({ selected, children, onClick }: Props) => (
     {children}
   </Option>
 );
+
+OptionComponent.propTypes = {
+  selected: PropTypes.bool.isRequired,
+  children: PropTypes.node.isRequired,
+  onClick: PropTypes.func.isRequired
+};
 
 export default OptionComponent;

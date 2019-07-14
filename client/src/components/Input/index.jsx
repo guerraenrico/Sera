@@ -1,19 +1,17 @@
-// @flow
 import React from "react";
+import PropTypes from "prop-types";
 
 import { Input } from "./style";
 
-type Small = "small";
-type Normal = "normal";
-type Large = "large";
+const Small = "small";
+const Normal = "normal";
+const Large = "large";
 
-type Props = {
-  +size?: Small | Normal | Large
+const InputComponent = ({ size, ...props }) => <Input size={size} {...props} />;
+
+InputComponent.propTypes = {
+  size: PropTypes.oneOf([Small, Normal, Large])
 };
-
-const InputComponent = ({ size, ...props }: Props) => (
-  <Input size={size} {...props} />
-);
 
 InputComponent.defaultProps = {
   size: "normal"

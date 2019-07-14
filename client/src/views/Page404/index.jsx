@@ -1,4 +1,3 @@
-// @flow
 import React from "react";
 import { ContentApp, Page404, Title, Description } from "./style";
 

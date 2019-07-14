@@ -1,15 +1,12 @@
 // @flow
 import React from "react";
+import PropTypes from "prop-types";
+
 import Switch from "~/components/Switch";
-import { Container } from "./style";
 import Strings from "~/styles/strings";
+import { Container } from "./style";
 
-type Props = {
-  selectedFilter: string,
-  onSwitch: string => void
-};
-
-const VisibilityComponent = ({ selectedFilter, onSwitch }: Props) => (
+const VisibilityComponent = ({ selectedFilter, onSwitch }) => (
   <Container>
     <Switch
       options={[
@@ -35,5 +32,10 @@ const VisibilityComponent = ({ selectedFilter, onSwitch }: Props) => (
     />
   </Container>
 );
+
+VisibilityComponent.propTypes = {
+  selectedFilter: PropTypes.string.isRequired,
+  onSwitch: PropTypes.func.isRequired
+};
 
 export default VisibilityComponent;

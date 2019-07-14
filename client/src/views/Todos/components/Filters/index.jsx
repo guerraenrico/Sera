@@ -1,5 +1,5 @@
-// @flow
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import ButtonClose from "./ButtonClose";
@@ -12,14 +12,7 @@ import DialogAnim from "~/components/anims/DialogAnim";
 
 import { Dialog, Header, Container } from "./style";
 
-type Props = {
-  open: boolean,
-  onClose: () => void,
-  selectedFilter: string,
-  onSwitch: string => void
-};
-
-const Filters = ({ onClose, open, selectedFilter, onSwitch }: Props) => {
+const Filters = ({ onClose, open, selectedFilter, onSwitch }) => {
   const handleOnSwitch = visibility => {
     onSwitch(visibility);
     onClose();
@@ -39,6 +32,13 @@ const Filters = ({ onClose, open, selectedFilter, onSwitch }: Props) => {
       </Dialog>
     </DialogAnim>
   );
+};
+
+Filters.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  selectedFilter: PropTypes.string.isRequired,
+  onSwitch: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => ({

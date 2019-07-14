@@ -1,17 +1,17 @@
-// @flow
-
 import React from "react";
+import PropTypes from "prop-types";
 import GoogleLogin from "react-google-login";
 import { connect } from "react-redux";
 
 import Snackbar from "~/components/Snackbar";
 import Button from "~/components/Button";
-import { getCurrentBaseUrl } from "~/utils/Common";
-import { SeraLogo } from "~/assets/Svgs";
 
 import * as authActions from "~/actions/authActions";
 import * as messageActions from "~/actions/messageActions";
-import type { MessageState } from "~/reducers/message";
+import { MessageType } from "~/models/message";
+
+import { getCurrentBaseUrl } from "~/utils/Common";
+import { SeraLogo } from "~/assets/Svgs";
 
 import {
   Container,
@@ -28,19 +28,12 @@ import {
   Tip
 } from "./style";
 
-type Props = {
-  message: MessageState,
-  enterAsGuest: () => void,
-  authenticateGoogleToken: string => void,
-  hideMessage: () => void
-};
-
 const Login = ({
   message,
   enterAsGuest,
   authenticateGoogleToken,
   hideMessage
-}: Props) => {
+}) => {
   const responseGoogle = response => {
     if (response.code !== undefined) {
       authenticateGoogleToken(response.code);
@@ -51,11 +44,11 @@ const Login = ({
       <ContentDeclaration>
         <Title>This is an Experimental App</Title>
         <Description>
-          Dont use to store your confidential data. This app is Highly
-          experimental and has been created only for my personal test. Entering
-          as a guest will not save any information (all data will be lost if you
-          refresh this page or close your browser) and some feature may not be
-          available
+          {`Dont use to store your confidential data. This app is Highly
+            experimental and has been created only for my personal test. Entering
+            as a guest will not save any information (all data will be lost if you
+            refresh this page or close your browser) and some feature may not be
+            available`}
         </Description>
       </ContentDeclaration>
       <LoginContainer>
@@ -97,6 +90,13 @@ const Login = ({
   );
 };
 
+Login.propTypes = {
+  message: MessageType.isRequired,
+  enterAsGuest: PropTypes.func.isRequired,
+  authenticateGoogleToken: PropTypes.func.isRequired,
+  hideMessage: PropTypes.func.isRequired
+};
+
 const mapStateToProps = state => ({
   message: state.message
 });
@@ -105,7 +105,7 @@ const mapDispatchToProps = dispatch => ({
   enterAsGuest: () => {
     dispatch(authActions.enterAsGuest());
   },
-  authenticateGoogleToken: (idToken: string) => {
+  authenticateGoogleToken: idToken => {
     dispatch(authActions.authenticateGoogleToken(idToken));
   },
   hideMessage: () => {

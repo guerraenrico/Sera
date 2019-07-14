@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { debounce } from "lodash";
 import { TransitionGroup } from "react-transition-group";
@@ -10,7 +11,6 @@ import Resize from "~/components/anims/Resize";
 import { searchCategory } from "~/actions/todoFiltersActions";
 
 import CategoryComponent from "../../Category";
-import type { Category } from "~/models/category";
 
 import {
   Container,
@@ -24,23 +24,7 @@ import {
 
 const waitTime = 300;
 
-type Props = {
-  +withMargin: boolean,
-  +doSearchCategory: (string, (Array<Category>) => void) => void,
-  +onSelectCategory: Category => void,
-  +onCreateCategory: string => void,
-  +fullAddButton: boolean
-};
-
-type State = {
-  text: string,
-  categories: Array<Category>,
-  suggestionsVisible: boolean,
-  inputHeight: number,
-  searchingCategory: boolean
-};
-
-class SearchComponent extends Component<Props, State> {
+class SearchComponent extends Component {
   state = {
     text: "",
     categories: [],
@@ -196,6 +180,14 @@ class SearchComponent extends Component<Props, State> {
     );
   }
 }
+
+SearchComponent.propTypes = {
+  withMargin: PropTypes.bool.isRequired,
+  doSearchCategory: PropTypes.func.isRequired,
+  onSelectCategory: PropTypes.func.isRequired,
+  onCreateCategory: PropTypes.func.isRequired,
+  fullAddButton: PropTypes.bool.isRequired
+};
 
 const mapDispatchToProps = dispatch => ({
   doSearchCategory: (text, callback) => dispatch(searchCategory(text, callback))

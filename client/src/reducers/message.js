@@ -1,27 +1,10 @@
-// @flow
-export type ShowMessageInfoAction = {
-  type: "SHOW_MESSAGE_INFO",
-  message: string
-};
-export type ShowMessageErrorAction = {
-  type: "SHOW_MESSAGE_ERROR",
-  message: string
-};
-export type HideMessageAction = { type: "HIDE_MESSAGE" };
-
-export type MessageAction =
-  | ShowMessageInfoAction
-  | ShowMessageErrorAction
-  | HideMessageAction;
-export type MessageState = { +show: boolean, +isError: boolean, +text: string };
-
-const initialState: MessageState = {
+const initialState = {
   show: false,
   isError: false,
   text: ""
 };
 
-const message = (state: MessageState = initialState, action: MessageAction) => {
+const message = (state = initialState, action) => {
   switch (action.type) {
     case "SHOW_MESSAGE_INFO":
       return {

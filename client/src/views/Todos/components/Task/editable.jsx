@@ -1,5 +1,5 @@
-// @flow
 import React from "react";
+import PropTypes from "prop-types";
 
 import Input from "~/components/Input";
 import Button from "~/components/Button";
@@ -7,8 +7,7 @@ import DatePicker from "~/components/DatePicker";
 
 import labels from "~/constants/labels";
 
-import type { Task } from "~/models/task";
-import type { Category } from "~/models/category";
+import { TaskType } from "~/models/task";
 
 import {
   Item,
@@ -20,30 +19,6 @@ import {
   ContentEditDescription,
   ContentEditActions
 } from "./style";
-
-export type EditableProps = {
-  +onUndo: () => void,
-  +onCreate: ({}) => void,
-  +task?: Task
-};
-
-type ControlString = {
-  text: string,
-  valid: boolean,
-  error: string
-};
-
-type ControlDate = {
-  date: Date,
-  valid: boolean,
-  error: string
-};
-
-type State = {
-  title: ControlString,
-  description: ControlString,
-  todoWithin: ControlDate
-};
 
 const initialState = {
   title: {
@@ -63,19 +38,19 @@ const initialState = {
   }
 };
 
-class EditableTaskComponent extends React.PureComponent<EditableProps, State> {
+class EditableTaskComponent extends React.PureComponent {
   static defaultProps = {
     task: undefined
   };
 
   state = initialState;
 
-  handleOnTextChange = (name: string) => (e: Object) =>
+  handleOnTextChange = name => e =>
     this.setState({
       [name]: { text: e.target.value, valid: true, error: "" }
     });
 
-  handleOnDateChange = (e: Object) => {
+  handleOnDateChange = e => {
     this.setState({
       todoWithin: { date: e.target.value, valid: true, error: "" }
     });
@@ -144,5 +119,11 @@ class EditableTaskComponent extends React.PureComponent<EditableProps, State> {
     );
   }
 }
+
+EditableTaskComponent.propTypes = {
+  onUndo: PropTypes.func.isRequired,
+  onCreate: PropTypes.func.isRequired,
+  task: TaskType
+};
 
 export default EditableTaskComponent;

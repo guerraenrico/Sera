@@ -1,21 +1,13 @@
-// @flow
-
-import type {
-  ShowMessageInfoAction,
-  ShowMessageErrorAction,
-  HideMessageAction
-} from "../reducers/message";
-
-export const showMessageInfo = (message: string): ShowMessageInfoAction => ({
+export const showMessageInfo = (message = "") => ({
   type: "SHOW_MESSAGE_INFO",
   message
 });
 
-export const showMessageError = (message: string): ShowMessageErrorAction => ({
+export const showMessageError = (message = "") => ({
   type: "SHOW_MESSAGE_ERROR",
   message
 });
 
-export const hideMessage = (): HideMessageAction => ({
+export const hideMessage = () => ({
   type: "HIDE_MESSAGE"
 });

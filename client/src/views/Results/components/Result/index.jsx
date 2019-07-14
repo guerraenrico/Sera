@@ -1,8 +1,8 @@
-// @flow
 import React from "react";
+import PropTypes from "prop-types";
 
 import ChartProgress from "~/components/ChartProgress";
-import type { Stats } from "~/models/resultsData";
+import { StatisticType } from "~/models/resultsData";
 
 import {
   Content,
@@ -15,12 +15,6 @@ import {
   ContainerStats
 } from "./style";
 
-type Props = {
-  +title: string,
-  +first?: boolean,
-  +stats?: Stats
-};
-
 const getPercentage = stats => {
   if (stats.total === 0) {
     return 0;
@@ -28,7 +22,7 @@ const getPercentage = stats => {
   return (stats.completed / stats.total) * 100;
 };
 
-const Result = ({ title, first, stats }: Props) => (
+const Result = ({ title, first, stats }) => (
   <Content first={first}>
     <Title>{title}</Title>
     <ContainerStats>
@@ -47,6 +41,12 @@ const Result = ({ title, first, stats }: Props) => (
     </ContainerStats>
   </Content>
 );
+
+Result.propTypes = {
+  title: PropTypes.string.isRequired,
+  first: PropTypes.bool,
+  stats: StatisticType
+};
 
 Result.defaultProps = {
   first: false,

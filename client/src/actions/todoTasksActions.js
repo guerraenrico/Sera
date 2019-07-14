@@ -6,58 +6,41 @@ import { refreshAccessToken } from "./authActions";
 import { queryItemsLimit } from "../constants/config";
 import { showMessageError } from "./messageActions";
 
-import type {
-  RequestFetchTasksAction,
-  ReceiveFetchTaskssAction,
-  ErrorFetchTasksAction,
-  AddTaskLocalAction,
-  RemoveTaskAction,
-  UpdateTaskLocalAction,
-  ChangeTaskOrderLocalAction
-} from "../reducers/todoTasks";
 import { visibilityOnlyCompleted } from "../selectors/todoFiltersSelectors";
 
-import type { Task } from "../models/task";
-import type { Category } from "../models/category";
-import type { ThunkAction } from "../reducers";
-
-const requestFetchTasks = (limit: number, skip): RequestFetchTasksAction => ({
+const requestFetchTasks = (limit, skip) => ({
   type: "REQUEST_FETCH_TASKS",
   limit,
   skip
 });
 
-const receiveFetchTasks = (tasks: Array<Task>): ReceiveFetchTaskssAction => ({
+const receiveFetchTasks = tasks => ({
   type: "RECEIVE_FETCH_TASKS",
   tasks
 });
 
-const errorFetchTasks = (error: string): ErrorFetchTasksAction => ({
+const errorFetchTasks = error => ({
   type: "ERROR_FETCH_TASKS",
   error
 });
 
-const addTaskLocal = (task: Task): AddTaskLocalAction => ({
+const addTaskLocal = task => ({
   type: "ADD_TASK_LOCAL",
   task
 });
 
-const removeTaskLocal = (taskIndex: number): RemoveTaskAction => ({
+const removeTaskLocal = taskIndex => ({
   type: "REMOVE_TASK_LOCAL",
   taskIndex
 });
 
-const updateTaskLocal = (id, data): UpdateTaskLocalAction => ({
+const updateTaskLocal = (id, data) => ({
   type: "UPDATE_TASK_LOCAL",
   id,
   data
 });
 
-const changeTaskOrderLocal = (
-  id,
-  previousIndex,
-  nextIndex
-): ChangeTaskOrderLocalAction => ({
+const changeTaskOrderLocal = (id, previousIndex, nextIndex) => ({
   type: "CHANGE_TASK_ORDER_LOCAL",
   id,
   previousIndex,
@@ -65,11 +48,11 @@ const changeTaskOrderLocal = (
 });
 
 export const fetchTasksByCategory = (
-  categoriesId: string[] = [],
-  completed: boolean = false,
-  skip: number = 0,
-  limit: number = queryItemsLimit
-): ThunkAction => async (dispatch, getState) => {
+  categoriesId = [],
+  completed = false,
+  skip = 0,
+  limit = queryItemsLimit
+) => async (dispatch, getState) => {
   const { todoTasks, auth } = getState();
   const { accessToken } = auth;
   if (todoTasks.isFetching) {
@@ -114,11 +97,11 @@ export const fetchTasksByCategory = (
 };
 
 export const addTask = (
-  title: string = "",
-  description: string = "",
-  category?: Category,
-  todoWithin: Date
-): ThunkAction => async (dispatch, getState) => {
+  title = "",
+  description = "",
+  category,
+  todoWithin
+) => async (dispatch, getState) => {
   try {
     const { accessToken, guest } = getState().auth;
     if (guest) {
@@ -174,10 +157,7 @@ export const addTask = (
   }
 };
 
-export const deleteTask = (id: string = ""): ThunkAction => async (
-  dispatch,
-  getState
-) => {
+export const deleteTask = (id = "") => async (dispatch, getState) => {
   try {
     const { todoTasks, auth } = getState();
     const { items } = todoTasks;
@@ -203,10 +183,10 @@ export const deleteTask = (id: string = ""): ThunkAction => async (
   }
 };
 
-export const toggleTaskCompleted = (
-  id: string = "",
-  isCompleted: boolean = false
-): ThunkAction => async (dispatch, getState) => {
+export const toggleTaskCompleted = (id = "", isCompleted = false) => async (
+  dispatch,
+  getState
+) => {
   const { accessToken, guest } = getState().auth;
   const completed = !isCompleted;
   const completedAt = completed ? new Date() : undefined;
@@ -234,10 +214,10 @@ export const toggleTaskCompleted = (
   }
 };
 
-export const setCategoryToTask = (
-  task: Task,
-  category: Category
-): ThunkAction => async (dispatch, getState) => {
+export const setCategoryToTask = (task, category) => async (
+  dispatch,
+  getState
+) => {
   const { accessToken, guest } = getState().auth;
   // $FlowFixMe
   const updatedData = { categories: [...task.categories, category] };
@@ -266,10 +246,10 @@ export const setCategoryToTask = (
   }
 };
 
-export const createAndSetCategoryToTask = (
-  task: Task,
-  name: string
-): ThunkAction => async (dispatch, getState) => {
+export const createAndSetCategoryToTask = (task, name) => async (
+  dispatch,
+  getState
+) => {
   try {
     const { accessToken, guest } = getState().auth;
     if (guest) {
@@ -298,10 +278,10 @@ export const createAndSetCategoryToTask = (
   }
 };
 
-export const removeCategoryToTask = (
-  task: Task,
-  category: Category
-): ThunkAction => async (dispatch, getState) => {
+export const removeCategoryToTask = (task, category) => async (
+  dispatch,
+  getState
+) => {
   const { accessToken, guest } = getState().auth;
   const updatedData = {
     // $FlowFixMe
@@ -332,11 +312,10 @@ export const removeCategoryToTask = (
   }
 };
 
-export const changeTaskOrder = (
-  previousIndex: number,
-  nextIndex: number,
-  taskId: string
-): ThunkAction => async (dispatch, getState) => {
+export const changeTaskOrder = (previousIndex, nextIndex, taskId) => async (
+  dispatch,
+  getState
+) => {
   const { auth, todoTasks } = getState();
   const { accessToken, guest } = auth;
   const { items } = todoTasks;
@@ -367,10 +346,7 @@ export const changeTaskOrder = (
   }
 };
 
-export const searchTask = (text: string): ThunkAction => async (
-  dispatch,
-  getState
-) => {
+export const searchTask = text => async (dispatch, getState) => {
   const { accessToken, guest } = getState().auth;
   const completed = visibilityOnlyCompleted(getState());
   if (guest) {

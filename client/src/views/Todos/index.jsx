@@ -1,5 +1,5 @@
-// @flow
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import LoaderLinear from "~/components/LoaderLinear";
@@ -13,22 +13,11 @@ import Snackbar from "~/components/Snackbar";
 import * as messageActions from "~/actions/messageActions";
 import * as commonSelectors from "~/selectors/commonSelectors";
 
-import type { MessageState } from "~/reducers/message";
+import { MessageType } from "~/models/message";
 
 import { ContentApp, MainTopBar, ContentTopBarActions } from "./style";
 
-type Props = {
-  message: MessageState,
-  hideMessage: () => void,
-  showLoading: boolean
-};
-
-type State = {
-  isFilterOpen: boolean,
-  creatingTask: boolean
-};
-
-class Todos extends React.PureComponent<Props, State> {
+class Todos extends React.PureComponent {
   state = {
     isFilterOpen: false,
     creatingTask: false
@@ -77,6 +66,12 @@ class Todos extends React.PureComponent<Props, State> {
     );
   }
 }
+
+Todos.propTypes = {
+  message: MessageType.isRequired,
+  hideMessage: PropTypes.func.isRequired,
+  showLoading: PropTypes.bool.isRequired
+};
 
 const mapStateToProps = state => ({
   message: state.message,

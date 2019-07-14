@@ -1,5 +1,6 @@
 // @flow
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { debounce } from "lodash";
 import { TransitionGroup } from "react-transition-group";
@@ -20,7 +21,7 @@ import {
 } from "~/selectors/todoFiltersSelectors";
 
 import CategoryComponent from "../Category";
-import type { Category } from "~/models/category";
+import { CategoryType } from "~/models/category";
 
 import {
   Container,
@@ -36,24 +37,7 @@ import {
 
 const waitTime = 300;
 
-type Props = {
-  +selectedCategory?: Category,
-  +searchText?: string,
-  +doSearchCategory: (string, (Array<Category>) => void) => void,
-  +doSetSelectedCategory: Category => void,
-  +doCleanSelectedCategory: () => void,
-  +doSetTaskSearchText: string => void,
-  +doCleanTaskSearchText: () => void
-};
-
-type State = {
-  text: string,
-  categories: Array<Category>,
-  suggestionsVisible: boolean,
-  inputHeight: number
-};
-
-class SearchComponent extends Component<Props, State> {
+class SearchComponent extends PureComponent {
   static defaultProps = {
     selectedCategory: undefined,
     searchText: undefined
@@ -226,17 +210,27 @@ class SearchComponent extends Component<Props, State> {
   }
 }
 
+SearchComponent.propTypes = {
+  selectedCategory: CategoryType,
+  searchText: PropTypes.string,
+  doSearchCategory: PropTypes.func.isRequired,
+  doSetSelectedCategory: PropTypes.func.isRequired,
+  doCleanSelectedCategory: PropTypes.func.isRequired,
+  doSetTaskSearchText: PropTypes.func.isRequired,
+  doCleanTaskSearchText: PropTypes.func.isRequired
+};
+
 const mapStateToProps = state => ({
   selectedCategory: getCategoryFilter(state),
   searchText: getSearchText(state)
 });
 
 const mapDispatchToProps = dispatch => ({
-  doSearchCategory: (text: string, callback) =>
+  doSearchCategory: (text, callback) =>
     dispatch(searchCategory(text, callback)),
   doSetSelectedCategory: category => dispatch(setSelectedCategory(category)),
   doCleanSelectedCategory: () => dispatch(cleanSelectedCategory()),
-  doSetTaskSearchText: (text: String) => dispatch(setTaskSearchText(text)),
+  doSetTaskSearchText: text => dispatch(setTaskSearchText(text)),
   doCleanTaskSearchText: () => dispatch(cleanTaskSearchText())
 });
 

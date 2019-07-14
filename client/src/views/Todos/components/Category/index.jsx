@@ -1,23 +1,16 @@
 ﻿// @flow
 import React from "react";
+import PropTypes from "prop-types";
+
+import { CategoryType } from "~/models/category";
 import ButtonDelete from "./ButtonDelete";
 
 import { Chip, Text } from "./style";
 
-import type { Category } from "~/models/category";
+const Normal = "normal";
+const Small = "small";
 
-type Normal = "normal";
-type Small = "small";
-type Size = Small | Normal;
-
-type Props = {
-  +category: Category,
-  +onDelete?: Category => void,
-  +onClick: Category => void,
-  +size?: Size
-};
-
-const CategoryComponent = ({ category, onClick, onDelete, size }: Props) => {
+const CategoryComponent = ({ category, onClick, onDelete, size }) => {
   const onChipClick = e => {
     if (
       e.target.tagName.toLowerCase() !== "i" &&
@@ -29,9 +22,7 @@ const CategoryComponent = ({ category, onClick, onDelete, size }: Props) => {
 
   const onDeleteClick = e => {
     if (
-      // $FlowFixMe
       (e.target.tagName.toLowerCase() === "i" ||
-        // $FlowFixMe
         e.target.tagName.toLowerCase() === "button") &&
       onDelete !== undefined
     ) {
@@ -45,6 +36,13 @@ const CategoryComponent = ({ category, onClick, onDelete, size }: Props) => {
       {onDelete !== undefined && <ButtonDelete onClick={onDeleteClick} />}
     </Chip>
   );
+};
+
+CategoryComponent.propTypes = {
+  category: CategoryType.isRequired,
+  onDelete: PropTypes.func,
+  onClick: PropTypes.func.isRequired,
+  size: PropTypes.oneOf([Small, Normal])
 };
 
 CategoryComponent.defaultProps = {

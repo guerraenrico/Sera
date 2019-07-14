@@ -1,5 +1,6 @@
 ﻿// @flow
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { TransitionGroup } from "react-transition-group";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
@@ -12,37 +13,13 @@ import * as todoTasksActions from "~/actions/todoTasksActions";
 import * as todoTasksSelectors from "~/selectors/todoTasksSelectors";
 import * as todoFiltersSelectors from "~/selectors/todoFiltersSelectors";
 
-import type { Task } from "~/models/task";
-import type { Category } from "~/models/category";
-import type { Response } from "~/models/response";
+import { TaskType } from "~/models/task";
 
 import { Container } from "./style";
 
-type Props = {
-  +deleteTask: Task => void,
-  +completeTask: Task => void,
-  +addTask: Task => Promise<Response>,
-  +setSelectedCategory: Category => void,
-  +setCategoryToTask: (Task, Category) => void,
-  +createAndSetCategoryToTask: (Task, string) => void,
-  +removeCategoryToTask: (Task, Category) => void,
-  +changeTaskOrder: (number, number, string) => void,
-  +taskList: Array<Task>,
-  +moreToLoad: boolean,
-  +fetchTasks: (string, boolean, number, ?number) => void,
-  +categoryFilterId: string,
-  +completed: boolean,
-  // eslint-disable-next-line
-  +skip: number,
-  +creatingTask: boolean,
-  +onAbortCreatingTask: () => void
-};
+const initialState = {};
 
-type State = {};
-
-const initialState: State = {};
-
-class Tasks extends React.PureComponent<Props, State> {
+class Tasks extends React.PureComponent {
   state = initialState;
 
   componentDidMount() {
@@ -107,7 +84,7 @@ class Tasks extends React.PureComponent<Props, State> {
                         <TaskComponent
                           creating
                           onUndo={onAbortCreatingTask}
-                          onCreate={async (task: Task) => {
+                          onCreate={async task => {
                             const response = await addTask(task);
                             if (response.success) {
                               onAbortCreatingTask();
@@ -154,6 +131,25 @@ class Tasks extends React.PureComponent<Props, State> {
   }
 }
 
+Tasks.propTypes = {
+  deleteTask: PropTypes.func.isRequired,
+  completeTask: PropTypes.func.isRequired,
+  addTask: PropTypes.func.isRequired,
+  setSelectedCategory: PropTypes.func.isRequired,
+  setCategoryToTask: PropTypes.func.isRequired,
+  createAndSetCategoryToTask: PropTypes.func.isRequired,
+  removeCategoryToTask: PropTypes.func.isRequired,
+  changeTaskOrder: PropTypes.func.isRequired,
+  taskList: PropTypes.arrayOf(TaskType).isRequired,
+  moreToLoad: PropTypes.bool.isRequired,
+  fetchTasks: PropTypes.func.isRequired,
+  categoryFilterId: PropTypes.string.isRequired,
+  completed: PropTypes.bool.isRequired,
+  skip: PropTypes.number.isRequired,
+  creatingTask: PropTypes.bool.isRequired,
+  onAbortCreatingTask: PropTypes.func.isRequired
+};
+
 const mapStateToProps = state => ({
   taskList: todoTasksSelectors.getTaskList(state),
   skip: todoTasksSelectors.getSkip(state),
@@ -163,10 +159,10 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  deleteTask: (task: Task) => dispatch(todoTasksActions.deleteTask(task.id)),
-  completeTask: (task: Task) =>
+  deleteTask: task => dispatch(todoTasksActions.deleteTask(task.id)),
+  completeTask: task =>
     dispatch(todoTasksActions.toggleTaskCompleted(task.id, task.completed)),
-  addTask: (task: Task) =>
+  addTask: task =>
     dispatch(
       todoTasksActions.addTask(
         task.title,
@@ -175,23 +171,23 @@ const mapDispatchToProps = dispatch => ({
         task.todoWithin
       )
     ),
-  setSelectedCategory: (category: Category) =>
+  setSelectedCategory: category =>
     dispatch(todoFiltersActions.setSelectedCategory(category)),
-  setCategoryToTask: (task: Task, category: Category) =>
+  setCategoryToTask: (task, category) =>
     dispatch(todoTasksActions.setCategoryToTask(task, category)),
-  createAndSetCategoryToTask: (task: Task, name: string) =>
+  createAndSetCategoryToTask: (task, name) =>
     dispatch(todoTasksActions.createAndSetCategoryToTask(task, name)),
-  removeCategoryToTask: (task: Task, category: Category) =>
+  removeCategoryToTask: (task, category) =>
     dispatch(todoTasksActions.removeCategoryToTask(task, category)),
-  changeTaskOrder: (previousIndex: number, nextIndex: number, taskId: string) =>
+  changeTaskOrder: (previousIndex, nextIndex, taskId) =>
     dispatch(
       todoTasksActions.changeTaskOrder(previousIndex, nextIndex, taskId)
     ),
   fetchTasks: (
-    categoryFilterId: string,
-    completed: boolean,
-    skip: number,
-    limit: number
+    categoryFilterId,
+    completed,
+    skip,
+    limit
   ) =>
     dispatch(
       todoTasksActions.fetchTasksByCategory(

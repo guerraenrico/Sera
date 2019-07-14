@@ -1,31 +1,19 @@
-// @flow
-
 import React from "react";
+import PropTypes from "prop-types";
+
 import SnackbarAnim from "./anim";
 import { Snackbar, Message, Action } from "./style";
 
-type ActionProps = {
-  +text: string,
-  +onClick: () => void
-};
-
-const ActionComponent = ({ onClick, text }: ActionProps) => (
+const ActionComponent = ({ onClick, text }) => (
   <Action onClick={onClick}>{text}</Action>
 );
 
-type SnackbarProps = {
-  +show: boolean,
-  +message: string,
-  +onClose: () => void,
-  +duration?: number,
-  +isError?: boolean,
-  +actionText?: string,
-  +actionClick?: void,
-  +verticalPostion?: string,
-  +horizontalPosition?: string
+ActionComponent.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  text: PropTypes.string.isRequired
 };
 
-class SnackbarComponent extends React.Component<SnackbarProps> {
+class SnackbarComponent extends React.PureComponent {
   static defaultProps = {
     duration: 5000,
     isError: false,
@@ -77,5 +65,17 @@ class SnackbarComponent extends React.Component<SnackbarProps> {
     );
   }
 }
+
+SnackbarComponent.propTypes = {
+  show: PropTypes.bool.isRequired,
+  message: PropTypes.string.isRequired,
+  onClose: PropTypes.func.isRequired,
+  duration: PropTypes.number,
+  isError: PropTypes.bool,
+  actionText: PropTypes.string,
+  actionClick: PropTypes.func,
+  verticalPostion: PropTypes.string,
+  horizontalPosition: PropTypes.string
+};
 
 export default SnackbarComponent;

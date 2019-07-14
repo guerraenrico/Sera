@@ -5,26 +5,16 @@ import { refreshAccessToken } from "./authActions";
 
 import { showMessageError } from "./messageActions";
 
-import type {
-  RequestFetchResultsAction,
-  ReceiveFetchResultsAction,
-  ErrorFetchResultsAction
-} from "../reducers/resultsData";
-
-import type { ResultsData } from "../models/resultsData";
-
-import type { ThunkAction } from "../reducers";
-
-const requestFetchResults = (): RequestFetchResultsAction => ({
+const requestFetchResults = () => ({
   type: "REQUEST_FETCH_RESULTS"
 });
 
-const receiveFetchResults = (data: ResultsData): ReceiveFetchResultsAction => ({
+const receiveFetchResults = data => ({
   type: "RECEIVE_FETCH_RESULTS",
   data
 });
 
-const errorFetchResults = (error: string): ErrorFetchResultsAction => ({
+const errorFetchResults = error => ({
   type: "ERROR_FETCH_RESULTS",
   error
 });
@@ -33,7 +23,7 @@ const errorFetchResults = (error: string): ErrorFetchResultsAction => ({
  * Fetch user results. If an error accour check if it's caused by the token that is expired;
  * if this is the case the token is refreshed and retry fetch
  */
-export const fetchResults = (): ThunkAction => async (dispatch, getState) => {
+export const fetchResults = () => async (dispatch, getState) => {
   const { resultsData, resultsFilters, auth } = getState();
   const { accessToken } = auth;
   if (resultsData.isFetching) {

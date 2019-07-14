@@ -1,40 +1,17 @@
-// @flow
+import { TimeInterval } from "~/models/resultsData";
 
-export type Week = "WEEK";
-export type Month = "MONTH";
-export type Year = "YEAR";
-
-export type TimeInterval = Week | Month | Year;
-
-export type SwitchTimeIntervalAction = {
-  type: "SWITCH_TIME_INTERVAL",
-  timeInterval: TimeInterval
-};
-
-export type ResultsFiltersAction = SwitchTimeIntervalAction;
-
-export type ResultsFiltersState = {
-  +timeInterval: TimeInterval
-};
-
-const setTimeInterval = (
-  current: TimeInterval,
-  next: TimeInterval
-): TimeInterval => {
+const setTimeInterval = (current, next) => {
   if (current !== next) {
     return next;
   }
   return current;
 };
 
-const initialState: ResultsFiltersState = {
-  timeInterval: "MONTH"
+const initialState = {
+  timeInterval: TimeInterval.MONTH
 };
 
-const resultsFilters = (
-  state: ResultsFiltersState = initialState,
-  action: ResultsFiltersAction
-) => {
+const resultsFilters = (state = initialState, action) => {
   switch (action.type) {
     case "SWITCH_TIME_INTERVAL":
       return {

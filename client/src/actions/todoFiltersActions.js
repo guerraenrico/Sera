@@ -11,18 +11,7 @@ import {
   visibilityOnlyCompleted
 } from "../selectors/todoFiltersSelectors";
 
-import type {
-  SelectCategoryAction,
-  ClearSelectedCategoryAction,
-  SwitchVisibilityFilterAction,
-  Visibility,
-  SetSearchText
-} from "../reducers/todoFilters";
-
-import type { Category } from "../models/category";
-import type { ThunkAction } from "../reducers";
-
-const fetchTasks = (): ThunkAction => (dispatch, getState) => {
+const fetchTasks = () => (dispatch, getState) => {
   dispatch(
     fetchTasksByCategory(
       getSelectedCategoryId(getState()),
@@ -31,23 +20,21 @@ const fetchTasks = (): ThunkAction => (dispatch, getState) => {
   );
 };
 
-const selectCategory = (category: Category): SelectCategoryAction => ({
+const selectCategory = category => ({
   type: "SELECT_CATEGORY",
   category
 });
 
-const clearSelectedCategory = (): ClearSelectedCategoryAction => ({
+const clearSelectedCategory = () => ({
   type: "CLEAR_SELECTED_CATEGORY"
 });
 
-const switchVisibilityFilter = (
-  visibility: Visibility
-): SwitchVisibilityFilterAction => ({
+const switchVisibilityFilter = visibility => ({
   type: "SWITCH_VISIBILITY_FILTER",
   visibility
 });
 
-const setSearchText = (searchText: string): SetSearchText => ({
+const setSearchText = searchText => ({
   type: "SET_SEARCH_TEXT",
   searchText
 });
@@ -82,7 +69,7 @@ const setSearchText = (searchText: string): SetSearchText => ({
 //   }
 // };
 
-export const deleteCategory = (categoryId: string = ""): ThunkAction => async (
+export const deleteCategory = (categoryId = "") => async (
   dispatch,
   getState
 ) => {
@@ -117,10 +104,10 @@ export const deleteCategory = (categoryId: string = ""): ThunkAction => async (
  * @param {String} name category name to add
  * @param {Function} callback function that need to handle the category created
  */
-export const addCategory = (
-  name: string = "",
-  callback: Category => void
-): ThunkAction => async (dispatch, getState) => {
+export const addCategory = (name = "", callback) => async (
+  dispatch,
+  getState
+) => {
   try {
     const { accessToken, guest } = getState().auth;
     if (guest) {
@@ -158,10 +145,10 @@ export const addCategory = (
   }
 };
 
-export const searchCategory = (
-  text: string,
-  callback: (Array<Category>) => void
-): ThunkAction => async (dispatch, getState) => {
+export const searchCategory = (text, callback) => async (
+  dispatch,
+  getState
+) => {
   try {
     const { accessToken, guest } = getState().auth;
     if (guest) {
@@ -192,31 +179,27 @@ export const searchCategory = (
   }
 };
 
-export const changeVisibility = (
-  visibility: Visibility
-): ThunkAction => dispatch => {
+export const changeVisibility = visibility => dispatch => {
   dispatch(switchVisibilityFilter(visibility));
   return dispatch(fetchTasks());
 };
 
-export const setSelectedCategory = (
-  category: Category
-): ThunkAction => dispatch => {
+export const setSelectedCategory = category => dispatch => {
   dispatch(selectCategory(category));
   dispatch(fetchTasks());
 };
 
-export const cleanSelectedCategory = (): ThunkAction => dispatch => {
+export const cleanSelectedCategory = () => dispatch => {
   dispatch(clearSelectedCategory());
   dispatch(fetchTasks());
 };
 
-export const setTaskSearchText = (text: string): ThunkAction => dispatch => {
+export const setTaskSearchText = text => dispatch => {
   dispatch(setSearchText(text));
   dispatch(searchTask(text));
 };
 
-export const cleanTaskSearchText = (): ThunkAction => dispatch => {
+export const cleanTaskSearchText = () => dispatch => {
   dispatch(setSearchText("text"));
   dispatch(fetchTasks());
 };

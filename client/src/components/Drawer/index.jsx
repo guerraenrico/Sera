@@ -1,17 +1,10 @@
-// @flow
 import React from "react";
-import type { Node } from "react";
+import PropTypes from "prop-types";
 
 import { menuItems } from "~/constants/drawer";
 import { DrawerContainer, Drawer, NavLink, ButtonItem, Space } from "./style";
 
-type ItemProps = {
-  exact?: boolean,
-  pathTo: string,
-  children: Node
-};
-
-const ItemComponent = ({ pathTo, exact, children }: ItemProps) => (
+const ItemComponent = ({ pathTo, exact, children }) => (
   <NavLink
     className="item align-items-center"
     to={pathTo}
@@ -22,15 +15,17 @@ const ItemComponent = ({ pathTo, exact, children }: ItemProps) => (
   </NavLink>
 );
 
+ItemComponent.propTypes = {
+  exact: PropTypes.bool,
+  pathTo: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired
+};
+
 ItemComponent.defaultProps = {
   exact: false
 };
 
-type DrawerProps = {
-  logout: () => void
-};
-
-const DrawerComponent = ({ logout }: DrawerProps) => (
+const DrawerComponent = ({ logout }) => (
   <DrawerContainer>
     <Drawer>
       {menuItems.map(item => (
@@ -45,5 +40,9 @@ const DrawerComponent = ({ logout }: DrawerProps) => (
     </Drawer>
   </DrawerContainer>
 );
+
+DrawerComponent.propTypes = {
+  logout: PropTypes.func.isRequired
+};
 
 export default DrawerComponent;

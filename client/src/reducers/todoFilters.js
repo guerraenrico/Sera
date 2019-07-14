@@ -1,56 +1,17 @@
-﻿// @flow
-import type { Category } from "../models/category";
-
-export type OnlyCompleted = "ONLY_COMPLETED";
-export type OnlyToComplete = "ONLY_TO_COMPLETE";
-
-export type Visibility = OnlyCompleted | OnlyToComplete;
-
-export type SelectCategoryAction = {
-  type: "SELECT_CATEGORY",
-  category: Category
-};
-export type ClearSelectedCategoryAction = {
-  type: "CLEAR_SELECTED_CATEGORY"
-};
-export type SwitchVisibilityFilterAction = {
-  type: "SWITCH_VISIBILITY_FILTER",
-  visibility: Visibility
-};
-export type SetSearchText = {
-  type: "SET_SEARCH_TEXT",
-  searchText: string
-};
-
-export type TodoFiltersAction =
-  | SelectCategoryAction
-  | ClearSelectedCategoryAction
-  | SwitchVisibilityFilterAction
-  | SetSearchText;
-
-export type TodoFiltersState = {
-  +category?: Category,
-  +searchText?: string,
-  +visibility: Visibility
-};
-
-const setVisibility = (current: Visibility, next: Visibility): Visibility => {
+﻿const setVisibility = (current, next) => {
   if (current !== next) {
     return next;
   }
   return current;
 };
 
-const initialState: TodoFiltersState = {
+const initialState = {
   category: undefined,
   searchText: undefined,
   visibility: "ONLY_TO_COMPLETE"
 };
 
-const todoFilters = (
-  state: TodoFiltersState = initialState,
-  action: TodoFiltersAction
-) => {
+const todoFilters = (state = initialState, action) => {
   switch (action.type) {
     case "SELECT_CATEGORY":
       return {

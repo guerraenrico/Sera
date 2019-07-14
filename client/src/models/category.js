@@ -1,7 +1,8 @@
-// @flow
-export type Category = {
-  id: string,
-  name: string,
-  userId: string,
-  selected: boolean // Only client side
-};
+import PropTypes from "prop-types";
+
+export const CategoryType = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
+  selected: PropTypes.bool.isRequired // Only client side
+});

@@ -1,4 +1,5 @@
 import React, { PureComponent } from "react";
+import PropTypes from "prop-types";
 
 import {
   ContentChart,
@@ -9,19 +10,7 @@ import {
 
 const DEFAULT_ANIMANTION_DELAY = 1000;
 
-type Props = {
-  +radius?: number,
-  +strokeWidth?: number,
-  +color?: string,
-  +progress?: number,
-  +dimension?: number
-};
-
-type State = {
-  setStrokeLength: boolean
-};
-
-class ChartProgressComponent extends PureComponent<Props, State> {
+class ChartProgressComponent extends PureComponent {
   static defaultProps = {
     radius: 120,
     progress: 100,
@@ -73,4 +62,13 @@ class ChartProgressComponent extends PureComponent<Props, State> {
     );
   }
 }
+
+ChartProgressComponent.propTypes = {
+  radius: PropTypes.number,
+  strokeWidth: PropTypes.number,
+  color: PropTypes.string,
+  progress: PropTypes.number,
+  dimension: PropTypes.number
+};
+
 export default ChartProgressComponent;

@@ -1,31 +1,13 @@
 ﻿// @flow
 import React from "react";
+import PropTypes from "prop-types";
+
 import EditableTaskComponent from "./editable";
 import StaticTaskComponent from "./static";
 
-import type { Task } from "~/models/task";
-import type { Category } from "~/models/category";
+import { TaskType } from "~/models/task";
 
-type Props = {
-  // ...StaticProps,
-  +onUndo?: () => void,
-  +onCreate?: ({}) => void,
-  // ...EditableProps,
-  +index?: number,
-  +onDelete?: () => void,
-  +onComplete?: () => void,
-  +onCategoryClick?: Category => void,
-  +onSetCategory?: Category => void,
-  +onCreateCategory?: string => void,
-  +onRemoveCategory?: Category => void,
-  // Common
-  +task?: Task,
-  +creating?: boolean
-};
-
-type State = {};
-
-class TaskComponent extends React.PureComponent<Props, State> {
+class TaskComponent extends React.PureComponent {
   static defaultProps = {
     onUndo: () => {},
     onCreate: () => {},
@@ -54,5 +36,22 @@ class TaskComponent extends React.PureComponent<Props, State> {
     return <>{component}</>;
   }
 }
+
+TaskComponent.propTypes = {
+  // ...StaticProps,
+  onUndo: PropTypes.func,
+  onCreate: PropTypes.func,
+  // ...EditableProps,
+  index: PropTypes.number,
+  onDelete: PropTypes.func,
+  onComplete: PropTypes.func,
+  onCategoryClick: PropTypes.func,
+  onSetCategory: PropTypes.func,
+  onCreateCategory: PropTypes.func,
+  onRemoveCategory: PropTypes.func,
+  // Common
+  task: TaskType,
+  creating: PropTypes.bool
+};
 
 export default TaskComponent;

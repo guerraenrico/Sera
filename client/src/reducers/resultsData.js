@@ -1,30 +1,4 @@
-// @flow
-import type { ResultsData } from "../models/resultsData";
-
-export type RequestFetchResultsAction = {
-  type: "REQUEST_FETCH_RESULTS"
-};
-export type ReceiveFetchResultsAction = {
-  type: "RECEIVE_FETCH_RESULTS",
-  data: ResultsData
-};
-export type ErrorFetchResultsAction = {
-  type: "ERROR_FETCH_RESULTS",
-  error: string
-};
-
-export type ResultsAction =
-  | RequestFetchResultsAction
-  | ReceiveFetchResultsAction
-  | ErrorFetchResultsAction;
-
-export type ResultsState = {
-  +isFetching: boolean,
-  +data: ResultsData,
-  +error: string
-};
-
-const initialState: ResultsState = {
+const initialState = {
   isFetching: false,
   data: {
     tasks: { completed: 0, total: 0 },
@@ -33,10 +7,7 @@ const initialState: ResultsState = {
   error: ""
 };
 
-const resultsData = (
-  state: ResultsState = initialState,
-  action: ResultsAction
-) => {
+const resultsData = (state = initialState, action) => {
   switch (action.type) {
     case "REQUEST_FETCH_RESULTS":
       return {

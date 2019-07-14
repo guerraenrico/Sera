@@ -1,5 +1,5 @@
-// @flow
 import React from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import LoaderLinear from "~/components/LoaderLinear";
@@ -16,27 +16,14 @@ import * as commonSelectors from "~/selectors/commonSelectors";
 import * as resultsFiltersSelectors from "~/selectors/resultsFiltersSelectors";
 import * as resultsDataSelectors from "~/selectors/resultsDataSelectors";
 
-import type { MessageState } from "~/reducers/message";
-import type { TimeInterval } from "~/reducers/resultsFilters";
-import type { ResultsData } from "~/models/resultsData";
+import { MessageType } from "~/models/message";
+import { ResultsDataType, TimeInterval } from "~/models/resultsData";
 
 import Strings from "~/styles/strings";
 
 import { ContentApp, MainTopBar, Container, ContentSwitches } from "./style";
 
-type Props = {
-  +message: MessageState,
-  +hideMessage: () => void,
-  +fetchResults: () => void,
-  +showLoading: boolean,
-  +timeInterval: TimeInterval,
-  +changeTimeInterval: TimeInterval => {},
-  +resultsData: ResultsData
-};
-
-type State = {};
-
-class Results extends React.PureComponent<Props, State> {
+class Results extends React.PureComponent {
   state = {};
 
   componentDidMount() {
@@ -50,7 +37,13 @@ class Results extends React.PureComponent<Props, State> {
   };
 
   render() {
-    const { message, hideMessage, showLoading, timeInterval, resultsData } = this.props;
+    const {
+      message,
+      hideMessage,
+      showLoading,
+      timeInterval,
+      resultsData
+    } = this.props;
     return (
       <ContentApp>
         <LoaderLinear show={showLoading} />
@@ -80,7 +73,11 @@ class Results extends React.PureComponent<Props, State> {
           </ContentSwitches>
         </MainTopBar>
         <Container>
-          <Result title={Strings().labelTasks} first stats={resultsData.tasks} />
+          <Result
+            title={Strings().labelTasks}
+            first
+            stats={resultsData.tasks}
+          />
           <Result title={Strings().labelGoals} stats={resultsData.goals} />
         </Container>
 
@@ -95,6 +92,20 @@ class Results extends React.PureComponent<Props, State> {
   }
 }
 
+Results.propTypes = {
+  message: MessageType.isRequired,
+  hideMessage: PropTypes.func.isRequired,
+  fetchResults: PropTypes.func.isRequired,
+  changeTimeInterval: PropTypes.func.isRequired,
+  showLoading: PropTypes.bool.isRequired,
+  timeInterval: PropTypes.oneOf([
+    TimeInterval.MONTH,
+    TimeInterval.WEEK,
+    TimeInterval.YEAR
+  ]).isRequired,
+  resultsData: ResultsDataType.isRequired
+};
+
 const mapStateToProps = state => ({
   message: state.message,
   timeInterval: resultsFiltersSelectors.getTimeIntervalFilter(state),
@@ -106,7 +117,7 @@ const mapDispatchToProps = dispatch => ({
   hideMessage: () => {
     dispatch(messageActions.hideMessage());
   },
-  changeTimeInterval: (timeInterval: TimeInterval) => {
+  changeTimeInterval: timeInterval => {
     dispatch(resultsFiltersActions.changeTimeInterval(timeInterval));
   },
   fetchResults: () => {

@@ -1,7 +1,5 @@
-// @flow
-
 import React from "react";
-import type { Node } from "react";
+import PropTypes from "prop-types";
 import { Transition } from "react-transition-group";
 
 import { SnackbarContainer } from "./style";
@@ -24,13 +22,7 @@ const transitionStyles = {
   }
 };
 
-type Props = {
-  +in: boolean,
-  +children: Node,
-  +customClass?: string
-};
-
-const SnackbarAnim = ({ in: inProp, children, customClass }: Props) => (
+const SnackbarAnim = ({ in: inProp, children, customClass }) => (
   <Transition in={inProp} timeout={duration}>
     {state => (
       <SnackbarContainer
@@ -45,6 +37,12 @@ const SnackbarAnim = ({ in: inProp, children, customClass }: Props) => (
     )}
   </Transition>
 );
+
+SnackbarAnim.propTypes = {
+  in: PropTypes.bool.isRequired,
+  children: PropTypes.node.isRequired,
+  customClass: PropTypes.string
+};
 
 SnackbarAnim.defaultProps = {
   customClass: ""

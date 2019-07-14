@@ -1,5 +1,6 @@
-// @flow
 import React from "react";
+import PropTypes from "prop-types";
+
 import { Draggable } from "react-beautiful-dnd";
 import Collapse from "~/components/anims/Collapse";
 import Fade from "~/components/anims/Fade";
@@ -10,8 +11,7 @@ import CategoryAutocomplete from "./CategoryAutocomplete";
 import { toSimpleDateFormat } from "~/utils/Common";
 import labels from "~/constants/labels";
 
-import type { Task } from "~/models/task";
-import type { Category } from "~/models/category";
+import { TaskType } from "~/models/task";
 
 import {
   Item,
@@ -28,22 +28,7 @@ import {
   Description
 } from "./style";
 
-export type StaticProps = {
-  +index: number,
-  +onDelete?: () => void,
-  +onComplete?: () => void,
-  +onCategoryClick: Category => void,
-  +onSetCategory: Category => void,
-  +onCreateCategory: string => void,
-  +onRemoveCategory: Category => void,
-  +task: Task
-};
-type State = {
-  collapsed: boolean,
-  addingCategory?: boolean
-};
-
-class StaticTaskComponent extends React.PureComponent<StaticProps, State> {
+class StaticTaskComponent extends React.PureComponent {
   static defaultProps = {
     onDelete: undefined,
     onComplete: undefined
@@ -80,7 +65,7 @@ class StaticTaskComponent extends React.PureComponent<StaticProps, State> {
     );
   };
 
-  categoriesToRender = (task: Task) => {
+  categoriesToRender = task => {
     // const { addingCategory } = this.state;
     const {
       onCategoryClick,
@@ -173,5 +158,16 @@ class StaticTaskComponent extends React.PureComponent<StaticProps, State> {
     );
   }
 }
+
+StaticTaskComponent.propTypes = {
+  index: PropTypes.number.isRequired,
+  onDelete: PropTypes.func,
+  onComplete: PropTypes.func,
+  onCategoryClick: PropTypes.func.isRequired,
+  onSetCategory: PropTypes.func.isRequired,
+  onCreateCategory: PropTypes.func.isRequired,
+  onRemoveCategory: PropTypes.func.isRequired,
+  task: TaskType.isRequired
+};
 
 export default StaticTaskComponent;

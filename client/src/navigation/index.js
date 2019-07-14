@@ -1,4 +1,3 @@
-// @flow
 import Loadable from "react-loadable";
 
 import LoaderLinear from "~/components/LoaderLinear";

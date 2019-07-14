@@ -1,18 +1,18 @@
-// @flow
 import React from "react";
+import PropTypes from "prop-types";
 
 import { Button, Icon } from "./style";
 
-type Props = {
-  onClick: () => void,
-  completed?: boolean
-};
-
-const ButtonComplete = ({ onClick, completed }: Props) => (
+const ButtonComplete = ({ onClick, completed }) => (
   <Button className={`${completed ? "completed" : ""}`} onClick={onClick}>
     <Icon className="icon-check" />
   </Button>
 );
+
+ButtonComplete.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  completed: PropTypes.bool
+};
 
 ButtonComplete.defaultProps = {
   completed: false

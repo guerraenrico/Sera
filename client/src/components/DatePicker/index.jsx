@@ -1,21 +1,16 @@
-// @flow
 import React from "react";
+import PropTypes from "prop-types";
 
 import Input from "../Input";
 import { toInputDateFormat } from "~/utils/Common";
 
 import { StyledDatePicker } from "./style";
 
-type Small = "small";
-type Normal = "normal";
-type Large = "large";
+const Small = "small";
+const Normal = "normal";
+const Large = "large";
 
-type Props = {
-  +size?: Small | Normal | Large,
-  +value: Date
-};
-
-const DatePicker = ({ size, value, ...props }: Props) => {
+const DatePicker = ({ size, value, ...props }) => {
   // TODO: fallback on native component on mobile
   return (
     // <StyledDatePicker
@@ -34,6 +29,11 @@ const DatePicker = ({ size, value, ...props }: Props) => {
       {...props}
     />
   );
+};
+
+DatePicker.propTypes = {
+  size: PropTypes.oneOf([Small, Normal, Large]),
+  value: PropTypes.node.isRequired
 };
 
 DatePicker.defaultProps = {

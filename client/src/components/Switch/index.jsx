@@ -1,23 +1,10 @@
-// @flow
 import React from "react";
-
+import PropTypes from "prop-types";
 import OptionComponent from "./option";
 
 import { Switch, Icon, Text } from "./style";
 
-type Option = {
-  +name: string,
-  +selected: boolean,
-  +iconClassName?: string,
-  +text: String
-};
-
-type Props = {
-  +options: Array<Option>,
-  +onOptionClick: string => void
-};
-
-const SwitchComponent = ({ options, onOptionClick }: Props) => (
+const SwitchComponent = ({ options, onOptionClick }) => (
   <Switch>
     {options.map(option => (
       <OptionComponent
@@ -34,5 +21,17 @@ const SwitchComponent = ({ options, onOptionClick }: Props) => (
     ))}
   </Switch>
 );
+
+SwitchComponent.propTypes = {
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      selected: PropTypes.bool.isRequired,
+      iconClassName: PropTypes.string,
+      text: PropTypes.string.isRequired
+    }).isRequired
+  ).isRequired,
+  onOptionClick: PropTypes.func.isRequired
+};
 
 export default SwitchComponent;
