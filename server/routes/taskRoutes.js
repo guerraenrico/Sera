@@ -39,13 +39,13 @@ router.get("/", (req, res) =>
         (isNullOrUndefined(categoriesId) && categoriesId.length > 0) ||
         !isNullOrUndefined(itemOrder)
       ) {
-        tasks = await Task.GetAllAsync(
-          session.userId,
+        tasks = await Task.GetAllAsync({
+          userId: session.userId,
           limit,
           skip,
           completed,
           categoriesId
-        );
+        });
       } else {
         tasks = await Task.GetAllByIdsAsync(
           session.userId,
@@ -60,12 +60,10 @@ router.get("/", (req, res) =>
         !isNullOrUndefined(itemOrder) ||
         !isNullOrUndefined(itemOrder.orderedIds)
       ) {
-        const allTasks = await Task.GetAllAsync(
-          session.userId,
-          undefined,
-          undefined,
+        const allTasks = await Task.GetAllAsync({
+          userId: session.userId,
           completed
-        );
+        });
         await ItemOrder.InsertAsync(
           ItemOrder.New({
             orderedIds: allTasks.map(t => t.id.valueOf().toString()),
@@ -87,7 +85,7 @@ router.get("/", (req, res) =>
       handleResponse(res, orederedTasks, session.accessToken);
     } catch (e) {
       console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorReadTask(e), session.accessToken);
+      handleError(res, ApiErrors.ErrorReadTask(e), 500, session.accessToken);
     }
   })
 );
@@ -126,11 +124,11 @@ router.post("/", (req, res) =>
           session.accessToken
         );
       } else {
-        handleError(res, ApiErrors.ErrorInsertTask(), session.accessToken);
+        handleError(res, ApiErrors.ErrorInsertTask(), 500, session.accessToken);
       }
     } catch (e) {
       console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorInsertTask(e), session.accessToken);
+      handleError(res, ApiErrors.ErrorInsertTask(e), 500, session.accessToken);
     }
   })
 );
@@ -160,11 +158,11 @@ router.delete("/:id", (req, res) =>
         }
         handleResponse(res, {}, session.accessToken);
       } else {
-        handleError(res, ApiErrors.ErrorDeleteTask(), session.accessToken);
+        handleError(res, ApiErrors.ErrorDeleteTask(), 500, session.accessToken);
       }
     } catch (e) {
       console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorDeleteTask(e), session.accessToken);
+      handleError(res, ApiErrors.ErrorDeleteTask(e), 500, session.accessToken);
     }
   })
 );
@@ -193,11 +191,11 @@ router.patch("/", (req, res) =>
           session.accessToken
         );
       } else {
-        handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
+        handleError(res, ApiErrors.ErrorUpdateTask(), 500, session.accessToken);
       }
     } catch (e) {
       console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorUpdateTask(e), session.accessToken);
+      handleError(res, ApiErrors.ErrorUpdateTask(e), 500, session.accessToken);
     }
   })
 );
@@ -227,11 +225,11 @@ router.patch("/position", (req, res) =>
       if (isNullOrUndefined(result) && result.ok === 1) {
         handleResponse(res, {}, session.accessToken);
       } else {
-        handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
+        handleError(res, ApiErrors.ErrorUpdateTask(), 500, session.accessToken);
       }
     } catch (e) {
       console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorUpdateTask(e), session.accessToken);
+      handleError(res, ApiErrors.ErrorUpdateTask(e), 500, session.accessToken);
     }
   })
 );
@@ -282,11 +280,11 @@ router.patch("/toggle-complete", (req, res) =>
           session.accessToken
         );
       } else {
-        handleError(res, ApiErrors.ErrorUpdateTask(), session.accessToken);
+        handleError(res, ApiErrors.ErrorUpdateTask(), 500, session.accessToken);
       }
     } catch (e) {
       console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorUpdateTask(e), session.accessToken);
+      handleError(res, ApiErrors.ErrorUpdateTask(e), 500, session.accessToken);
     }
   })
 );
@@ -312,10 +310,10 @@ router.get("/search", (req, res) =>
         }
       });
 
-      handleResponse(res, orederedTasks, session.accessToken);
+      handleResponse(res, orederedTasks, 500, session.accessToken);
     } catch (e) {
       console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorReadTask(e), session.accessToken);
+      handleError(res, ApiErrors.ErrorReadTask(e), 500, session.accessToken);
     }
   })
 );

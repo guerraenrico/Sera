@@ -29,7 +29,12 @@ router.get("/", (req, res) =>
       handleResponse(res, categories, session.accessToken);
     } catch (e) {
       console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorReadCategory(e), session.accessToken);
+      handleError(
+        res,
+        ApiErrors.ErrorReadCategory(e),
+        500,
+        session.accessToken
+      );
     }
   })
 );
@@ -44,7 +49,12 @@ router.get("/search", (req, res) =>
       handleResponse(res, categories, session.accessToken);
     } catch (e) {
       console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorReadCategory(e), session.accessToken);
+      handleError(
+        res,
+        ApiErrors.ErrorReadCategory(e),
+        500,
+        session.accessToken
+      );
     }
   })
 );
@@ -73,11 +83,21 @@ router.post("/", (req, res) =>
           session.accessToken
         );
       } else {
-        handleError(res, ApiErrors.ErrorInsertCategory(), session.accessToken);
+        handleError(
+          res,
+          ApiErrors.ErrorInsertCategory(),
+          500,
+          session.accessToken
+        );
       }
     } catch (e) {
       console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorInsertCategory(e), session.accessToken);
+      handleError(
+        res,
+        ApiErrors.ErrorInsertCategory(e),
+        500,
+        session.accessToken
+      );
     }
   })
 );
@@ -96,11 +116,21 @@ router.delete("/:id", (req, res) =>
       if (result.deletedCount >= 1) {
         handleResponse(res, {}, session.accessToken);
       } else {
-        handleError(res, ApiErrors.ErrorDeleteCategory(), session.accessToken);
+        handleError(
+          res,
+          ApiErrors.ErrorDeleteCategory(),
+          500,
+          session.accessToken
+        );
       }
     } catch (e) {
       console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorDeleteCategory(e), session.accessToken);
+      handleError(
+        res,
+        ApiErrors.ErrorDeleteCategory(e),
+        500,
+        session.accessToken
+      );
     }
   })
 );

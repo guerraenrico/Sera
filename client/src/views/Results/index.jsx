@@ -10,11 +10,14 @@ import Result from "./components/Result";
 
 import * as messageActions from "~/actions/messageActions";
 import * as resultsFiltersActions from "~/actions/resultsFiltersActions";
+
 import * as commonSelectors from "~/selectors/commonSelectors";
 import * as resultsFiltersSelectors from "~/selectors/resultsFiltersSelectors";
+import * as resultsDataSelectors from "~/selectors/resultsDataSelectors";
 
 import type { MessageState } from "~/reducers/message";
 import type { TimeInterval } from "~/reducers/resultsFilters";
+import type {ResultsData} from "~/models/resultsData";
 
 import Strings from "~/styles/strings";
 
@@ -25,7 +28,8 @@ type Props = {
   +hideMessage: () => void,
   +showLoading: boolean,
   +timeInterval: TimeInterval,
-  +dispatchChangeTimeInterval: TimeInterval => {}
+  +changeTimeInterval: TimeInterval => {},
+  +resultsData: ResultsData
 };
 
 type State = {};
@@ -34,12 +38,13 @@ class Results extends React.PureComponent<Props, State> {
   state = {};
 
   onSwitch = timeInterval => {
-    const { dispatchChangeTimeInterval } = this.props;
-    dispatchChangeTimeInterval(timeInterval);
+    const { changeTimeInterval } = this.props;
+    changeTimeInterval(timeInterval);
   };
 
   render() {
-    const { message, hideMessage, showLoading, timeInterval } = this.props;
+    const { message, hideMessage, showLoading, timeInterval, resultsData } = this.props;
+    console.log('ressss', resultsData)
     return (
       <ContentApp>
         <LoaderLinear show={showLoading} />
@@ -69,8 +74,8 @@ class Results extends React.PureComponent<Props, State> {
           </ContentSwitches>
         </MainTopBar>
         <Container>
-          <Result title={Strings().labelTasks} first />
-          <Result title={Strings().labelGoals} />
+          <Result title={Strings().labelTasks} first stats={resultsData.tasks} />
+          <Result title={Strings().labelGoals} stats={resultsData.goals} />
         </Container>
 
         <Snackbar
@@ -87,6 +92,7 @@ class Results extends React.PureComponent<Props, State> {
 const mapStateToProps = state => ({
   message: state.message,
   timeInterval: resultsFiltersSelectors.getTimeIntervalFilter(state),
+  resultsData: resultsDataSelectors.getResultsData(state),
   showLoading: commonSelectors.showLoading(state)
 });
 
@@ -94,7 +100,7 @@ const mapDispatchToProps = dispatch => ({
   hideMessage: () => {
     dispatch(messageActions.hideMessage());
   },
-  dispatchChangeTimeInterval: (timeInterval: TimeInterval) => {
+  changeTimeInterval: (timeInterval: TimeInterval) => {
     dispatch(resultsFiltersActions.changeTimeInterval(timeInterval));
   }
 });

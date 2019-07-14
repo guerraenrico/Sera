@@ -2,6 +2,7 @@
 import React from "react";
 
 import ChartProgress from "~/components/ChartProgress";
+import type { Stats } from "~/models/resultsData";
 
 import {
   Content,
@@ -16,22 +17,23 @@ import {
 
 type Props = {
   +title: string,
-  +first?: boolean
+  +first?: boolean,
+  +stats?: Stats
 };
 
-const Result = ({ title, first }: Props) => (
+const Result = ({ title, first, stats }: Props) => (
   <Content first={first}>
     <Title>{title}</Title>
     <ContainerStats>
       <ContentChart>
-        <ChartProgress progress={70} />
+        <ChartProgress progress={(stats.completed / stats.total) * 100} />
       </ContentChart>
       <ContentCaption>
         <Caption>
           <CaptionText>
-            <span>50</span>
+            <span>{stats.completed}</span>
             <SmallText> of </SmallText>
-            <span>100</span>
+            <span>{stats.total}</span>
           </CaptionText>
         </Caption>
       </ContentCaption>
@@ -40,7 +42,8 @@ const Result = ({ title, first }: Props) => (
 );
 
 Result.defaultProps = {
-  first: false
+  first: false,
+  stats: { completed: 0, total: 0 }
 };
 
 export default Result;

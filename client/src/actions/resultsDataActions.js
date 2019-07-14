@@ -40,7 +40,6 @@ export const fetchResults = (): ThunkAction => async (dispatch, getState) => {
     return;
   }
   if (auth.guest) {
-    // dispatch(receiveFetchTasks(todoTasks.items));
     return;
   }
   dispatch(requestFetchResults());

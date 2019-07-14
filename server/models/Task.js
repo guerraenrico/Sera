@@ -1,6 +1,7 @@
 const { ObjectId } = require("mongodb");
 const Category = require("./Category");
 
+const { isNullOrUndefined } = require("../utils/common");
 const database = require("../utils/database");
 
 /* eslint dot-notation: 0 */
@@ -73,21 +74,23 @@ const CreateFromDocument = taskDocument => {
 const CreateFromDocuments = taskDocuments =>
   taskDocuments.map(doc => CreateFromDocument(doc));
 
-const GetAllAsync = async (
+const GetAllAsync = async ({
   userId,
   limit,
   skip,
-  completed = false,
+  completed,
   categoriesId = []
-) => {
+}) => {
   const db = database.instance();
   const filter = {
     $and: [
-      { [Schema.fields.completed]: completed },
+      { [Schema.fields.userId]: userId },
+      !isNullOrUndefined(completed)
+        ? { [Schema.fields.completed]: completed }
+        : {},
       categoriesId.length > 0 && categoriesId[0] !== ""
         ? { [`${Schema.fields.categories}.id`]: { $in: categoriesId } }
-        : {},
-      { [Schema.fields.userId]: userId }
+        : {}
     ]
   };
   const query =

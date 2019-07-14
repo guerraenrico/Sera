@@ -26,7 +26,10 @@ export type ResultsState = {
 
 const initialState: ResultsState = {
   isFetching: false,
-  data: {},
+  data: {
+    tasks: { completed: 0, total: 0 },
+    goals: { completed: 0, total: 0 }
+  },
   error: ""
 };
 
