@@ -1,5 +1,6 @@
 const { ObjectId } = require("mongodb");
 const database = require("../utils/database");
+const { isNullOrUndefined } = require("../utils/common");
 
 /* eslint dot-notation: 0 */
 const Schema = {
@@ -41,7 +42,7 @@ const New = ({
 });
 
 const CreateFromDocument = document => {
-  if (document === undefined || document === null) {
+  if (isNullOrUndefined(document)) {
     return undefined;
   }
   let fields = {};

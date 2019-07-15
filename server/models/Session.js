@@ -33,7 +33,7 @@ const New = ({
 });
 
 const CreateFromDocument = document => {
-  if (document === undefined || document === null) {
+  if (isNullOrUndefined(document)) {
     return undefined;
   }
   let fields = {};

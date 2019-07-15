@@ -76,7 +76,7 @@ router.post("/", (req, res) =>
     }
     try {
       const result = await Category.InsertAsync(category);
-      if (isNullOrUndefined(result.insertedId)) {
+      if (!isNullOrUndefined(result.insertedId)) {
         handleResponse(
           res,
           { ...category, id: result.insertedId },

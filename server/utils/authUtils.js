@@ -2,6 +2,7 @@ const { OAuth2Client } = require("google-auth-library");
 
 const User = require("../models/User");
 const Session = require("../models/Session");
+const { isNullOrUndefined } = require("../utils/common");
 
 const {
   Unauthorized,
@@ -41,7 +42,7 @@ const getPayload = async idToken => {
  * @param {Object} payload user's google payload
  */
 const isPayloadValid = payload => {
-  if (payload === undefined) {
+  if (isNullOrUndefined(payload)) {
     return false;
   }
   // Client id
@@ -63,7 +64,7 @@ const isPayloadValid = payload => {
  * @param {Object} session user session
  */
 const verifySession = async session => {
-  if (session === undefined) {
+  if (isNullOrUndefined(session)) {
     return Unauthorized();
   }
   if (session.expireAt < new Date()) {
@@ -92,12 +93,12 @@ const getSessionByToken = async accessToken => {
  */
 const getSessionByTokenAndRefreshIfNeeded = async accessToken => {
   let session = await getSessionByToken(accessToken);
-  if (session === undefined) {
+  if (isNullOrUndefined(session)) {
     return undefined;
   }
 
   const sessionError = await verifySession(session);
-  if (sessionError === undefined) {
+  if (isNullOrUndefined(sessionError)) {
     return session;
   }
   // Refresh only if the session is expired
@@ -106,7 +107,7 @@ const getSessionByTokenAndRefreshIfNeeded = async accessToken => {
   }
 
   const user = await User.GetAsync(session.userId);
-  if (user === undefined) {
+  if (isNullOrUndefined(user)) {
     return undefined;
   }
   client.credentials.refresh_token = user.refreshToken;
@@ -125,7 +126,7 @@ const getSessionByTokenAndRefreshIfNeeded = async accessToken => {
   };
 
   const { result } = await Session.UpdateAsync(session);
-  if (result === undefined || result.ok !== 1) {
+  if (isNullOrUndefined(result) || result.ok !== 1) {
     return undefined;
   }
 
@@ -141,7 +142,7 @@ const getUserByToken = async accessToken => {
   const session = await getSessionByToken(accessToken);
 
   const sessionError = await verifySession(session);
-  if (sessionError !== undefined) {
+  if (!isNullOrUndefined(sessionError)) {
     return sessionError;
   }
 

@@ -42,10 +42,10 @@ const New = ({
 });
 
 const CreateFromBodyRequest = (body, userId) => {
-  if (body.title === undefined || body.title === "") {
+  if (isNullOrUndefined(body.title) || body.title === "") {
     return undefined;
   }
-  if (body.todoWithin === undefined || body.todoWithin === "") {
+  if (isNullOrUndefined(body.todoWithin) || body.todoWithin === "") {
     return undefined;
   }
   return New({
@@ -94,7 +94,7 @@ const GetAllAsync = async ({
     ]
   };
   const query =
-    limit !== undefined && skip !== undefined
+    !isNullOrUndefined(limit) && !isNullOrUndefined(skip)
       ? db
           .collection(Schema.name)
           .find(filter)

@@ -95,7 +95,7 @@ router.post("/", (req, res) =>
   needAuth(req, res, async session => {
     const { body } = req;
     const task = Task.CreateFromBodyRequest(body, session.userId);
-    if (!isNullOrUndefined(task)) {
+    if (isNullOrUndefined(task)) {
       handleError(
         res,
         ApiErrors.InvalidTaskParameters(),
@@ -107,7 +107,7 @@ router.post("/", (req, res) =>
     try {
       task.position = 0;
       const result = await Task.InsertAsync(task);
-      if (isNullOrUndefined(result.insertedId)) {
+      if (!isNullOrUndefined(result.insertedId)) {
         await ItemOrder.PrependIdAsync(
           session.userId,
           Task.Schema.name,
@@ -137,7 +137,7 @@ router.post("/", (req, res) =>
 router.delete("/:id", (req, res) =>
   needAuth(req, res, async session => {
     const { id } = req.params;
-    if (!isNullOrUndefined(id) || id.toString() === "") {
+    if (isNullOrUndefined(id) || id.toString() === "") {
       handleError(res, ApiErrors.InvalidTaskId(), 400, session.accessToken);
       return;
     }
@@ -145,7 +145,7 @@ router.delete("/:id", (req, res) =>
       const task = await Task.GetAsync(session.userId, id);
       const result = await Task.DeleteAsync(session.userId, id);
       if (result.deletedCount >= 1) {
-        if (isNullOrUndefined(task)) {
+        if (!isNullOrUndefined(task)) {
           await ItemOrder.RemoveIdAsync(
             session.userId,
             Task.Schema.name,
@@ -172,7 +172,7 @@ router.patch("/", (req, res) =>
   needAuth(req, res, async session => {
     const { body } = req;
     const { id, ...other } = body;
-    if (!isNullOrUndefined(id)) {
+    if (isNullOrUndefined(id)) {
       handleError(
         res,
         ApiErrors.InvalidTaskParameters(),
@@ -183,7 +183,7 @@ router.patch("/", (req, res) =>
     }
     try {
       const result = await Task.UpdateAsync(id, { ...other });
-      if (isNullOrUndefined(result) && result.ok === 1) {
+      if (!isNullOrUndefined(result) && result.ok === 1) {
         handleResponse(
           res,
           { ...Task.CreateFromDocument(result.value), ...other },
@@ -203,7 +203,7 @@ router.patch("/position", (req, res) =>
   needAuth(req, res, async session => {
     const { body } = req;
     const { task, nextId } = body;
-    if (!isNullOrUndefined(task)) {
+    if (isNullOrUndefined(task)) {
       handleError(
         res,
         ApiErrors.InvalidTaskParameters(),
@@ -221,7 +221,7 @@ router.patch("/position", (req, res) =>
         nextId,
         task.id
       );
-      if (isNullOrUndefined(result) && result.ok === 1) {
+      if (!isNullOrUndefined(result) && result.ok === 1) {
         handleResponse(res, {}, session.accessToken);
       } else {
         handleError(res, ApiErrors.ErrorUpdateTask(), 500, session.accessToken);
@@ -237,7 +237,7 @@ router.patch("/toggle-complete", (req, res) =>
   needAuth(req, res, async session => {
     const { body } = req;
     const { id, completed, completedAt } = body;
-    if (!isNullOrUndefined(id) || !isNullOrUndefined(completed)) {
+    if (isNullOrUndefined(id) || isNullOrUndefined(completed)) {
       handleError(
         res,
         ApiErrors.InvalidTaskParameters(),
@@ -268,7 +268,7 @@ router.patch("/toggle-complete", (req, res) =>
         completed,
         completedAt
       });
-      if (isNullOrUndefined(result) && result.ok === 1) {
+      if (!isNullOrUndefined(result) && result.ok === 1) {
         handleResponse(
           res,
           {
