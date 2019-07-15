@@ -43,7 +43,10 @@ router.get("/", (req, res) =>
           limit,
           skip,
           completed,
-          categoriesId
+          categoriesId,
+          ...(completed && {
+            orderBy: { [Task.Schema.fields.completedAt]: -1 }
+          })
         });
       } else {
         tasks = await Task.GetAllByIdsAsync(

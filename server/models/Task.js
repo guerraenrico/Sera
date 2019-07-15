@@ -79,7 +79,8 @@ const GetAllAsync = async ({
   limit,
   skip,
   completed,
-  categoriesId = []
+  categoriesId = [],
+  orderBy = { [Schema.fields.todoWithin]: 1 }
 }) => {
   const db = database.instance();
   const filter = {
@@ -100,7 +101,11 @@ const GetAllAsync = async ({
           .find(filter)
           .limit(limit)
           .skip(skip)
-      : db.collection(Schema.name).find(filter);
+          .sort(orderBy)
+      : db
+          .collection(Schema.name)
+          .find(filter)
+          .sort(orderBy);
   const tasksDocs = await query.toArray();
   return CreateFromDocuments(tasksDocs);
 };
