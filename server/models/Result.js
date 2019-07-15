@@ -49,7 +49,7 @@ const GetTaskResults = async ({ userId, timeInterval = TimeInterval.all }) => {
   const tasksDocs = await query.toArray();
   return {
     completed: tasksDocs.reduce(
-      (tot, doc) => (tot + doc[Task.Schema.fields.completed] ? 1 : 0),
+      (tot, doc) => tot + (doc[Task.Schema.fields.completed] ? 1 : 0),
       0
     ),
     total: tasksDocs.length
