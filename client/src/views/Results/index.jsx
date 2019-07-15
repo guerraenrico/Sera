@@ -73,11 +73,7 @@ class Results extends React.PureComponent {
           </ContentSwitches>
         </MainTopBar>
         <Container>
-          <Result
-            title={Strings().labelTasks}
-            first
-            stats={resultsData.tasks}
-          />
+          <Result title={Strings().labelTasks} stats={resultsData.tasks} />
           <Result title={Strings().labelGoals} stats={resultsData.goals} />
         </Container>
 

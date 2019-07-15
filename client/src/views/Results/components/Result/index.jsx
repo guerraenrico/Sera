@@ -22,8 +22,8 @@ const getPercentage = stats => {
   return (stats.completed / stats.total) * 100;
 };
 
-const Result = ({ title, first, stats }) => (
-  <Content first={first}>
+const Result = ({ title, stats }) => (
+  <Content>
     <Title>{title}</Title>
     <ContainerStats>
       <ContentChart>
@@ -44,12 +44,10 @@ const Result = ({ title, first, stats }) => (
 
 Result.propTypes = {
   title: PropTypes.string.isRequired,
-  first: PropTypes.bool,
   stats: StatisticType
 };
 
 Result.defaultProps = {
-  first: false,
   stats: { completed: 0, total: 0 }
 };
 

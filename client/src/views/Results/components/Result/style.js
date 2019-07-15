@@ -14,8 +14,11 @@ export const Content = styled.div`
   box-sizing: border-box;
   border-radius: ${commonSizes.containerBorderRadius};
   transition: height 500ms ease-in;
-  margin-right: ${props => (props.first ? commonSizes.containerMargin : 0)};
   padding: ${resultItemSize.padding};
+
+  &:nth-child(odd) {
+    margin-right: ${commonSizes.containerMargin};
+  }
 `;
 
 export const Title = styled.p`

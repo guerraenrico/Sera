@@ -12,7 +12,7 @@ class Goals extends Component {
     const { message, hideMessage } = this.props;
     return (
       <div className="content-app">
-        <p>In development</p>
+        <p style={{ color: "#fff" }}>In development</p>
         <Snackbar
           show={message.show}
           isError={message.isError}
