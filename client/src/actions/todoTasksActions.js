@@ -79,7 +79,8 @@ export const fetchTasksByCategory = (
       const tasks = response.data.map(task => ({
         ...task,
         completedAt: task.completedAt ? new Date(task.completedAt) : undefined,
-        todoWithin: task.todoWithin ? new Date(task.todoWithin) : undefined
+        todoWithin: task.todoWithin ? new Date(task.todoWithin) : undefined,
+        createdAt: task.createdAt ? new Date(task.createdAt) : undefined
       }));
       dispatch(receiveFetchTasks(tasks));
     } else {

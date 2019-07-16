@@ -4,5 +4,5 @@ export const CategoryType = PropTypes.shape({
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
-  selected: PropTypes.bool.isRequired // Only client side
+  selected: PropTypes.bool // Only client side
 });

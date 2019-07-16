@@ -17,15 +17,16 @@ router.get("/", (req, res) =>
   needAuth(req, res, async session => {
     // Limit results only if no filter selected
     const limit = isNullOrUndefined(req.query.limit)
-      ? 0
+      ? undefined
       : parseInt(req.query.limit, 10);
     const skip = isNullOrUndefined(req.query.skip)
-      ? 0
+      ? undefined
       : parseInt(req.query.skip, 10);
     const completed = req.query.completed === "true";
-    const categoriesId = isNullOrUndefined(req.query.categoriesId)
-      ? []
-      : req.query.categoriesId.split(",");
+    const categoriesId =
+      isNullOrUndefined(req.query.categoriesId) || req.query.categoriesId === ""
+        ? []
+        : req.query.categoriesId.split(",");
     try {
       const itemOrder = await ItemOrder.GetAsync(
         session.userId,
@@ -51,7 +52,9 @@ router.get("/", (req, res) =>
       } else {
         tasks = await Task.GetAllByIdsAsync(
           session.userId,
-          itemOrder.orderedIds.slice(skip, skip + limit)
+          !isNullOrUndefined(limit) && !isNullOrUndefined(skip)
+            ? itemOrder.orderedIds.slice(skip, skip + limit)
+            : itemOrder.orderedIds
         );
       }
 

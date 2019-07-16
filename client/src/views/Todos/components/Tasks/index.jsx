@@ -28,7 +28,6 @@ class Tasks extends React.PureComponent {
   }
 
   onFetchTodoTasksNext = () => {
-    // TODO: Fix load more issues - task may be mixed on load
     const {
       categoryFilterId,
       completed,
@@ -143,11 +142,15 @@ Tasks.propTypes = {
   taskList: PropTypes.arrayOf(TaskType).isRequired,
   moreToLoad: PropTypes.bool.isRequired,
   fetchTasks: PropTypes.func.isRequired,
-  categoryFilterId: PropTypes.string.isRequired,
+  categoryFilterId: PropTypes.string,
   completed: PropTypes.bool.isRequired,
   skip: PropTypes.number.isRequired,
   creatingTask: PropTypes.bool.isRequired,
   onAbortCreatingTask: PropTypes.func.isRequired
+};
+
+Tasks.defaultProps = {
+  categoryFilterId: undefined
 };
 
 const mapStateToProps = state => ({

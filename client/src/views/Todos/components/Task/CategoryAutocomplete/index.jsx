@@ -24,7 +24,7 @@ import {
 
 const waitTime = 300;
 
-class SearchComponent extends Component {
+class CategoryAutocomplete extends Component {
   state = {
     text: "",
     categories: [],
@@ -131,7 +131,7 @@ class SearchComponent extends Component {
       inputHeight,
       searchingCategory
     } = this.state;
-    const { withMargin, fullAddButton } = this.props;
+    const { fullAddButton } = this.props;
 
     let contentAction = (
       <ButtonAdd onClick={() => this.setState({ searchingCategory: true })}>
@@ -153,7 +153,7 @@ class SearchComponent extends Component {
       );
     }
     return (
-      <Container withMargin={withMargin}>
+      <Container>
         <ContentSearch ref={this.contentSearch}>{contentAction}</ContentSearch>
         <Suggestions
           top={inputHeight}
@@ -181,8 +181,7 @@ class SearchComponent extends Component {
   }
 }
 
-SearchComponent.propTypes = {
-  withMargin: PropTypes.bool.isRequired,
+CategoryAutocomplete.propTypes = {
   doSearchCategory: PropTypes.func.isRequired,
   onSelectCategory: PropTypes.func.isRequired,
   onCreateCategory: PropTypes.func.isRequired,
@@ -196,4 +195,4 @@ const mapDispatchToProps = dispatch => ({
 export default connect(
   undefined,
   mapDispatchToProps
-)(SearchComponent);
+)(CategoryAutocomplete);
