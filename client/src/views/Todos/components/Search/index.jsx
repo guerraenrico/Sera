@@ -20,7 +20,6 @@ import {
 } from "~/selectors/todoFiltersSelectors";
 
 import CategoryComponent from "../Category";
-import { CategoryType } from "~/models/category";
 
 import {
   Container,
@@ -210,7 +209,12 @@ class SearchComponent extends PureComponent {
 }
 
 SearchComponent.propTypes = {
-  selectedCategory: CategoryType,
+  selectedCategory: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    userId: PropTypes.string.isRequired,
+    selected: PropTypes.bool // Only client side
+  }),
   searchText: PropTypes.string,
   doSearchCategory: PropTypes.func.isRequired,
   doSetSelectedCategory: PropTypes.func.isRequired,

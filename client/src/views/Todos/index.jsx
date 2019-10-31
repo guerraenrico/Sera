@@ -13,8 +13,6 @@ import Snackbar from "~/components/Snackbar";
 import * as messageActions from "~/actions/messageActions";
 import * as commonSelectors from "~/selectors/commonSelectors";
 
-import { MessageType } from "~/models/message";
-
 import { ContentApp, MainTopBar, ContentTopBarActions } from "./style";
 
 class Todos extends React.PureComponent {
@@ -68,7 +66,11 @@ class Todos extends React.PureComponent {
 }
 
 Todos.propTypes = {
-  message: MessageType.isRequired,
+  message: PropTypes.shape({
+    show: PropTypes.bool.isRequired,
+    isError: PropTypes.bool.isRequired,
+    text: PropTypes.string
+  }).isRequired,
   hideMessage: PropTypes.func.isRequired,
   showLoading: PropTypes.bool.isRequired
 };

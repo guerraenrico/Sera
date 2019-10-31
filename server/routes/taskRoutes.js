@@ -1,11 +1,15 @@
 const express = require("express");
 
 const needAuth = require("../middleware/authMiddleware");
+const { catchErrors, errorHandler } = require("../middleware//errorMiddleware");
 
 const Task = require("../models/Task");
 const ItemOrder = require("../models/ItemOrder");
-const ApiErrors = require("../ApiErrors");
-const { handleError, handleResponse } = require("../Handlers");
+
+const errorCodes = require("../constants/errorCodes");
+const ApiError = require("../error/ApiError");
+const ApiResponse = require("../ApiResponse");
+const BadRequestError = require("../error/BadRequestError");
 
 const { isNullOrUndefined } = require("../utils/common");
 
@@ -13,8 +17,11 @@ const router = express.Router();
 
 // Get Tasks
 
-router.get("/", (req, res) =>
-  needAuth(req, res, async session => {
+router.get(
+  "/",
+  needAuth,
+  catchErrors(async (req, res) => {
+    const { session } = res.locals;
     // Limit results only if no filter selected
     const limit = isNullOrUndefined(req.query.limit)
       ? undefined
@@ -87,28 +94,27 @@ router.get("/", (req, res) =>
           }
         });
       }
-      handleResponse(res, orederedTasks, session.accessToken);
+      res.status(200).json(ApiResponse.success(orederedTasks));
     } catch (e) {
-      console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorReadTask(e), 500, session.accessToken);
+      throw new ApiError(errorCodes.ERROR_READ_TASK, e.message);
     }
   })
 );
 
 // Insert Task
 
-router.post("/", (req, res) =>
-  needAuth(req, res, async session => {
+router.post(
+  "/",
+  needAuth,
+  catchErrors(async (req, res) => {
+    const { session } = res.locals;
     const { body } = req;
     const task = Task.CreateFromBodyRequest(body, session.userId);
     if (isNullOrUndefined(task)) {
-      handleError(
-        res,
-        ApiErrors.InvalidTaskParameters(),
-        400,
-        session.accessToken
+      throw new BadRequestError(
+        errorCodes.INVALID_TASK_PARAMETERS,
+        "Invalid param task"
       );
-      return;
     }
     try {
       task.position = 0;
@@ -122,30 +128,31 @@ router.post("/", (req, res) =>
           },
           result.insertedId.valueOf().toString()
         );
-
-        handleResponse(
-          res,
-          { ...task, id: result.insertedId },
-          session.accessToken
-        );
+        res
+          .status(200)
+          .json(ApiResponse.success({ ...task, id: result.insertedId }));
       } else {
-        handleError(res, ApiErrors.ErrorInsertTask(), 500, session.accessToken);
+        throw new ApiError(errorCodes.ERROR_INSERT_TASK, "Error insert task");
       }
     } catch (e) {
-      console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorInsertTask(e), 500, session.accessToken);
+      throw new ApiError(errorCodes.ERROR_INSERT_TASK, e.message);
     }
   })
 );
 
 // Delete Task
 
-router.delete("/:id", (req, res) =>
-  needAuth(req, res, async session => {
+router.delete(
+  "/:id",
+  needAuth,
+  catchErrors(async (req, res) => {
+    const { session } = res.locals;
     const { id } = req.params;
     if (isNullOrUndefined(id) || id.toString() === "") {
-      handleError(res, ApiErrors.InvalidTaskId(), 400, session.accessToken);
-      return;
+      throw new BadRequestError(
+        errorCodes.INVALID_TASK_PARAMETERS,
+        "Missing param id"
+      );
     }
     try {
       const task = await Task.GetAsync(session.userId, id);
@@ -161,62 +168,60 @@ router.delete("/:id", (req, res) =>
             id
           );
         }
-        handleResponse(res, {}, session.accessToken);
+        res.status(200);
       } else {
-        handleError(res, ApiErrors.ErrorDeleteTask(), 500, session.accessToken);
+        throw new ApiError(errorCodes.ERROR_DELETE_TASK, "Error delete task");
       }
     } catch (e) {
-      console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorDeleteTask(e), 500, session.accessToken);
+      throw new ApiError(errorCodes.ERROR_DELETE_TASK, e.message);
     }
   })
 );
 
 // Update Task
 
-router.patch("/", (req, res) =>
-  needAuth(req, res, async session => {
+router.patch(
+  "/",
+  needAuth,
+  catchErrors(async (req, res) => {
     const { body } = req;
     const { id, ...other } = body;
     if (isNullOrUndefined(id)) {
-      handleError(
-        res,
-        ApiErrors.InvalidTaskParameters(),
-        400,
-        session.accessToken
+      throw new BadRequestError(
+        errorCodes.INVALID_TASK_PARAMETERS,
+        "Missing param id"
       );
-      return;
     }
     try {
       const result = await Task.UpdateAsync(id, { ...other });
       if (!isNullOrUndefined(result) && result.ok === 1) {
-        handleResponse(
-          res,
-          { ...Task.CreateFromDocument(result.value), ...other },
-          session.accessToken
+        res.status(200).json(
+          ApiResponse.success({
+            ...Task.CreateFromDocument(result.value),
+            ...other
+          })
         );
       } else {
-        handleError(res, ApiErrors.ErrorUpdateTask(), 500, session.accessToken);
+        throw new ApiError(errorCodes.ERROR_UPDATE_TASK, "Error update task");
       }
     } catch (e) {
-      console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorUpdateTask(e), 500, session.accessToken);
+      throw new ApiError(errorCodes.ERROR_UPDATE_TASK, e.message);
     }
   })
 );
 
-router.patch("/position", (req, res) =>
-  needAuth(req, res, async session => {
+router.patch(
+  "/position",
+  needAuth,
+  catchErrors(async (req, res) => {
+    const { session } = res.locals;
     const { body } = req;
     const { task, nextId } = body;
     if (isNullOrUndefined(task)) {
-      handleError(
-        res,
-        ApiErrors.InvalidTaskParameters(),
-        400,
-        session.accessToken
+      throw new BadRequestError(
+        errorCodes.INVALID_TASK_PARAMETERS,
+        "Invalid param task"
       );
-      return;
     }
 
     try {
@@ -228,29 +233,37 @@ router.patch("/position", (req, res) =>
         task.id
       );
       if (!isNullOrUndefined(result) && result.ok === 1) {
-        handleResponse(res, {}, session.accessToken);
+        res.status(200);
       } else {
-        handleError(res, ApiErrors.ErrorUpdateTask(), 500, session.accessToken);
+        throw new ApiError(
+          errorCodes.ERROR_UPDATE_TASK,
+          "Error update task position"
+        );
       }
     } catch (e) {
-      console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorUpdateTask(e), 500, session.accessToken);
+      throw new ApiError(errorCodes.ERROR_UPDATE_TASK, e.message);
     }
   })
 );
 
-router.patch("/toggle-complete", (req, res) =>
-  needAuth(req, res, async session => {
+router.patch(
+  "/toggle-complete",
+  needAuth,
+  catchErrors(async (req, res) => {
+    const { session } = res.locals;
     const { body } = req;
     const { id, completed, completedAt } = body;
-    if (isNullOrUndefined(id) || isNullOrUndefined(completed)) {
-      handleError(
-        res,
-        ApiErrors.InvalidTaskParameters(),
-        400,
-        session.accessToken
+    if (isNullOrUndefined(id)) {
+      throw new BadRequestError(
+        errorCodes.INVALID_TASK_PARAMETERS,
+        "Missing param id"
       );
-      return;
+    }
+    if (isNullOrUndefined(completed)) {
+      throw new BadRequestError(
+        errorCodes.INVALID_TASK_PARAMETERS,
+        "Missing param completed"
+      );
     }
     try {
       // If completed remove task id from item order tasks to complete
@@ -275,27 +288,30 @@ router.patch("/toggle-complete", (req, res) =>
         completedAt
       });
       if (!isNullOrUndefined(result) && result.ok === 1) {
-        handleResponse(
-          res,
-          {
+        res.status(200).json(
+          ApiResponse.success({
             ...Task.CreateFromDocument(result.value),
             completed,
             completedAt
-          },
-          session.accessToken
+          })
         );
       } else {
-        handleError(res, ApiErrors.ErrorUpdateTask(), 500, session.accessToken);
+        throw new ApiError(
+          errorCodes.ERROR_UPDATE_TASK,
+          "Error toogle task completed status"
+        );
       }
     } catch (e) {
-      console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorUpdateTask(e), 500, session.accessToken);
+      throw new ApiError(errorCodes.ERROR_UPDATE_TASK, e.message);
     }
   })
 );
 
-router.get("/search", (req, res) =>
-  needAuth(req, res, async session => {
+router.get(
+  "/search",
+  needAuth,
+  catchErrors(async (req, res) => {
+    const { session } = res.locals;
     const text = req.query.text || "";
     const completed = req.query.completed === "true";
     try {
@@ -315,12 +331,13 @@ router.get("/search", (req, res) =>
         }
       });
 
-      handleResponse(res, orederedTasks, 500, session.accessToken);
+      res.status(200).json(ApiResponse.success(orederedTasks));
     } catch (e) {
-      console.log("err", e.message);
-      handleError(res, ApiErrors.ErrorReadTask(e), 500, session.accessToken);
+      throw new ApiError(errorCodes.ERROR_READ_TASK, e.message);
     }
   })
 );
+
+router.use(errorHandler);
 
 module.exports = router;

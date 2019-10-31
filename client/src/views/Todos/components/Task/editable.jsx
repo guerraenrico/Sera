@@ -7,8 +7,6 @@ import DatePicker from "~/components/DatePicker";
 
 import labels from "~/constants/labels";
 
-import { TaskType } from "~/models/task";
-
 import {
   Item,
   Content,
@@ -123,7 +121,14 @@ class EditableTaskComponent extends React.PureComponent {
 EditableTaskComponent.propTypes = {
   onUndo: PropTypes.func.isRequired,
   onCreate: PropTypes.func.isRequired,
-  task: TaskType
+  task: PropTypes.shape({
+    id: PropTypes.string,
+    title: PropTypes.string,
+    description: PropTypes.string,
+    todoWithin: PropTypes.instanceOf(Date),
+    completedAt: PropTypes.instanceOf(Date),
+    categories: PropTypes.arrayOf(PropTypes.shape())
+  })
 };
 
 export default EditableTaskComponent;

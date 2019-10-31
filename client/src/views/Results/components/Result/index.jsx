@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import ChartProgress from "~/components/ChartProgress";
-import { StatisticType } from "~/models/resultsData";
 
 import {
   Content,
@@ -44,11 +43,10 @@ const Result = ({ title, stats }) => (
 
 Result.propTypes = {
   title: PropTypes.string.isRequired,
-  stats: StatisticType
-};
-
-Result.defaultProps = {
-  stats: { completed: 0, total: 0 }
+  stats: PropTypes.shape({
+    completed: PropTypes.number.isRequired,
+    total: PropTypes.number.isRequired
+  }).isRequired
 };
 
 export default Result;

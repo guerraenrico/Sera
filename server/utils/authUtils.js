@@ -1,14 +1,11 @@
 const { OAuth2Client } = require("google-auth-library");
 
+const AuthorizationError = require("../error/AuthorizationError");
+
+const errorCodes = require("../constants/errorCodes");
 const User = require("../models/User");
 const Session = require("../models/Session");
 const { isNullOrUndefined } = require("../utils/common");
-
-const {
-  Unauthorized,
-  ExpiredSession,
-  isErrorExpiredSession
-} = require("../ApiErrors");
 
 const client = new OAuth2Client(
   process.env.OAUTH2_CLIENT_ID_WEB,
@@ -20,21 +17,32 @@ const client = new OAuth2Client(
  * Get user tokens from Google Auth Client
  * @param {String} code user's google code
  */
-const getTokens = code => client.getToken(code);
+const getTokensAsync = async code => {
+  try {
+    const { tokens } = await client.getToken(code);
+    return tokens;
+  } catch (e) {
+    throw new AuthorizationError(errorCodes.INVALID_AUTH_CODE, e.message);
+  }
+};
 
 /**
  * Get payloads from Google Auth Client
  * @param {String} idToken usert token id
  */
 const getPayload = async idToken => {
-  const ticket = await client.verifyIdToken({
-    idToken,
-    audience: [
-      // Clients id
-      process.env.OAUTH2_CLIENT_ID_WEB
-    ]
-  });
-  return ticket.getPayload();
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: [
+        // Clients id
+        process.env.OAUTH2_CLIENT_ID_WEB
+      ]
+    });
+    return ticket.getPayload();
+  } catch (e) {
+    throw new AuthorizationError(errorCodes.AUTH_INVALID_PAYLOAD, e.message);
+  }
 };
 
 /**
@@ -60,20 +68,30 @@ const isPayloadValid = payload => {
 
 /**
  * Check if the session is valid
- * Return undefined if is valid othrewise an {Object} Error
+ * Return null if is valid othrewise an AuthorizationError
  * @param {Object} session user session
+ * @returns {AuthorizationError} error or null if valid
  */
 const verifySession = async session => {
   if (isNullOrUndefined(session)) {
-    return Unauthorized();
+    throw new AuthorizationError(
+      errorCodes.INVALID_SESSION_TOKEN,
+      "Invalid session token"
+    );
   }
   if (session.expireAt < new Date()) {
-    return ExpiredSession();
+    throw new AuthorizationError(
+      errorCodes.EXPIRED_SESSION,
+      "Session expired. Please sign in"
+    );
   }
   if (!(await client.getTokenInfo(session.accessToken))) {
-    return Unauthorized();
+    throw new AuthorizationError(
+      errorCodes.UNAUTHORIZED,
+      "Invalid session token"
+    );
   }
-  return undefined;
+  return null;
 };
 
 /**
@@ -82,6 +100,12 @@ const verifySession = async session => {
  */
 const getSessionByToken = async accessToken => {
   const session = await Session.GetByAccessTokenAsync(accessToken);
+  if (isNullOrUndefined(session)) {
+    throw new AuthorizationError(
+      errorCodes.INVALID_SESSION_TOKEN,
+      "Invalid session token"
+    );
+  }
   return session;
 };
 
@@ -102,19 +126,28 @@ const getSessionByTokenAndRefreshIfNeeded = async accessToken => {
     return session;
   }
   // Refresh only if the session is expired
-  if (!isErrorExpiredSession(sessionError)) {
+  if (
+    sessionError instanceof AuthorizationError &&
+    sessionError.httpCode === errorCodes.EXPIRED_SESSION
+  ) {
     return undefined;
   }
 
   const user = await User.GetAsync(session.userId);
   if (isNullOrUndefined(user)) {
-    return undefined;
+    throw new AuthorizationError(
+      errorCodes.USER_NOT_FOUND,
+      "User deleted of invalid session"
+    );
   }
   client.credentials.refresh_token = user.refreshToken;
   const res = await client.getAccessToken();
   const { token } = res;
   if (!token) {
-    return undefined;
+    throw new AuthorizationError(
+      errorCodes.INVALID_SESSION_TOKEN,
+      "Invalid user refresh token"
+    );
   }
 
   const tokenInfo = await client.getTokenInfo(token);
@@ -127,7 +160,10 @@ const getSessionByTokenAndRefreshIfNeeded = async accessToken => {
 
   const { result } = await Session.UpdateAsync(session);
   if (isNullOrUndefined(result) || result.ok !== 1) {
-    return undefined;
+    throw new AuthorizationError(
+      errorCodes.ERROR_UPDATE_SESSION,
+      "Error while updating the session, try again"
+    );
   }
 
   return session;
@@ -143,7 +179,7 @@ const getUserByToken = async accessToken => {
 
   const sessionError = await verifySession(session);
   if (!isNullOrUndefined(sessionError)) {
-    return sessionError;
+    throw sessionError;
   }
 
   // Verify user saved in the db
@@ -160,7 +196,7 @@ module.exports = {
   isPayloadValid,
   verifySession,
   getUserByToken,
-  getTokens,
+  getTokensAsync,
   getSessionByToken,
   getSessionByTokenAndRefreshIfNeeded,
   revokeSessionAndToken

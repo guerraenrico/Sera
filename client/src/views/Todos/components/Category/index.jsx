@@ -2,7 +2,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { CategoryType } from "~/models/category";
 import ButtonDelete from "./ButtonDelete";
 
 import { Chip, Text } from "./style";
@@ -39,7 +38,12 @@ const CategoryComponent = ({ category, onClick, onDelete, size }) => {
 };
 
 CategoryComponent.propTypes = {
-  category: CategoryType.isRequired,
+  category: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    userId: PropTypes.string.isRequired,
+    selected: PropTypes.bool // Only client side
+  }).isRequired,
   onDelete: PropTypes.func,
   onClick: PropTypes.func.isRequired,
   size: PropTypes.oneOf([Small, Normal])

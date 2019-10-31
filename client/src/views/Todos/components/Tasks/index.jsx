@@ -13,8 +13,6 @@ import * as todoTasksActions from "~/actions/todoTasksActions";
 import * as todoTasksSelectors from "~/selectors/todoTasksSelectors";
 import * as todoFiltersSelectors from "~/selectors/todoFiltersSelectors";
 
-import { TaskType } from "~/models/task";
-
 import { Container } from "./style";
 
 const initialState = {};
@@ -139,7 +137,19 @@ Tasks.propTypes = {
   createAndSetCategoryToTask: PropTypes.func.isRequired,
   removeCategoryToTask: PropTypes.func.isRequired,
   changeTaskOrder: PropTypes.func.isRequired,
-  taskList: PropTypes.arrayOf(TaskType).isRequired,
+  taskList: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
+      description: PropTypes.string.isRequired,
+      completed: PropTypes.bool.isRequired,
+      todoWithin: PropTypes.instanceOf(Date).isRequired,
+      completedAt: PropTypes.instanceOf(Date),
+      createdAt: PropTypes.instanceOf(Date).isRequired,
+      userId: PropTypes.string.isRequired,
+      categories: PropTypes.arrayOf(PropTypes.shape())
+    })
+  ).isRequired,
   moreToLoad: PropTypes.bool.isRequired,
   fetchTasks: PropTypes.func.isRequired,
   categoryFilterId: PropTypes.string,
@@ -186,12 +196,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(
       todoTasksActions.changeTaskOrder(previousIndex, nextIndex, taskId)
     ),
-  fetchTasks: (
-    categoryFilterId,
-    completed,
-    skip,
-    limit
-  ) =>
+  fetchTasks: (categoryFilterId, completed, skip, limit) =>
     dispatch(
       todoTasksActions.fetchTasksByCategory(
         categoryFilterId ? [categoryFilterId] : [],

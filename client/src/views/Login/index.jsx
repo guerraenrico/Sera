@@ -8,7 +8,6 @@ import Button from "~/components/Button";
 
 import * as authActions from "~/actions/authActions";
 import * as messageActions from "~/actions/messageActions";
-import { MessageType } from "~/models/message";
 
 import { getCurrentBaseUrl } from "~/utils/Common";
 import { SeraLogo } from "~/assets/Svgs";
@@ -91,7 +90,11 @@ const Login = ({
 };
 
 Login.propTypes = {
-  message: MessageType.isRequired,
+  message: PropTypes.shape({
+    show: PropTypes.bool.isRequired,
+    isError: PropTypes.bool.isRequired,
+    text: PropTypes.string
+  }).isRequired,
   enterAsGuest: PropTypes.func.isRequired,
   authenticateGoogleToken: PropTypes.func.isRequired,
   hideMessage: PropTypes.func.isRequired

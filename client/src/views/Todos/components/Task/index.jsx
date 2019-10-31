@@ -5,8 +5,6 @@ import PropTypes from "prop-types";
 import EditableTaskComponent from "./editable";
 import StaticTaskComponent from "./static";
 
-import { TaskType } from "~/models/task";
-
 class TaskComponent extends React.PureComponent {
   static defaultProps = {
     onUndo: () => {},
@@ -50,7 +48,17 @@ TaskComponent.propTypes = {
   onCreateCategory: PropTypes.func,
   onRemoveCategory: PropTypes.func,
   // Common
-  task: TaskType,
+  task: PropTypes.shape({
+    id: PropTypes.string,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    completed: PropTypes.bool.isRequired,
+    todoWithin: PropTypes.instanceOf(Date).isRequired,
+    completedAt: PropTypes.instanceOf(Date),
+    createdAt: PropTypes.instanceOf(Date).isRequired,
+    userId: PropTypes.string.isRequired,
+    categories: PropTypes.arrayOf(PropTypes.shape())
+  }),
   creating: PropTypes.bool
 };
 

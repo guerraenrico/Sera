@@ -59,8 +59,10 @@ export const authenticateGoogleToken = code => async dispatch => {
       Methods.POST
     );
     if (response.success) {
-      store.saveAccessToken(response.accessToken);
-      dispatch(receiveAuthentication(response.data, response.accessToken));
+      store.saveAccessToken(response.data.accessToken);
+      dispatch(
+        receiveAuthentication(response.data.user, response.data.accessToken)
+      );
     } else {
       dispatch(showMessageError(response.error.message));
     }
@@ -77,8 +79,10 @@ export const validateToken = accessToken => async (dispatch, getState) => {
       Methods.POST
     );
     if (response.success) {
-      store.saveAccessToken(response.accessToken);
-      dispatch(receiveAuthentication(response.data, response.accessToken));
+      store.saveAccessToken(response.data.accessToken);
+      dispatch(
+        receiveAuthentication(response.data.user, response.data.accessToken)
+      );
     } else {
       if (shouldRefreshToken(response)) {
         await dispatch(refreshAccessToken());

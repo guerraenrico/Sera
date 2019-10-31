@@ -18,7 +18,10 @@ const resultsData = (state = initialState, action) => {
       return {
         ...state,
         isFetching: false,
-        data: action.data
+        data: {
+          ...state.data,
+          ...action.data
+        }
       };
     case "ERROR_FETCH_RESULTS":
       return {

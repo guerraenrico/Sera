@@ -1,33 +1,33 @@
 const express = require("express");
 
 const needAuth = require("../middleware/authMiddleware");
+const { catchErrors, errorHandler } = require("../middleware//errorMiddleware");
 
+const errorCodes = require("../constants/errorCodes");
 const Result = require("../models/Result");
-const ApiErrors = require("../ApiErrors");
-const { handleError, handleResponse } = require("../Handlers");
+const ApiError = require("../error/ApiError");
+const ApiResponse = require("../ApiResponse");
 
 const router = express.Router();
 
-router.get("/", (req, res) =>
-  needAuth(req, res, async session => {
+router.get(
+  "/",
+  needAuth,
+  catchErrors(async (req, res) => {
     const { timeInterval } = req.query;
+    const { session } = res.locals;
     try {
       const taskResults = await Result.GetTaskResults({
         userId: session.userId,
         timeInterval
       });
-
-      handleResponse(res, { tasks: taskResults }, session.accessToken);
+      res.status(200).json(ApiResponse.success({ tasks: taskResults }));
     } catch (e) {
-      console.log("err", e.message);
-      handleError(
-        res,
-        ApiErrors.ErrorReadTaskResults(e),
-        500,
-        session.accessToken
-      );
+      throw new ApiError(errorCodes.ERROR_READ_TASK_RESULTS, e.message);
     }
   })
 );
+
+router.use(errorHandler);
 
 module.exports = router;

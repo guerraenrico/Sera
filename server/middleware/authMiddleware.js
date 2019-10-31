@@ -1,23 +1,38 @@
 const { getSessionByToken, verifySession } = require("../utils/authUtils");
 const { isNullOrUndefined } = require("../utils/common");
-const { handleError } = require("../Handlers");
-const { Unauthorized } = require("../ApiErrors");
+const ApiResponse = require("../ApiResponse");
 
-async function needAuth(req, res, next) {
+const errorCodes = require("../constants/errorCodes");
+const AuthorizationError = require("../error/AuthorizationError");
+const BadRequestError = require("../error/BadRequestError");
+
+const needAuth = async (req, res, next) => {
   try {
-    const session = await getSessionByToken(req.get("x-token"));
-    if (isNullOrUndefined(session)) {
-      return handleError(res, Unauthorized(), 401);
+    const token = req.get("x-token");
+    if (isNullOrUndefined(token) || token === "") {
+      throw new BadRequestError(
+        errorCodes.VALID_TOKEN_REQUIRED,
+        "Invalid token"
+      );
     }
+    const session = await getSessionByToken(req.get("x-token"));
     const sessionError = await verifySession(session);
     if (!isNullOrUndefined(sessionError)) {
-      return handleError(res, sessionError, 401);
+      throw sessionError;
     }
-
-    return next(session);
-  } catch (ex) {
-    return handleError(res, Unauthorized(ex), 401);
+    res.locals.session = session;
+    next();
+  } catch (e) {
+    if (e instanceof AuthorizationError) {
+      res.status(e.httpCode).json(ApiResponse.error(e.errorCode, e.message));
+      return;
+    }
+    if (e instanceof BadRequestError) {
+      res.status(e.httpCode).json(ApiResponse.error(e.errorCode, e.message));
+      return;
+    }
+    res.status(500).json(ApiResponse.error(errorCodes.UNKNOWN, e.message));
   }
-}
+};
 
 module.exports = needAuth;

@@ -16,8 +16,7 @@ import * as commonSelectors from "~/selectors/commonSelectors";
 import * as resultsFiltersSelectors from "~/selectors/resultsFiltersSelectors";
 import * as resultsDataSelectors from "~/selectors/resultsDataSelectors";
 
-import { MessageType } from "~/models/message";
-import { ResultsDataType, TimeInterval } from "~/models/resultsData";
+import { TimeInterval } from "~/models/resultsData";
 
 import Strings from "~/styles/strings";
 
@@ -44,6 +43,7 @@ class Results extends React.PureComponent {
       timeInterval,
       resultsData
     } = this.props;
+
     return (
       <ContentApp>
         <LoaderLinear show={showLoading} />
@@ -89,7 +89,11 @@ class Results extends React.PureComponent {
 }
 
 Results.propTypes = {
-  message: MessageType.isRequired,
+  message: PropTypes.shape({
+    show: PropTypes.bool.isRequired,
+    isError: PropTypes.bool.isRequired,
+    text: PropTypes.string
+  }).isRequired,
   hideMessage: PropTypes.func.isRequired,
   fetchResults: PropTypes.func.isRequired,
   changeTimeInterval: PropTypes.func.isRequired,
@@ -99,7 +103,23 @@ Results.propTypes = {
     TimeInterval.WEEK,
     TimeInterval.YEAR
   ]).isRequired,
-  resultsData: ResultsDataType.isRequired
+  resultsData: PropTypes.shape({
+    tasks: PropTypes.shape({
+      completed: PropTypes.number.isRequired,
+      total: PropTypes.number.isRequired
+    }).isRequired,
+    goals: PropTypes.shape({
+      completed: PropTypes.number.isRequired,
+      total: PropTypes.number.isRequired
+    }).isRequired
+  })
+};
+
+Results.defaultProps = {
+  resultsData: {
+    tasks: { completed: 0, total: 0 },
+    goals: { completed: 0, total: 0 }
+  }
 };
 
 const mapStateToProps = state => ({

@@ -1,10 +1,14 @@
 const express = require("express");
 
 const needAuth = require("../middleware/authMiddleware");
+const { catchErrors, errorHandler } = require("../middleware//errorMiddleware");
 
 const Category = require("../models/Category");
-const ApiErrors = require("../ApiErrors");
-const { handleError, handleResponse } = require("../Handlers");
+
+const errorCodes = require("../constants/errorCodes");
+const ApiError = require("../error/ApiError");
+const ApiResponse = require("../ApiResponse");
+const BadRequestError = require("../error/BadRequestError");
 
 const { isNullOrUndefined } = require("../utils/common");
 
@@ -12,8 +16,11 @@ const router = express.Router();
 
 // Get Categories
 
-router.get("/", (req, res) =>
-  needAuth(req, res, async session => {
+router.get(
+  "/",
+  needAuth,
+  catchErrors(async (req, res) => {
+    const { session } = res.locals;
     const limit = isNullOrUndefined(req.query.limit)
       ? parseInt(req.query.limit, 10)
       : 0;
@@ -26,113 +33,93 @@ router.get("/", (req, res) =>
         limit,
         skip
       );
-      handleResponse(res, categories, session.accessToken);
+      res.status(200).json(ApiResponse.success(categories));
     } catch (e) {
-      console.log("err", e.message);
-      handleError(
-        res,
-        ApiErrors.ErrorReadCategory(e),
-        500,
-        session.accessToken
-      );
+      throw new ApiError(errorCodes.ERROR_READ_CATEGORY, e.message);
     }
   })
 );
 
 // Search Categories
 
-router.get("/search", (req, res) =>
-  needAuth(req, res, async session => {
+router.get(
+  "/search",
+  needAuth,
+  catchErrors(async (req, res) => {
+    const { session } = res.locals;
     const text = req.query.text || "";
     try {
       const categories = await Category.SearchAsync(session.userId, text);
-      handleResponse(res, categories, session.accessToken);
+      res.status(200).json(ApiResponse.success(categories));
     } catch (e) {
-      console.log("err", e.message);
-      handleError(
-        res,
-        ApiErrors.ErrorReadCategory(e),
-        500,
-        session.accessToken
-      );
+      throw new ApiError(errorCodes.ERROR_SEARCH_CATEGORY, e.message);
     }
   })
 );
 
 // Insert Category
 
-router.post("/", (req, res) =>
-  needAuth(req, res, async session => {
+router.post(
+  "/",
+  needAuth,
+  catchErrors(async (req, res) => {
     const { body } = req;
+    const { session } = res.locals;
     const category = Category.CreateFromBodyRequest(body, session.userId);
     if (isNullOrUndefined(category)) {
-      handleError(
-        res,
-        ApiErrors.InvalidCategoryParameters(),
-        400,
-        session.accessToken
+      throw new BadRequestError(
+        errorCodes.INVALID_CATEGORY_PARAMETERS,
+        "Invalid param category"
       );
-      return;
     }
     try {
       const result = await Category.InsertAsync(category);
       if (!isNullOrUndefined(result.insertedId)) {
-        handleResponse(
-          res,
-          { ...category, id: result.insertedId },
-          session.accessToken
-        );
+        res
+          .status(200)
+          .json(ApiResponse.success({ ...category, id: result.insertedId }));
       } else {
-        handleError(
-          res,
-          ApiErrors.ErrorInsertCategory(),
-          500,
-          session.accessToken
+        throw new ApiError(
+          errorCodes.ERROR_INSERT_CATEGORY,
+          "Error insert category"
         );
       }
     } catch (e) {
-      console.log("err", e.message);
-      handleError(
-        res,
-        ApiErrors.ErrorInsertCategory(e),
-        500,
-        session.accessToken
-      );
+      throw new ApiError(errorCodes.ERROR_INSERT_CATEGORY, e.message);
     }
   })
 );
 
 // Detete Category
 
-router.delete("/:id", (req, res) =>
-  needAuth(req, res, async session => {
+router.delete(
+  "/:id",
+  needAuth,
+  catchErrors(async (req, res) => {
     const { id } = req.params;
+    const { session } = res.locals;
     if (isNullOrUndefined(id) || id.toString() === "") {
-      handleError(res, ApiErrors.InvalidCategoryId(), 400, session.accessToken);
-      return;
+      throw new BadRequestError(
+        errorCodes.INVALID_CATEGORY_PARAMETERS,
+        "Missing param id"
+      );
     }
     try {
       const result = await Category.DeleteAsync(session.userId, id);
       if (result.deletedCount >= 1) {
-        handleResponse(res, {}, session.accessToken);
+        res.status(200);
       } else {
-        handleError(
-          res,
-          ApiErrors.ErrorDeleteCategory(),
-          500,
-          session.accessToken
+        throw new ApiError(
+          errorCodes.ERROR_DELETE_CATEGORY,
+          "Error delete category"
         );
       }
     } catch (e) {
-      console.log("err", e.message);
-      handleError(
-        res,
-        ApiErrors.ErrorDeleteCategory(e),
-        500,
-        session.accessToken
-      );
+      throw new ApiError(errorCodes.ERROR_DELETE_CATEGORY, e.message);
     }
   })
 );
+
+router.use(errorHandler);
 
 module.exports = router;

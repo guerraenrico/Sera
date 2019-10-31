@@ -11,8 +11,6 @@ import CategoryAutocomplete from "./CategoryAutocomplete";
 import { toSimpleDateFormat } from "~/utils/Common";
 import labels from "~/constants/labels";
 
-import { TaskType } from "~/models/task";
-
 import {
   Item,
   Content,
@@ -167,7 +165,17 @@ StaticTaskComponent.propTypes = {
   onSetCategory: PropTypes.func.isRequired,
   onCreateCategory: PropTypes.func.isRequired,
   onRemoveCategory: PropTypes.func.isRequired,
-  task: TaskType.isRequired
+  task: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    completed: PropTypes.bool.isRequired,
+    todoWithin: PropTypes.instanceOf(Date).isRequired,
+    completedAt: PropTypes.instanceOf(Date),
+    createdAt: PropTypes.instanceOf(Date).isRequired,
+    userId: PropTypes.string.isRequired,
+    categories: PropTypes.arrayOf(PropTypes.shape())
+  }).isRequired
 };
 
 export default StaticTaskComponent;

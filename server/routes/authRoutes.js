@@ -2,91 +2,79 @@ const express = require("express");
 
 const User = require("../models/User");
 const Session = require("../models/Session");
-const { handleError, handleResponse } = require("../Handlers");
-const {
-  ErrorAuthInvalidPayload,
-  ErrorCreateUser,
-  ErrorCreateSession,
-  ErrorAuthInvalidCode,
-  Unauthorized,
-  InvalidAuthCode
-} = require("../ApiErrors");
+
+const { catchErrors, errorHandler } = require("../middleware/errorMiddleware");
+
+const errorCodes = require("../constants/errorCodes");
+const ApiResponse = require("../ApiResponse");
+const AuthorizationError = require("../error/AuthorizationError");
+const BadRequestError = require("../error/BadRequestError");
+
 const {
   getPayload,
   isPayloadValid,
   getUserByToken,
-  getTokens,
+  getTokensAsync,
   revokeSessionAndToken,
   getSessionByTokenAndRefreshIfNeeded
 } = require("../utils/authUtils");
-
 const { isNullOrUndefined } = require("../utils/common");
 
 const router = express.Router();
 
-router.post("/google/signin/callback", async (req, res) => {
-  const { code, platform } = req.body;
-  let tokens;
-  let payload;
+router.post(
+  "/google/signin/callback",
+  catchErrors(async (req, res) => {
+    const { code, platform } = req.body;
 
-  if (isNullOrUndefined(code) || code === "") {
-    handleError(res, InvalidAuthCode(), 401);
-    return;
-  }
-
-  try {
-    ({ tokens } = await getTokens(code));
-  } catch (e) {
-    handleError(res, ErrorAuthInvalidCode(e), 401);
-    return;
-  }
-
-  const idToken = tokens.id_token;
-  const refreshToken = tokens.refresh_token;
-  const accessToken = tokens.access_token;
-  const expireAt = new Date(tokens.expiry_date);
-
-  try {
-    payload = await getPayload(idToken);
-    if (!isPayloadValid(payload)) {
-      handleError(res, ErrorAuthInvalidPayload(), 401);
-      return;
+    if (isNullOrUndefined(code) || code === "") {
+      throw new BadRequestError(
+        errorCodes.INVALID_AUTH_CODE,
+        "Invalid or missing code"
+      );
     }
-  } catch (e) {
-    handleError(res, ErrorAuthInvalidPayload(e), 401);
-    return;
-  }
 
-  const user = User.New({
-    googleId: payload.sub,
-    email: payload.email,
-    name: payload.name,
-    locale: payload.locale,
-    pictureUrl: payload.picture,
-    refreshToken
-  });
+    const tokens = await getTokensAsync(code);
 
-  try {
+    const idToken = tokens.id_token;
+    const refreshToken = tokens.refresh_token;
+    const accessToken = tokens.access_token;
+    const expireAt = new Date(tokens.expiry_date);
+
+    const payload = await getPayload(idToken);
+    if (!isPayloadValid(payload)) {
+      throw new AuthorizationError(
+        errorCodes.isPayloadValid,
+        "Invalid payload from token"
+      );
+    }
+
+    const user = User.New({
+      googleId: payload.sub,
+      email: payload.email,
+      name: payload.name,
+      locale: payload.locale,
+      pictureUrl: payload.picture,
+      refreshToken
+    });
+
     const savedUser = await User.GetByGoogleIdAsync(user.googleId);
-    if (savedUser === undefined) {
+    if (isNullOrUndefined(savedUser)) {
       // Save user if not exists in the db
       const result = await User.InsertAsync(user);
       if (isNullOrUndefined(result.insertedId)) {
-        handleError(res, ErrorCreateUser(), 500);
-        return;
+        throw new AuthorizationError(
+          errorCodes.ERROR_CREATE_USER,
+          "Cannot create user, retry"
+        );
       }
       user.id = result.insertedId;
     } else {
       user.id = savedUser.id;
     }
-  } catch (e) {
-    handleError(res, ErrorCreateUser(e), 500);
-    return;
-  }
-  // Clear refresh token
-  user.refreshToken = undefined;
+    // Clear refresh token
+    user.refreshToken = undefined;
 
-  try {
     const savedSession = await Session.GetByAccessTokenAsync(accessToken);
     if (isNullOrUndefined(savedSession)) {
       const session = Session.New({
@@ -95,70 +83,64 @@ router.post("/google/signin/callback", async (req, res) => {
         platform,
         expireAt
       });
-      await Session.InsertAsync(session);
+      const result = await Session.InsertAsync(session);
+      if (isNullOrUndefined(result.insertedId)) {
+        throw new AuthorizationError(
+          errorCodes.ERROR_CREATE_SESSION,
+          "Cannot create session, retry"
+        );
+      }
     }
-  } catch (e) {
-    handleError(res, ErrorCreateSession(e), 500);
-    return;
-  }
+    res.status(200).json(ApiResponse.success({ user, accessToken }));
+  })
+);
 
-  handleResponse(res, user, accessToken);
-});
-
-router.post("/google/validate/token", async (req, res) => {
-  const { accessToken } = req.body;
-  try {
+router.post(
+  "/google/validate/token",
+  catchErrors(async (req, res) => {
+    const { accessToken } = req.body;
     const result = await getUserByToken(accessToken);
-    // Check if return error
-    if (!isNullOrUndefined(result.code)) {
-      console.log("(Validate) ERROR: ", `result: ${JSON.stringify(result)}`);
-      handleError(res, result, 401);
-      return;
-    }
+
     const { user, session } = result;
     // Clear refresh token
     user.refreshToken = undefined;
 
     if (isNullOrUndefined(user) || isNullOrUndefined(session)) {
-      handleError(res, Unauthorized(), 401);
-      console.log(
-        "(Validate) ERROR: ",
-        `user: ${JSON.stringify(user)} - session: ${JSON.stringify(session)}`
+      throw new AuthorizationError(
+        errorCodes.UNAUTHORIZED,
+        "User unauthorized, sign in again"
       );
-      return;
     }
-    handleResponse(res, user, session.accessToken);
-  } catch (e) {
-    handleError(res, Unauthorized(e), 401);
-  }
-});
+    res
+      .status(200)
+      .json(ApiResponse.success({ user, accessToken: session.accessToken }));
+  })
+);
 
-router.post("/google/logout", async (req, res) => {
-  const { accessToken } = req.body;
-  try {
+router.post(
+  "/google/logout",
+  catchErrors(async (req, res) => {
+    const { accessToken } = req.body;
     await revokeSessionAndToken(accessToken);
-    handleResponse(res);
-  } catch (e) {
-    handleError(res, Unauthorized(e), 401);
-  }
-});
+    res.status(200);
+  })
+);
 
-router.post("/google/refresh/token", async (req, res) => {
-  const { accessToken } = req.body;
-  try {
+router.post(
+  "/google/refresh/token",
+  catchErrors(async (req, res) => {
+    const { accessToken } = req.body;
     const newSession = await getSessionByTokenAndRefreshIfNeeded(accessToken);
     if (isNullOrUndefined(newSession)) {
-      console.log(
-        "(Refresh) ERROR: ",
-        `newSession: ${JSON.stringify(newSession)}`
+      throw new AuthorizationError(
+        errorCodes.INVALID_SESSION_TOKEN,
+        "Cannot refresh token, sign in again"
       );
-      handleError(res, Unauthorized(), 401);
-      return;
     }
-    handleResponse(res, newSession, newSession.accessToken);
-  } catch (e) {
-    handleError(res, Unauthorized(e), 401);
-  }
-});
+    res.status(200).json(ApiResponse.success(newSession));
+  })
+);
+
+router.use(errorHandler);
 
 module.exports = router;

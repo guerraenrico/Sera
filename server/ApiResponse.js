@@ -1,15 +1,16 @@
-const success = (data, accessToken) => ({
+const success = data => ({
   success: true,
   data,
-  error: undefined,
-  accessToken
+  error: undefined
 });
 
-const error = (apiError, accessToken) => ({
+const error = (errorCode, message) => ({
   success: false,
   data: undefined,
-  error: apiError,
-  accessToken
+  error: {
+    code: errorCode,
+    message
+  }
 });
 
 module.exports = {
