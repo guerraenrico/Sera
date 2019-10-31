@@ -1,6 +1,6 @@
 {
   "name": "sera_node",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "node.js sera",
   "main": "index.js",
   "author": "Enrico Guerra",
@@ -10,24 +10,24 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "dotenv": "^8.0.0",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
-    "google-auth-library": "^4.2.5",
+    "google-auth-library": "^5.5.1",
     "moment": "^2.24.0",
-    "mongodb": "^3.2.7"
+    "mongodb": "^3.3.3"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.1",
-    "eslint": "^5.13.0",
-    "eslint-config-airbnb": "^17.1.1",
-    "eslint-config-airbnb-base": "^13.1.0",
-    "eslint-config-prettier": "^6.0.0",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.5.0",
     "eslint-import-resolver-babel-module": "^5.1.0",
-    "eslint-plugin-import": "^2.18.1",
+    "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-prettier": "^3.1.0",
-    "prettier": "^1.16.4",
+    "eslint-plugin-prettier": "^3.1.1",
+    "prettier": "^1.18.2",
     "tape": "^4.11.0"
   }
 }
