@@ -122,7 +122,7 @@ router.post(
   catchErrors(async (req, res) => {
     const { accessToken } = req.body;
     await revokeSessionAndToken(accessToken);
-    res.status(200);
+    res.status(200).json({});
   })
 );
 
