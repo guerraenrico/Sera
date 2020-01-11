@@ -121,16 +121,19 @@ const getSessionByTokenAndRefreshIfNeeded = async accessToken => {
     return undefined;
   }
 
-  const sessionError = await verifySession(session);
-  if (isNullOrUndefined(sessionError)) {
-    return session;
-  }
-  // Refresh only if the session is expired
-  if (
-    sessionError instanceof AuthorizationError &&
-    sessionError.httpCode === errorCodes.EXPIRED_SESSION
-  ) {
-    return undefined;
+  try {
+    const sessionError = await verifySession(session);
+    if (isNullOrUndefined(sessionError)) {
+      return session;
+    }
+  } catch (e) {
+    // Refresh only if the session is expired
+    if (
+      !(e instanceof AuthorizationError) &&
+      e.httpCode !== errorCodes.EXPIRED_SESSION
+    ) {
+      throw e;
+    }
   }
 
   const user = await User.GetAsync(session.userId);

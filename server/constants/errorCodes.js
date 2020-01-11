@@ -22,7 +22,7 @@ const ERROR_UPDATE_SESSION = "error_update_session";
 const ERROR_READ_TASK_RESULTS = "error_read_task_results";
 
 const INVALID_AUTH_CODE = "invalid_auth_code";
-const INVALID_CATEGORY_PARAMETERS = "invalid_Category_parameters";
+const INVALID_CATEGORY_PARAMETERS = "invalid_category_parameters";
 const INVALID_CATEGORY_ID = "invalid_category_id";
 const INVALID_TASK_PARAMETERS = "invalid_task_parameters";
 const INVALID_TASK_ID = "invalid_task_id";
