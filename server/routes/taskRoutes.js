@@ -190,15 +190,15 @@ router.patch(
   needAuth,
   catchErrors(async (req, res) => {
     const { body } = req;
-    const task = Task.ParseFields(body);
-    if (isNullOrUndefined(task) || isNullOrUndefined(task.id)) {
+    const { id, ...task } = Task.ParseFields(body);
+    if (isNullOrUndefined(task) || isNullOrUndefined(id)) {
       throw new BadRequestError(
         errorCodes.INVALID_TASK_PARAMETERS,
         "Missing params"
       );
     }
     try {
-      const result = await Task.UpdateAsync(task.id, task);
+      const result = await Task.UpdateAsync(id, task);
       if (!isNullOrUndefined(result) && result.ok === 1) {
         res
           .status(200)
