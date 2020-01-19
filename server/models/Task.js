@@ -39,7 +39,7 @@ const New = ({
   [Schema.fields.completedAt]: parseDate(completedAt),
   [Schema.fields.userId]: userId,
   [Schema.fields.createdAt]: parseDate(createdAt),
-  ...(isNullOrUndefined(id) && { id })
+  ...(!isNullOrUndefined(id) && { id })
 });
 
 const ParseFields = ({

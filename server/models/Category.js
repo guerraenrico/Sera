@@ -19,7 +19,7 @@ const ParseFields = ({ name = null, id = undefined }) => ({
 });
 
 const New = ({ name = "", userId = "", id = undefined }) => ({
-  ...(id !== undefined && { id }),
+  ...(!isNullOrUndefined(id) && { id }),
   [Schema.fields.name]: name,
   [Schema.fields.userId]: userId
 });
@@ -75,7 +75,7 @@ const InsertAsync = async (category, userId) => {
   const db = database.instance();
   return db
     .collection(Schema.name)
-    .insertOne({ ...category, [Schema.fields.userId]: userId });
+    .insertOne({ ...New(category), [Schema.fields.userId]: userId });
 };
 
 const DeleteAsync = async (userId, id) => {
