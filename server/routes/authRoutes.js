@@ -99,6 +99,12 @@ router.post(
   "/google/validate/token",
   catchErrors(async (req, res) => {
     const { accessToken } = req.body;
+    if (isNullOrUndefined(accessToken) || accessToken === "") {
+      throw new BadRequestError(
+        errorCodes.INVALID_AUTH_CODE,
+        "Invalid or missing access token"
+      );
+    }
     const result = await getUserByToken(accessToken);
 
     const { user, session } = result;
@@ -121,6 +127,12 @@ router.post(
   "/google/logout",
   catchErrors(async (req, res) => {
     const { accessToken } = req.body;
+    if (isNullOrUndefined(accessToken) || accessToken === "") {
+      throw new BadRequestError(
+        errorCodes.INVALID_AUTH_CODE,
+        "Invalid or missing access token"
+      );
+    }
     await revokeSessionAndToken(accessToken);
     res.status(200).json({});
   })
@@ -130,6 +142,12 @@ router.post(
   "/google/refresh/token",
   catchErrors(async (req, res) => {
     const { accessToken } = req.body;
+    if (isNullOrUndefined(accessToken) || accessToken === "") {
+      throw new BadRequestError(
+        errorCodes.INVALID_AUTH_CODE,
+        "Invalid or missing access token"
+      );
+    }
     const newSession = await getSessionByTokenAndRefreshIfNeeded(accessToken);
     if (isNullOrUndefined(newSession)) {
       throw new AuthorizationError(

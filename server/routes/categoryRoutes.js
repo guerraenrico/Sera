@@ -65,7 +65,7 @@ router.post(
   catchErrors(async (req, res) => {
     const { body } = req;
     const { session } = res.locals;
-    const category = Category.CreateFromBodyRequest(body, session.userId);
+    const category = Category.ParseFields(body);
     if (isNullOrUndefined(category)) {
       throw new BadRequestError(
         errorCodes.INVALID_CATEGORY_PARAMETERS,
@@ -73,7 +73,7 @@ router.post(
       );
     }
     try {
-      const result = await Category.InsertAsync(category);
+      const result = await Category.InsertAsync(category, session.userId);
       if (!isNullOrUndefined(result.insertedId)) {
         res
           .status(200)

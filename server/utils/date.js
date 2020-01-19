@@ -20,9 +20,12 @@ const currentWeekDates = () => {
 
 const toISOString = date => moment(date).toISOString();
 
+const parseDate = dateString => dateString && moment(dateString).toDate();
+
 module.exports = {
   currentMonthDates,
   currentYearDates,
   currentWeekDates,
-  toISOString
+  toISOString,
+  parseDate
 };

@@ -109,28 +109,33 @@ router.post(
   catchErrors(async (req, res) => {
     const { session } = res.locals;
     const { body } = req;
-    const task = Task.CreateFromBodyRequest(body, session.userId);
-    if (isNullOrUndefined(task)) {
+    const task = Task.ParseFields(body);
+    if (
+      isNullOrUndefined(task) ||
+      isNullOrUndefined(task.title) ||
+      isNullOrUndefined(task.todoWithin)
+    ) {
       throw new BadRequestError(
         errorCodes.INVALID_TASK_PARAMETERS,
-        "Invalid param task"
+        "Invalid params"
       );
     }
     try {
-      task.position = 0;
-      const result = await Task.InsertAsync(task);
+      const result = await Task.InsertAsync(task, session.userId);
       if (!isNullOrUndefined(result.insertedId)) {
         await ItemOrder.PrependIdAsync(
           session.userId,
           Task.Schema.name,
           {
-            completed: task.completed
+            completed: false
           },
           result.insertedId.valueOf().toString()
         );
         res
           .status(200)
-          .json(ApiResponse.success({ ...task, id: result.insertedId }));
+          .json(
+            ApiResponse.success({ ...result.ops[0], id: result.insertedId })
+          );
       } else {
         throw new ApiError(errorCodes.ERROR_INSERT_TASK, "Error insert task");
       }
@@ -185,22 +190,19 @@ router.patch(
   needAuth,
   catchErrors(async (req, res) => {
     const { body } = req;
-    const { id, ...other } = body;
-    if (isNullOrUndefined(id)) {
+    const task = Task.ParseFields(body);
+    if (isNullOrUndefined(task) || isNullOrUndefined(task.id)) {
       throw new BadRequestError(
         errorCodes.INVALID_TASK_PARAMETERS,
-        "Missing param id"
+        "Missing params"
       );
     }
     try {
-      const result = await Task.UpdateAsync(id, { ...other });
+      const result = await Task.UpdateAsync(task.id, task);
       if (!isNullOrUndefined(result) && result.ok === 1) {
-        res.status(200).json(
-          ApiResponse.success({
-            ...Task.CreateFromDocument(result.value),
-            ...other
-          })
-        );
+        res
+          .status(200)
+          .json(ApiResponse.success(Task.CreateFromDocument(result.value)));
       } else {
         throw new ApiError(errorCodes.ERROR_UPDATE_TASK, "Error update task");
       }
@@ -216,11 +218,16 @@ router.patch(
   catchErrors(async (req, res) => {
     const { session } = res.locals;
     const { body } = req;
-    const { task, nextId } = body;
-    if (isNullOrUndefined(task)) {
+    const { nextId } = body;
+    const task = Task.ParseFields(body.task);
+    if (
+      isNullOrUndefined(task) ||
+      isNullOrUndefined(task.id) ||
+      isNullOrUndefined(task.completed)
+    ) {
       throw new BadRequestError(
         errorCodes.INVALID_TASK_PARAMETERS,
-        "Invalid param task"
+        "Missing params"
       );
     }
 
@@ -252,17 +259,18 @@ router.patch(
   catchErrors(async (req, res) => {
     const { session } = res.locals;
     const { body } = req;
-    const { id, completed, completedAt } = body;
-    if (isNullOrUndefined(id)) {
+    const task = Task.ParseFields(body);
+    const { id, completed, completedAt } = task;
+    if (isNullOrUndefined(id) || isNullOrUndefined(completed)) {
       throw new BadRequestError(
         errorCodes.INVALID_TASK_PARAMETERS,
-        "Missing param id"
+        "Missing params"
       );
     }
-    if (isNullOrUndefined(completed)) {
+    if (completed && isNullOrUndefined(completedAt)) {
       throw new BadRequestError(
         errorCodes.INVALID_TASK_PARAMETERS,
-        "Missing param completed"
+        "Missing param completedAt"
       );
     }
     try {
@@ -288,13 +296,9 @@ router.patch(
         completedAt
       });
       if (!isNullOrUndefined(result) && result.ok === 1) {
-        res.status(200).json(
-          ApiResponse.success({
-            ...Task.CreateFromDocument(result.value),
-            completed,
-            completedAt
-          })
-        );
+        res
+          .status(200)
+          .json(ApiResponse.success(Task.CreateFromDocument(result.value)));
       } else {
         throw new ApiError(
           errorCodes.ERROR_UPDATE_TASK,

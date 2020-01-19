@@ -9,7 +9,8 @@ async function openConnection() {
     return;
   }
   connection = await MongoClient.connect(MONGODB_URI, {
-    useNewUrlParser: true
+    useNewUrlParser: true,
+    useUnifiedTopology: true
   });
   db = connection.db(DATABASE_NAME);
 }

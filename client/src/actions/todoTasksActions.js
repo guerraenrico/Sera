@@ -220,7 +220,6 @@ export const setCategoryToTask = (task, category) => async (
   getState
 ) => {
   const { accessToken, guest } = getState().auth;
-  // $FlowFixMe
   const updatedData = { categories: [...task.categories, category] };
   dispatch(updateTaskLocal(task.id, updatedData));
   if (guest) {

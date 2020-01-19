@@ -57,10 +57,7 @@ const GetAsync = async (userId, collection, filter) => {
     ]
   };
   const document = await db.collection(Schema.name).findOne(queryFilter);
-  if (document === undefined || document === null) {
-    return undefined;
-  }
-  return CreateFromDocument(document);
+  return document && CreateFromDocument(document);
 };
 
 const InsertAsync = async itemOrder => {

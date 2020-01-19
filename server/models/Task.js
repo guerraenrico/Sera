@@ -2,6 +2,7 @@ const { ObjectId } = require("mongodb");
 const Category = require("./Category");
 
 const { isNullOrUndefined } = require("../utils/common");
+const { parseDate } = require("../utils/date");
 const database = require("../utils/database");
 
 /* eslint dot-notation: 0 */
@@ -30,31 +31,47 @@ const New = ({
   createdAt = undefined,
   id = undefined
 }) => ({
-  ...(id !== undefined && { id }),
   [Schema.fields.title]: title,
   [Schema.fields.description]: description,
-  [Schema.fields.todoWithin]: todoWithin,
-  [Schema.fields.completedAt]: completedAt,
+  [Schema.fields.todoWithin]: parseDate(todoWithin),
   [Schema.fields.categories]: categories,
   [Schema.fields.completed]: completed,
-  [Schema.fields.createdAt]: createdAt,
-  [Schema.fields.userId]: userId
+  [Schema.fields.completedAt]: parseDate(completedAt),
+  [Schema.fields.userId]: userId,
+  [Schema.fields.createdAt]: parseDate(createdAt),
+  ...(id !== undefined && { id })
 });
 
-const CreateFromBodyRequest = (body, userId) => {
-  if (isNullOrUndefined(body.title) || body.title === "") {
-    return undefined;
-  }
-  if (isNullOrUndefined(body.todoWithin) || body.todoWithin === "") {
-    return undefined;
-  }
-  return New({
-    title: body.title,
-    description: body.description,
-    todoWithin: body.todoWithin,
-    categories: body.categories.map(cat => Category.New(cat)),
-    userId
-  });
+const ParseFields = ({
+  title = null,
+  description = null,
+  todoWithin = null,
+  categories = null,
+  completed = null,
+  completedAt = null,
+  id = null
+}) => {
+  return {
+    ...(!isNullOrUndefined(title) && {
+      [Schema.fields.title]: title
+    }),
+    ...(!isNullOrUndefined(description) && {
+      [Schema.fields.description]: description
+    }),
+    ...(!isNullOrUndefined(todoWithin) && {
+      [Schema.fields.todoWithin]: parseDate(todoWithin)
+    }),
+    ...(!isNullOrUndefined(categories) && {
+      [Schema.fields.categories]: categories.map(cat => Category.New(cat))
+    }),
+    ...(!isNullOrUndefined(completed) && {
+      [Schema.fields.completed]: completed
+    }),
+    ...(!isNullOrUndefined(completedAt) && {
+      [Schema.fields.completedAt]: parseDate(completedAt)
+    }),
+    ...(!isNullOrUndefined(id) && { id })
+  };
 };
 
 const CreateFromDocument = taskDocument => {
@@ -131,11 +148,12 @@ const GetAllByIdsAsync = async (userId, ids) => {
   return CreateFromDocuments(tasksDocs);
 };
 
-const InsertAsync = async task => {
+const InsertAsync = async (task, userId) => {
   const db = database.instance();
   return db.collection(Schema.name).insertOne({
-    ...task,
-    createdAt: new Date()
+    ...New(task),
+    [Schema.fields.userId]: userId,
+    [Schema.fields.createdAt]: new Date()
   });
 };
 
@@ -148,12 +166,13 @@ const DeleteAsync = async (userId, id) => {
 
 const UpdateAsync = async (id, fields) => {
   const db = database.instance();
-  return db
-    .collection(Schema.name)
-    .findOneAndUpdate(
-      { _id: ObjectId(id.toString()) },
-      { $set: { ...fields } }
-    );
+  return db.collection(Schema.name).findOneAndUpdate(
+    { _id: ObjectId(id.toString()) },
+    { $set: { ...fields } },
+    {
+      returnNewDocument: true
+    }
+  );
 };
 
 const SearchAsync = async (userId, text) => {
@@ -182,7 +201,7 @@ const SearchAsync = async (userId, text) => {
 
 module.exports = {
   Schema,
-  CreateFromBodyRequest,
+  ParseFields,
   CreateFromDocument,
   CreateFromDocuments,
   GetAllAsync,

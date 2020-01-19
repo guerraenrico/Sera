@@ -1,5 +1,5 @@
 const { ObjectId } = require("mongodb");
-
+const { isNullOrUndefined } = require("../utils/common");
 const database = require("../utils/database");
 
 /* eslint dot-notation: 0 */
@@ -10,6 +10,13 @@ const Schema = {
     userId: "userId"
   }
 };
+
+const ParseFields = ({ name = null, id = undefined }) => ({
+  ...(!isNullOrUndefined(name) && {
+    [Schema.fields.name]: name
+  }),
+  ...(!isNullOrUndefined(id) && { id })
+});
 
 const New = ({ name = "", userId = "", id = undefined }) => ({
   ...(id !== undefined && { id }),
@@ -64,9 +71,11 @@ const GetAllFilteredAsync = async (categoriesId = []) => {
   return CreateFromDocuments(categoriesDocs);
 };
 
-const InsertAsync = async category => {
+const InsertAsync = async (category, userId) => {
   const db = database.instance();
-  return db.collection(Schema.name).insertOne(category);
+  return db
+    .collection(Schema.name)
+    .insertOne({ ...category, [Schema.fields.userId]: userId });
 };
 
 const DeleteAsync = async (userId, id) => {
@@ -96,6 +105,7 @@ const SearchAsync = async (userId, text) => {
 
 module.exports = {
   Schema,
+  ParseFields,
   New,
   CreateFromBodyRequest,
   CreateFromDocument,
