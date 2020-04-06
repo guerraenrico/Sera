@@ -5,11 +5,11 @@ const webpack = require("webpack");
 module.exports = {
   mode: "development",
   watch: true,
-  entry: ["@babel/polyfill", "./src/index.jsx"],
+  entry: ["@babel/polyfill", "./client/src/index.jsx"],
   output: {
     publicPath: "client/public/dist/",
     filename: "[name].js",
-    path: path.resolve(__dirname, "public/dist")
+    path: path.resolve(__dirname, "client/public/dist")
   },
   devtool: "inline-source-map",
   resolve: {
@@ -30,7 +30,8 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify("development")
+      "process.env.NODE_ENV": JSON.stringify("development"),
+      API_URL: JSON.stringify("http://localhost:5001/api/")
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),

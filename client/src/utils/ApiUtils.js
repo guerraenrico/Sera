@@ -11,7 +11,7 @@ export const Methods = {
   PATCH: "PATCH"
 };
 
-const fullUrl = url => `/api/${url}`;
+const fullUrl = url => `${API_URL}${url}`;
 
 const baseRequestParams = token => ({
   credentials: "include",

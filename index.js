@@ -7,13 +7,6 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 
-const database = require("./server/utils/database");
-
-const authRoutes = require("./server/routes/authRoutes");
-const categoryRoutes = require("./server/routes/categoryRoutes");
-const taskRouters = require("./server/routes/taskRoutes");
-const resultRouters = require("./server/routes/resultRouters");
-
 const { PORT } = process.env;
 const app = express();
 
@@ -25,11 +18,6 @@ app.use(
   "/client/public",
   express.static(path.join(__dirname, "/client/public"))
 );
-
-app.use("/api/auth", authRoutes);
-app.use("/api/categories", categoryRoutes);
-app.use("/api/tasks", taskRouters);
-app.use("/api/results", resultRouters);
 
 app.get("/privacy", (req, res) => {
   res.sendFile(path.join(__dirname, "/client/public/privacy.html"));
@@ -46,8 +34,7 @@ app.get("/*", (req, res) => {
   );
 });
 
-(async function start() {
-  await database.openConnection();
+(function start() {
   httpServer.listen(PORT, () => {
     console.log(`sera server running on port ${PORT}`);
   });

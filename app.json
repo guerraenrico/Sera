@@ -1,12 +1,8 @@
 {
-  "name": "Sera Backend",
-  "description": "node.js sera's backend",
-  "keywords": ["node", "sera", "backend"],
+  "name": "Sera Web Client",
+  "description": "sera web client",
+  "keywords": ["node", "sera", "client", "web"],
   "env": {
-    "PORT": 5000,
-    "DB_URL": "mongodb://localhost:27017"
-  },
-  "addons": [
-    "mongolab"
-  ]
+    "PORT": 5000
+  }
 }

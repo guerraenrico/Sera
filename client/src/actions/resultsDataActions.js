@@ -1,4 +1,3 @@
-// @flow
 import { callApi, Methods } from "../utils/ApiUtils";
 import { shouldRefreshToken } from "../utils/RequestUtils";
 import { refreshAccessToken } from "./authActions";

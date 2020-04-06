@@ -10,14 +10,14 @@ const packageFile = require("./package.json");
 module.exports = {
   mode: "production",
   entry: {
-    main: "./src/index.jsx",
+    main: "./client/src/index.jsx",
     vendor: Object.keys(packageFile.dependencies)
   },
   output: {
     publicPath: "client/public/dist/",
     filename: "[name].js",
     chunkFilename: "[name].js",
-    path: path.resolve(__dirname, "public/dist")
+    path: path.resolve(__dirname, "client/public/dist")
   },
   resolve: {
     extensions: [".js", ".jsx"]
@@ -54,7 +54,8 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      "process.env.NODE_ENV": JSON.stringify("production")
+      "process.env.NODE_ENV": JSON.stringify("production"),
+      API_URL: JSON.stringify("http://localhost:5001/api/")
     }),
     new webpack.HashedModuleIdsPlugin(),
     new webpack.IgnorePlugin(/\.svg$/),
