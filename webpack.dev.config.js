@@ -9,32 +9,32 @@ module.exports = {
   output: {
     publicPath: "client/public/dist/",
     filename: "[name].js",
-    path: path.resolve(__dirname, "client/public/dist")
+    path: path.resolve(__dirname, "client/public/dist"),
   },
   devtool: "inline-source-map",
   resolve: {
-    extensions: [".js", ".jsx"]
+    extensions: [".js", ".jsx"],
   },
   module: {
     rules: [
       {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        loaders: ["babel-loader"]
+        loaders: ["babel-loader"],
       },
       {
         test: /\.(sass|css)$/,
-        use: [{ loader: "style-loader" }, { loader: "css-loader" }]
-      }
-    ]
+        use: [{ loader: "style-loader" }, { loader: "css-loader" }],
+      },
+    ],
   },
   plugins: [
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("development"),
-      API_URL: JSON.stringify("http://localhost:5001/api/")
+      API_URL: JSON.stringify("http://localhost:5001/api/"),
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.IgnorePlugin(/\.svg$/)
-  ]
+    new webpack.IgnorePlugin(/\.svg$/),
+  ],
 };
