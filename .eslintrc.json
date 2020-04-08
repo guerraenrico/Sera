@@ -13,7 +13,12 @@
   },
   "rules": {
     "no-case-declarations": "off",
-    "prettier/prettier": "error",
+    "prettier/prettier": [
+      "error",
+      {
+        "endOfLine": "auto"
+      }
+    ],
     "linebreak-style": ["error", "windows"],
     "import/prefer-default-export": "off",
     "react-hooks/rules-of-hooks": "error",

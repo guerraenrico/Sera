@@ -4,20 +4,24 @@ const webpack = require("webpack");
 const TerserPlugin = require("terser-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
-const nodeExternals = require("webpack-node-externals");
 
 const packageFile = require("./package.json");
 
-module.exports = {
+const serverDependencies = ["express", "dotenv"];
+const excludeServerDependencies = (dep) => !serverDependencies.includes(dep);
+
+const clientConfig = {
   mode: "production",
-  target: "node",
-  externals: [nodeExternals()],
+  target: "web",
+  name: "client",
   entry: {
     main: "./client/src/index.jsx",
-    vendor: Object.keys(packageFile.dependencies),
+    vendor: Object.keys(packageFile.dependencies).filter(
+      excludeServerDependencies
+    ),
   },
   output: {
-    publicPath: "client/public/dist/",
+    publicPath: "./client/public/dist/",
     filename: "[name].js",
     chunkFilename: "[name].js",
     path: path.resolve(__dirname, "client/public/dist"),
@@ -67,3 +71,5 @@ module.exports = {
     }),
   ],
 };
+
+module.exports = [clientConfig];

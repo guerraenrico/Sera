@@ -1,6 +1,6 @@
 {
   "name": "sera_client",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "sera client web",
   "main": "index.js",
   "author": "Enrico Guerra",
@@ -67,7 +67,6 @@
     "terser-webpack-plugin": "^2.3.5",
     "uglifyjs-webpack-plugin": "^2.2.0",
     "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-cli": "^3.3.11"
   }
 }
