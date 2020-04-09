@@ -10,7 +10,7 @@ const packageFile = require("./package.json");
 const serverDependencies = ["express", "dotenv"];
 const excludeServerDependencies = (dep) => !serverDependencies.includes(dep);
 
-const clientConfig = {
+module.exports = {
   mode: "production",
   target: "web",
   name: "client",
@@ -62,7 +62,7 @@ const clientConfig = {
   plugins: [
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("production"),
-      API_URL: JSON.stringify("https://sera-backend.herokuapp.com/"),
+      API_URL: JSON.stringify("https://sera-backend.herokuapp.com/api/"),
     }),
     new webpack.HashedModuleIdsPlugin(),
     new webpack.IgnorePlugin(/\.svg$/),
@@ -71,5 +71,3 @@ const clientConfig = {
     }),
   ],
 };
-
-module.exports = [clientConfig];

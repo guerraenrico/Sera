@@ -24,16 +24,16 @@ import {
   Label,
   ContentButtonGuest,
   ContentTip,
-  Tip
+  Tip,
 } from "./style";
 
 const Login = ({
   message,
   enterAsGuest,
   authenticateGoogleToken,
-  hideMessage
+  hideMessage,
 }) => {
-  const responseGoogle = response => {
+  const responseGoogle = (response) => {
     if (response.code !== undefined) {
       authenticateGoogleToken(response.code);
     }
@@ -59,7 +59,7 @@ const Login = ({
           accessType="offline"
           responseType="code"
           redirectUri={getCurrentBaseUrl}
-          render={renderProps => (
+          render={(renderProps) => (
             <ButtonGoogleLogin onClick={renderProps.onClick}>
               <GoogleIcon className="icon-google-g">
                 <span className="path1" />
@@ -93,30 +93,27 @@ Login.propTypes = {
   message: PropTypes.shape({
     show: PropTypes.bool.isRequired,
     isError: PropTypes.bool.isRequired,
-    text: PropTypes.string
+    text: PropTypes.string,
   }).isRequired,
   enterAsGuest: PropTypes.func.isRequired,
   authenticateGoogleToken: PropTypes.func.isRequired,
-  hideMessage: PropTypes.func.isRequired
+  hideMessage: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = state => ({
-  message: state.message
+const mapStateToProps = (state) => ({
+  message: state.message,
 });
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   enterAsGuest: () => {
     dispatch(authActions.enterAsGuest());
   },
-  authenticateGoogleToken: idToken => {
+  authenticateGoogleToken: (idToken) => {
     dispatch(authActions.authenticateGoogleToken(idToken));
   },
   hideMessage: () => {
     dispatch(messageActions.hideMessage());
-  }
+  },
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
