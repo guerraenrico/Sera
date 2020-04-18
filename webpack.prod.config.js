@@ -62,7 +62,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("production"),
-      API_URL: JSON.stringify("https://sera-backend.herokuapp.com/api/"),
+      API_URL: JSON.stringify("https://sera-backend.herokuapp.com/api/v1/"),
     }),
     new webpack.HashedModuleIdsPlugin(),
     new webpack.IgnorePlugin(/\.svg$/),

@@ -31,7 +31,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify("development"),
-      API_URL: JSON.stringify("http://localhost:5001/api/"),
+      API_URL: JSON.stringify("http://localhost:5001/api/v1/"),
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
