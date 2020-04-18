@@ -1,6 +1,6 @@
 {
   "name": "sera_client",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "sera client web",
   "main": "index.js",
   "author": "Enrico Guerra",
