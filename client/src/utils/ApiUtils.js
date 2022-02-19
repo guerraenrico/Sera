@@ -8,50 +8,50 @@ export const Methods = {
   POST: "POST",
   GET: "GET",
   DELETE: "DELETE",
-  PATCH: "PATCH"
+  PATCH: "PATCH",
 };
 
-const fullUrl = url => `${API_URL}${url}`;
+const fullUrl = (url) => `${API_URL}${url}`;
 
-const baseRequestParams = token => ({
+const baseRequestParams = (token) => ({
   credentials: "include",
   headers: {
     "Content-Type": "application/json",
-    "x-token": token
-  }
+    "x-token": token,
+  },
 });
 
-const createPostRequest = baseParams => (url, options = {}) =>
+const createPostRequest = (baseParams) => (url, options = {}) =>
   fetch(url, {
     ...baseParams,
     method: "POST",
-    body: JSON.stringify(options)
+    body: JSON.stringify(options),
   });
 
-const createGetRequest = baseParams => (url, options = {}) => {
+const createGetRequest = (baseParams) => (url, options = {}) => {
   let finalUrl = `${url}?`;
   Object.entries(options).forEach(([key, value], poition) => {
     finalUrl = `${finalUrl}${poition > 0 ? "&" : ""}${key}=${value}`;
   });
   return fetch(finalUrl, {
     ...baseParams,
-    method: "GET"
+    method: "GET",
   });
 };
 
-const createDeleteRequest = baseParams => (url, options) => {
+const createDeleteRequest = (baseParams) => (url, options) => {
   const finalUrl = `${url}/${options}`;
   return fetch(finalUrl, {
     ...baseParams,
-    method: "DELETE"
+    method: "DELETE",
   });
 };
 
-const createPatchRequest = baseParams => (url, options = {}) =>
+const createPatchRequest = (baseParams) => (url, options = {}) =>
   fetch(url, {
     ...baseParams,
     method: "PATCH",
-    body: JSON.stringify(options)
+    body: JSON.stringify(options),
   });
 
 const createRequest = (url, options, method, token) => {
@@ -73,8 +73,8 @@ const createRequest = (url, options, method, token) => {
 
 export const callApi = (url, options = {}, method = Methods.POST, token = "") =>
   createRequest(url, options, method, token).then(
-    response => response.json(),
-    error => {
+    (response) => response.json(),
+    (error) => {
       throw new ApiException(error);
     }
   );
